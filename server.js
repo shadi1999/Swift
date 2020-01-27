@@ -2,12 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const config = require('config');
-
-const users=require('./routes/api/users');
-const students=require('./routes/api/students');
-const tutors=require('./routes/api/tutors');
-const administrators=require('./routes/api/administrators');
-
+const path = require('path');
 
 
 const app = express();
@@ -19,21 +14,34 @@ app.use(bodyParser.json());
 
 const db = config.get('mongoURI');
 
-mongoose.connect(db,{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true,})
+mongoose.connect(db,{ useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,})
     .then(()=> console.log('Mongo DB connected...'))
-    .catch(err => console.log(err));
-//end of db connection
+    .catch(err => console.log(err)
+);
 
 
-app.use('/api/users',users);
-app.use('/api/students',students);
-app.use('/api/tutors',tutors);
-app.use('/api/administrators',administrators);
 
+app.use('/api/users',require('./routes/api/users'));
+app.use('/api/students',require('./routes/api/students'));
+app.use('/api/tutors',require('./routes/api/tutors'));
+app.use('/api/administrators',require('./routes/api/administrators'));
+
+
+// Serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static('client/build'));
+  
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+  }
 
 const port = process.env.PORT || 5000;
 
-app.listen(port , ()=>console.log(`server runnig on port ${port}`))
+app.listen(port , ()=>console.log(`Server started on port ${port}`))
 
 
 

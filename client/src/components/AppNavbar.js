@@ -1,79 +1,57 @@
-
-
+import { Menu, Icon } from 'antd';
 import React from 'react';
-import {
-    Navbar,
-    NavbarBrand,
-    Container,
-    Nav
-} from 'reactstrap';
-
-import 'antd/dist/antd.css';
-import { Menu, Dropdown, Icon, message } from 'antd';
-import '../App.css';
 
 
+const { SubMenu } = Menu;
 
-class AppNavbar extends React.Component{
-    state={
-        isOpen:false
-    }
+class AppNavbar extends React.Component {
+  state = {
+    current: 'mail',
+  };
 
-    toggle =()=>{
-        this.setState({
-            isOpen:!this.state.isOpen
-        })
-    }
-    handleButtonClick=(e)=> {
-        message.info('Click on left button.');
-        console.log('click left button', e);
-      }
-      
-    handleMenuClick=(e)=> {
-        message.info('Click on menu item.');
-        console.log('click', e);
-      }
-      
-    menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="1">
-            <Icon type="user" />
-            Login Screen
-          </Menu.Item>
-          <Menu.Item key="2">
-            <Icon type="user" />
-            Registration
-          </Menu.Item>
-          <Menu.Item key="3">
-            <Icon type="user" />
-            About This Site
-          </Menu.Item>
-        </Menu>
+  handleClick = e => {
+    console.log('click ', e);
+    this.setState({
+      current: e.key,
+    });
+  };
+
+  render() {
+    return (
+      <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
+        <Menu.Item key="mail">
+          <Icon type="mail" />
+          Navigation One
+        </Menu.Item>
+        <Menu.Item key="app" disabled>
+          <Icon type="appstore" />
+          Navigation Two
+        </Menu.Item>
+        <SubMenu
+          title={
+            <span className="submenu-title-wrapper">
+              <Icon type="setting" />
+              Navigation Three - Submenu
+            </span>
+          }
+        >
+          <Menu.ItemGroup title="Item 1">
+            <Menu.Item key="setting:1">Option 1</Menu.Item>
+            <Menu.Item key="setting:2">Option 2</Menu.Item>
+          </Menu.ItemGroup>
+          <Menu.ItemGroup title="Item 2">
+            <Menu.Item key="setting:3">Option 3</Menu.Item>
+            <Menu.Item key="setting:4">Option 4</Menu.Item>
+          </Menu.ItemGroup>
+        </SubMenu>
+        <Menu.Item key="alipay">
+          <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+            Navigation Four - Link
+          </a>
+        </Menu.Item>
+      </Menu>
     );
-
-    render(){
-        return(
-            <div class="navbar navbar-expand-sm navbar-custom py-0">
-                <Navbar  dark expand='sm' className='mb-5'>
-                    <Container margin='Center'>
-                        <NavbarBrand >Swift Course - A Fast and Affordable Online Classroom System </NavbarBrand><br/><br/><br/><br/>
-                            <Nav  navbar>
-                                <div id="dropdown" >
-                                    <Dropdown.Button onClick={this.handleButtonClick} overlay={this.menu}>
-                                        Navigation
-                                    </Dropdown.Button>
-                                </div>
-                            </Nav>
-                    </Container> 
-                </Navbar>
-            </div>
-        );
-    }
+  }
 }
 
-
-
 export default AppNavbar;
-
-
-
