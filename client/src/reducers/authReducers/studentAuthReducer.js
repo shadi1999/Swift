@@ -1,10 +1,4 @@
 import {
-    GUEST_LOADED,
-    GUEST_LOADING,
-    ADMINSTRATOR_LOADED,
-    ADMINSTRATOR_LOADING,
-    TUTOR_LOADED,
-    TUTOR_LOADING,
     STUDENT_LOADING,
     STUDENT_LOADED,
     AUTH_ERROR,
@@ -13,13 +7,13 @@ import {
     LOGOUT_SUCCESS,
     REGISTER_SUCCESS,
     REGISTER_FAIL
-  } from '../actions/types';
+  } from '../../actions/types';
   
   const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     isLoading: false,
-    guset: null
+    student: null
   };
   
   export default function(state = initialState, action) {
@@ -53,7 +47,7 @@ import {
         return {
           ...state,
           token: null,
-          guset: null,
+          student: null,
           isAuthenticated: false,
           isLoading: false
         };

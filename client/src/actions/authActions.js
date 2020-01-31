@@ -2,8 +2,6 @@ import axios from 'axios';
 import { returnErrors } from './errorActions';
 
 import {
-  GUEST_LOADED,
-  GUEST_LOADING,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -24,7 +22,7 @@ export const loadStudent = () => (dispatch, getState) => {
   dispatch({ type: STUDENT_LOADING });
 
   axios
-    .get('/api/auth/student', tokenConfig(getState))
+    .get('/api/auth/students/student', tokenConfig(getState))
     .then(res =>
       dispatch({
         type: STUDENT_LOADED,
@@ -40,7 +38,7 @@ export const loadStudent = () => (dispatch, getState) => {
 };
 
 // Register Student
-export const register = ({ name, email, password }) => dispatch => {
+export const registerStudent = ({ name, email, password }) => dispatch => {
   // Headers
   const config = {
     headers: {
@@ -70,7 +68,7 @@ export const register = ({ name, email, password }) => dispatch => {
 };
 
 // Login Student
-export const login = ({ email, password }) => dispatch => {
+export const loginStudent = ({ email, password }) => dispatch => {
   // Headers
   const config = {
     headers: {
@@ -82,7 +80,7 @@ export const login = ({ email, password }) => dispatch => {
   const body = JSON.stringify({ email, password });
 
   axios
-    .post('/api/auth', body, config)
+    .post('/api/auth/students', body, config)
     .then(res =>
       dispatch({
         type: LOGIN_SUCCESS,
@@ -100,11 +98,189 @@ export const login = ({ email, password }) => dispatch => {
 };
 
 // Logout Student
-export const logout = () => {
+export const logoutStudent = () => {
   return {
     type: LOGOUT_SUCCESS
   };
 };
+
+// Check token & load tutor
+export const loadTutor = () => (dispatch, getState) => {
+  // Student loading
+  dispatch({ type: TUTOR_LOADING });
+
+  axios
+    .get('/api/auth/tutors/tutor', tokenConfig(getState))
+    .then(res =>
+      dispatch({
+        type: TUTOR_LOADED,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch({
+        type: AUTH_ERROR
+      });
+    });
+};
+
+// Register Tutor
+export const registerTutor = ({ name, email, password }) => dispatch => {
+  // Headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // Request body
+  const body = JSON.stringify({ name, email, password });
+
+  axios
+    .post('/api/tutors', body, config)
+    .then(res =>
+      dispatch({
+        type: REGISTER_SUCCESS,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(
+        returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
+      );
+      dispatch({
+        type: REGISTER_FAIL
+      });
+    });
+};
+
+// Login Tutor
+export const loginTutor = ({ email, password }) => dispatch => {
+  // Headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // Request body
+  const body = JSON.stringify({ email, password });
+
+  axios
+    .post('/api/auth/tutors', body, config)
+    .then(res =>
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(
+        returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+      );
+      dispatch({
+        type: LOGIN_FAIL
+      });
+    });
+};
+
+// Logout Tutor
+export const logoutTutor = () => {
+  return {
+    type: LOGOUT_SUCCESS
+  };
+};
+
+// Check token & load Administrator
+export const loadStudent = () => (dispatch, getState) => {
+  // Administrator loading
+  dispatch({ type: ADMINSTRATOR_LOADING });
+
+  axios
+    .get('/api/auth/administrators/administrator', tokenConfig(getState))
+    .then(res =>
+      dispatch({
+        type: ADMINSTRATOR_LOADED,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch({
+        type: AUTH_ERROR
+      });
+    });
+};
+
+// Register Administrator
+export const registerAdministrator = ({ name, email, password }) => dispatch => {
+  // Headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // Request body
+  const body = JSON.stringify({ name, email, password });
+
+  axios
+    .post('/api/administrators', body, config)
+    .then(res =>
+      dispatch({
+        type: REGISTER_SUCCESS,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(
+        returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
+      );
+      dispatch({
+        type: REGISTER_FAIL
+      });
+    });
+};
+
+// Login Administrator
+export const loginAdministrator = ({ email, password }) => dispatch => {
+  // Headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // Request body
+  const body = JSON.stringify({ email, password });
+
+  axios
+    .post('/api/auth/administrators', body, config)
+    .then(res =>
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      dispatch(
+        returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+      );
+      dispatch({
+        type: LOGIN_FAIL
+      });
+    });
+};
+
+// Logout Administrator
+export const logoutAdministrator = () => {
+  return {
+    type: LOGOUT_SUCCESS
+  };
+};
+
+
 
 // Setup config/headers and token
 export const tokenConfig = getState => {

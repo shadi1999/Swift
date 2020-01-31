@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import errorReducer from './errorReducer';
-import authReducer from './authReducer';
-
+import studentAuthReducer from './authReducers/studentAuthReducer';
+import administratorAuthReducer from './authReducers/administratorAuthReducer';
+import tutorAuthReducer from './authReducers/tutorAuthReducer';
 export default combineReducers({
   error: errorReducer,
-  auth: authReducer
+  auth: {studentAuthReducer,administratorAuthReducer,tutorAuthReducer}
 });
