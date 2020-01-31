@@ -23,7 +23,7 @@ mongoose.connect(db,{ useNewUrlParser: true,
 
 
 
-app.use('/api/users',require('./routes/api/users'));
+app.use('/api/gusets',require('./routes/api/gusets'));
 app.use('/api/students',require('./routes/api/students'));
 app.use('/api/tutors',require('./routes/api/tutors'));
 app.use('/api/administrators',require('./routes/api/administrators'));
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
     app.get('*', (req, res) => {
       res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
-  }
+}
 
 const port = process.env.PORT || 5000;
 

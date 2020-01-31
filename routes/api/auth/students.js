@@ -3,11 +3,12 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
-const auth = require('../../../middleware/auth');
+const auth = require('../../middleware/auth');
+
 
 
 //Student Model
-const Student = require('../../../models/Student');
+const Student = require('../../models/Student');
 
 // @route   POST api/auth/students
 // @desc    Auth student
