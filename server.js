@@ -23,7 +23,7 @@ mongoose.connect(db,{ useNewUrlParser: true,
 
 
 
-app.use('/api/gusets',require('./routes/api/gusets'));
+app.use('/api/gusets',require('./routes/api/guests'));
 app.use('/api/students',require('./routes/api/students'));
 app.use('/api/tutors',require('./routes/api/tutors'));
 app.use('/api/administrators',require('./routes/api/administrators'));
