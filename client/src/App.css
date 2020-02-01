@@ -1,9 +1,4 @@
-#dropdown{
-  margin: Center;
-  color: #555;
-  background-color: #E7E7E7;
-  font-size:15px;
-}
+
 
 .navbar-custom {
     background-color: #182848;
@@ -23,3 +18,4 @@
 .navbar-custom .nav-item:hover .nav-link {
     color: #ffffff;
 }
+

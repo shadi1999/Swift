@@ -21,4 +21,4 @@ Guest.model= new Schema({
 });
 
 
-module.exports=guest=mongoose.model('guest',Guest.model);
+module.exports=mongoose.model('guest',Guest.model);

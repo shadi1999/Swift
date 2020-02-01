@@ -1,6 +1,6 @@
 import {GET_ERRORS,CLEAR_ERRORS} from '../actions/types';
 
-initialState ={
+const initialState ={
     msg:{},
     status:null,
     id:null
@@ -19,6 +19,12 @@ export default function(state=initialState,action){
                 msg:{},
                 state:null,
                 id:null
-            }    
+            } 
+        default:
+            return{
+                msg:{},
+                state:null,
+                id:null
+            }   
     }
 };

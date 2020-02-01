@@ -3,17 +3,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import AppNavbar from './components/AppNavbar';
 import 'antd/dist/antd.css';
-/*
+import LoginModal from './components/auth/LoginModal';
 import {Provider} from 'react-redux';
 import store from './store';
-*/
+import {Container} from 'reactstrap';
+
 function App() {
   return (
-    //<Provider store={store}>
+    <Provider store={store}>
       <div className="App">
-        <AppNavbar/>
+      <AppNavbar/>
+        <Container style={{alignContent:'center'}}>
+          <LoginModal/>
+        </Container>
       </div>
-    //</Provider>
+    </Provider>
   );
 }
 
