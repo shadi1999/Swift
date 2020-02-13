@@ -3,16 +3,16 @@ const router = express.Router();
 
 const Administrator = require('../../models/Administrator');
 
-// @route   GET api/users
-// @desc    get all users
+// @route   GET api/administrators
+// @desc    get all administrators
 // @access  public
 router.get('/',(req,res)=>{
     Administrator.find()
         .then(administrators=>res.json(administrators))
 });
 
-// @route   POST api/users
-// @desc    post a user
+// @route   POST api/administrators
+// @desc    post an administrator
 // @access  public
 router.post('/',(req,res)=>{
     const newAdministrator= new Administrator({
@@ -24,8 +24,8 @@ router.post('/',(req,res)=>{
     newAdministrator.save().then(administrator=>res.json(administrator));
 });
 
-// @route   DELETE api/users/:id
-// @desc    delete a user
+// @route   DELETE api/administrator/:id
+// @desc    delete an administrator
 // @access  public
 router.delete('/:id',(req,res)=>{
     Administrator.findById(req.params.id)

@@ -8,7 +8,9 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "MongoDB-MacOS": "mkdir mongo-db; mongod --dbpath mongo-db",
+    "MongoDB-Windows": "md mongo-db & \"C:/Program Files/MongoDb/Server/4.2/bin/mongod.exe\" --dbpath mongo-db",
+    "program": "concurrently \"npm run MongoDB-Windows || npm run MongoDB-MacOS\" \"npm run server\" \"npm run client\""
   },
   "author": "Shadi",
   "license": "MIT",
@@ -21,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.4",
     "mongoose-extend-schema": "^1.0.0",
+    "socket.io": "^2.3.0",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
