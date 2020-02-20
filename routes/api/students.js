@@ -1,38 +1,31 @@
 const express = require('express');
+const auth = require('../../middleware/auth');
 const router = express.Router();
 
+//Student model
 const Student = require('../../models/Student');
 
-// @route   GET api/students
-// @desc    get all students
-// @access  public
-router.get('/',(req,res)=>{
+/*
+@route  GET api/students
+@desc   display all students
+@access private
+*/
+router.get('/',auth, (req,res)=>{
     Student.find()
+        .select('-password')
         .then(students=>res.json(students))
+        .catch(err=>res.status(400).json({msg:'No Students'}))
 });
 
-// @route   POST api/students
-// @desc    post a student
-// @access  public
-router.post('/',(req,res)=>{
-    const newStudent= new Student({
-        name:req.body.name,
-        email:req.body.email,
-        password:req.body.password
-    });
-
-    newStudent.save().then(student=>res.json(student));
-});
-
-// @route   DELETE api/students/:id
-// @desc    delete a student
-// @access  public
-router.delete('/:id',(req,res)=>{
+/*
+@route  GET api/students/:id
+@desc   display a student
+@access private
+*/
+router.get('/:id', auth,(req,res)=>{
     Student.findById(req.params.id)
-    .then(student=> student.remove().then(()=>res.json({success:true})))
-    .catch(err=>res.status(404).json({success:false}));
+        .select('-password')
+        .then(student=>res.json(student))
+        .catch(err=>res.status(400).json({msg:'Student doesn\'t exsist'}))
 });
-
-
-
 module.exports=router;

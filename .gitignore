@@ -1,2 +1,4 @@
 node_modules
 mongo-db
+--dbpath
+mongod

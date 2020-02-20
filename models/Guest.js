@@ -1,15 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-class Guest{
-    constructor(){
-        
-    }
-    
-    
-}
 
-Guest.model= new Schema({
+Guest= new Schema({
     name:{
         type:String,
         required:true
@@ -21,4 +14,4 @@ Guest.model= new Schema({
 });
 
 
-module.exports=mongoose.model('guest',Guest.model);
+module.exports=mongoose.model('guest',Guest);

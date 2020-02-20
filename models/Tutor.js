@@ -1,13 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-class Tutor{
-    constructor(){
-        
-    }
-}
-
-Tutor.model = new Schema({
+Tutor= new Schema({
     name:{
         type:String,
         required:true
@@ -27,4 +21,4 @@ Tutor.model = new Schema({
     }
 });
 
-module.exports=mongoose.model('tutor',Tutor.model);
+module.exports=mongoose.model('tutor',Tutor);

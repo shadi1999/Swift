@@ -1,36 +1,30 @@
 const express = require('express');
+const auth = require('../../middleware/auth');
 const router = express.Router();
 
+//Guest model
 const Guest = require('../../models/Guest');
 
-// @route   GET api/guests
-// @desc    get all guests
-// @access  public
-router.get('/',(req,res)=>{
+/*
+@route  GET api/guests
+@desc   display all guests
+@access private
+*/
+router.get('/',auth, (req,res)=>{
     Guest.find()
         .then(guests=>res.json(guests))
+        .catch(err=>res.status(400).json({msg:'No Guests'}))
 });
 
-// @route   POST api/guests
-// @desc    post a guest
-// @access  public
-router.post('/',(req,res)=>{
-    const newGuest= new Guest({
-        name:req.body.name
-    });
-
-    newGuest.save().then(guest=>res.json(guest));
-});
-
-// @route   DELETE api/guests/:id
-// @desc    delete a guest
-// @access  public
-router.delete('/:id',(req,res)=>{
+/*
+@route  GET api/guests/:id
+@desc   display a guest
+@access private
+*/
+router.get('/:id',auth, (req,res)=>{
     Guest.findById(req.params.id)
-    .then(guest=> guest.remove().then(()=>res.json({success:true})))
-    .catch(err=>res.status(404).json({success:false}));
+        .then(guest=>res.json(guest))
+        .catch(err=>res.status(400).json({msg:'Guest doesn\'t exsist'}))
 });
-
-
 
 module.exports=router;

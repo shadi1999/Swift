@@ -2,13 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-class Administrator{
-    constructor(){
-        
-    }
-}
-
-Administrator.model = new Schema({
+Administrator = new Schema({
     name:{
         type:String,
         required:true
@@ -28,4 +22,4 @@ Administrator.model = new Schema({
     }
 });
 
-module.exports=mongoose.model('administrator',Administrator.model);
+module.exports=mongoose.model('administrator',Administrator);

@@ -28,13 +28,8 @@ app.use('/api/gusets',require('./routes/api/guests'));
 app.use('/api/students',require('./routes/api/students'));
 app.use('/api/tutors',require('./routes/api/tutors'));
 app.use('/api/administrators',require('./routes/api/administrators'));
-//Auth Routes ... to be written here...
-/*
-
-
-
-
-*/
+app.use('/api/classrooms',require('./routes/api/classrooms'));
+app.use('/api/auth',require('./routes/api/auth'));
 
 
 // Serve static assets if in production
@@ -47,26 +42,28 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-/* socket.io configration ...
-const http = require('http');
-const io = require('socket.io')(http);
+// socket.io configration ...
+// const http = require('http').Server(app);
+// const io = require('socket.io')(http);
 
-const users = {};
+// const users = {};
 
-io.on('connection', socket => {
-  socket.on('new-user', name => {
-    users[socket.id] = name;
-    socket.broadcast.emit('user-connected', name);
-  });
-  socket.on('send-chat-message', message => {
-    socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] });
-  });
-  socket.on('disconnect', () => {
-    socket.broadcast.emit('user-disconnected', users[socket.id]);
-    delete users[socket.id];
-  });
-});
-*/
+// io.on('connection', socket => {
+//   socket.on('new-user', name => {
+//     users[socket.id] = name;
+//     socket.broadcast.emit('user-connected', name);
+//   });
+//   socket.on('send-chat-message', message => {
+//     socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] });
+//   });
+//   socket.on('disconnect', () => {
+//     socket.broadcast.emit('user-disconnected', users[socket.id]);
+//     delete users[socket.id];
+//   });
+// });
+// const chatPort = 3200;
+// http.listen(chatPort , ()=>console.log(`Chat started on port ${chatPort}...`))
+
 
 //Server port
 const port = process.env.PORT || 5000;

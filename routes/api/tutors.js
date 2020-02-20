@@ -1,38 +1,32 @@
 const express = require('express');
+const auth = require('../../middleware/auth');
 const router = express.Router();
 
+//Tutor model
 const Tutor = require('../../models/Tutor');
 
-// @route   GET api/tutors
-// @desc    get all tutors
-// @access  public
-router.get('/',(req,res)=>{
+/*
+@route  GET api/tutors
+@desc   display all tutors
+@access private
+*/
+router.get('/tutors', auth,(req,res)=>{
     Tutor.find()
+        .select('-password')
         .then(tutors=>res.json(tutors))
+        .catch(err=>res.status(400).json({msg:'No Tutors'}))
 });
 
-// @route   POST api/tutors
-// @desc    post a tutor
-// @access  public
-router.post('/',(req,res)=>{
-    const newTutor= new Tutor({
-        name:req.body.name,
-        email:req.body.email,
-        password:req.body.password
-    });
-
-    newTutor.save().then(tutor=>res.json(tutor));
-});
-
-// @route   DELETE api/tutors/:id
-// @desc    delete a tutor
-// @access  public
-router.delete('/:id',(req,res)=>{
+/*
+@route  GET api/tutors/:id
+@desc   display a tutor
+@access private
+*/
+router.get('/tutors/:id', auth,(req,res)=>{
     Tutor.findById(req.params.id)
-    .then(tutor=> tutor.remove().then(()=>res.json({success:true})))
-    .catch(err=>res.status(404).json({success:false}));
+        .select('-password')
+        .then(tutor=>res.json(tutor))
+        .catch(err=>res.status(400).json({msg:'Tutor doesn\'t exsist'}))
 });
-
-
 
 module.exports=router;
