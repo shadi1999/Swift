@@ -1,25 +1,17 @@
 const mongoose = require('mongoose');
+const User = require('./User')
 const Schema = mongoose.Schema;
 
-
-Administrator = new Schema({
-    name:{
-        type:String,
-        required:true
+const AdministratorSchema = new Schema({
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    date:{
-        type:Date,
-        defualt:Date.now
-    },
-    email:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    password:{
-        type:String,
-        isRequired:true
+    password: {
+        type: String,
+        required: true
     }
 });
 
-module.exports=mongoose.model('administrator',Administrator);
+module.exports = User.discriminator('Administrator', AdministratorSchema);

@@ -1,24 +1,17 @@
 const mongoose = require('mongoose');
+const User = require('./User')
 const Schema = mongoose.Schema;
 
-Tutor= new Schema({
-    name:{
-        type:String,
-        required:true
+const TutorSchema = new Schema({
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    date:{
-        type:Date,
-        defualt:Date.now
-    },
-    email:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    password:{
-        type:String,
-        isRequired:true
+    password: {
+        type: String,
+        required: true
     }
 });
 
-module.exports=mongoose.model('tutor',Tutor);
+module.exports = User.discriminator('Tutor', TutorSchema);
