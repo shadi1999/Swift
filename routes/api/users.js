@@ -1,8 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
 
 const User = require('../../models/User');
 const usersController = require('../../middleware/usersController.js');
@@ -22,13 +19,7 @@ router.post('/', usersController.registerValidationRules(), usersController.vali
             .json({ errors: [{ msg: 'User already exists' }] });
         }
 
-        user = new User({
-            name,
-            email,
-            password
-        });
-
-        await user.save();
+        user = await usersController.create();
 
         const payload = {
             user: {
@@ -36,14 +27,7 @@ router.post('/', usersController.registerValidationRules(), usersController.vali
             }
         };
 
-        jwt.sign(
-            payload,
-            config.get('jwtSecret'),
-            { expiresIn: 360000 },
-            (err, token) => {
-                if (err) throw err;
-                res.json({ token });
-        });
+        usersController.jwtLogin(payload, res);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');

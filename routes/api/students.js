@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
+const adminOnly = require('../../middleware/privateRoutes');
 
 //Student model
 const Student = require('../../models/Student');
@@ -10,7 +11,7 @@ const Student = require('../../models/Student');
 @desc   display all students
 @access private
 */
-router.get('/',auth, (req,res)=>{
+router.get('/', auth, adminOnly, (req,res)=>{
     Student.find()
         .select('-password')
         .then(students=>res.json(students))
@@ -22,10 +23,12 @@ router.get('/',auth, (req,res)=>{
 @desc   display a student
 @access private
 */
-router.get('/:id', auth,(req,res)=>{
+router.get('/:id', auth, adminOnly, (req,res)=>{
     Student.findById(req.params.id)
         .select('-password')
         .then(student=>res.json(student))
         .catch(err=>res.status(400).json({msg:'Student doesn\'t exsist'}))
 });
+
+
 module.exports=router;

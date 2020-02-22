@@ -28,7 +28,7 @@ app.use('/api/users',require('./routes/api/users'));
 // app.use('/api/tutors',require('./routes/api/tutors'));
 // app.use('/api/administrators',require('./routes/api/administrators'));
 // app.use('/api/classrooms',require('./routes/api/classrooms'));
-// app.use('/api/auth',require('./routes/api/auth'));
+app.use('/api/auth',require('./routes/api/auth'));
 
 
 // Serve static assets if in production
