@@ -11,13 +11,13 @@ import setAuthToken from './utils/setAuthToken';
 import logo from './logo.svg';
 import './App.css';
 
-if (localStorage.token) {
-  setAuthToken(localStorage.token);
-}
 
 function App() {
   useEffect(() => {
-    store.dispatch(loadUser());
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+      store.dispatch(loadUser());
+    }
   }, []);
 
   return (
@@ -41,7 +41,7 @@ function App() {
             </header>
           </div>
           <Switch>
-            <Route exact path='/' component={Landing} />
+            <Route exact path="/" component={Landing} />
             <Route component={Routes} />
           </Switch>
         </>
