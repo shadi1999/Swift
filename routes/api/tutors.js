@@ -1,16 +1,19 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
+const {adminOnly} = require('../../middleware/privateRoutes');
 
-//Tutor model
+// Tutor model
 const Tutor = require('../../models/Tutor');
+
+const tutorsController = require('../../middleware/tutorsController');
 
 /*
 @route  GET api/tutors
 @desc   display all tutors
 @access private
 */
-router.get('/tutors', auth,(req,res)=>{
+router.get('/tutors', auth, adminOnly, (req,res)=>{
     Tutor.find()
         .select('-password')
         .then(tutors=>res.json(tutors))
@@ -22,11 +25,46 @@ router.get('/tutors', auth,(req,res)=>{
 @desc   display a tutor
 @access private
 */
-router.get('/tutors/:id', auth,(req,res)=>{
+router.get('/tutors/:id', auth, adminOnly, (req,res)=>{
     Tutor.findById(req.params.id)
         .select('-password')
         .then(tutor=>res.json(tutor))
         .catch(err=>res.status(400).json({msg:'Tutor doesn\'t exsist'}))
+});
+
+// @route    POST api/tutors
+// @desc     Register tutor
+// @access   Public
+router.post('/',
+tutorsController.registerValidationRules(),
+tutorsController.validate,
+auth,
+adminOnly,
+async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        // Check if a user with the same email already exists.
+        let user = await User.findOne({ email });
+        if (user) {
+            return res
+            .status(400)
+            .json({ errors: [{ msg: 'User already exists' }] });
+        }
+
+        user = await tutorsController.create({ name, email, password });
+
+        const payload = {
+            user: {
+                id: user.id
+            }
+        };
+
+        tutorsController.jwtLogin(payload, res);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
 });
 
 module.exports=router;

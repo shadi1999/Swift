@@ -1,21 +1,18 @@
 const { check, body, validationResult } = require('express-validator');
-const User = require('../../models/User');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
 module.exports = {
     registerValidationRules: () => {
         return [
-            // body("email").normalizeEmail({all_lowercase: true}).trim(),
-            // check("email", "Email is invalid").isEmail(),
             check('name', 'Name is required').not().isEmpty(),
-            check("password", "Please enter a password with 8 or more characters").isLength({ min: 8 })
         ]
     },
     loginValidationRules: () => {
         return [
-            // body("email").normalizeEmail({all_lowercase: true}).trim(),
-            // check('email', 'Please include a valid email').isEmail(),
+            body("email").normalizeEmail({all_lowercase: true}).trim(),
+            check('email', 'Please include a valid email').isEmail(),
             check('password', 'Password is required').exists()
         ]
     },
@@ -27,11 +24,9 @@ module.exports = {
             next();
         }
     },
-    create: async () => {
-        user = new User({
-            name,
-            // email,
-            password
+    create: async (name) => {
+        let user = new User({
+            name
         });
 
         await user.save();

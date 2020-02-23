@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 /*
     A unified model for all users, including students, guest students, tutors and admins.

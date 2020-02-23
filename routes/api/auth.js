@@ -49,14 +49,7 @@ router.post('/', usersController.loginValidationRules(), usersController.validat
         }
       };
 
-      jwt.sign(
-        payload,
-        config.get('jwtSecret'),
-        { expiresIn: 360000 },
-        (err, token) => {
-          if (err) throw err;
-          res.json({ token });
-        });
+      usersController.jwtLogin(payload, res);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
@@ -77,9 +70,10 @@ router.post('/attend',(req,res)=>{
 
   const classroom = ClassRoom.findOne({name:course});
   const guest = classroom.guests.findOne({name});
-  if(guest){
-      name=name+'2';
-  }
+
+  // if(guest){
+  //     name=name+'2';
+  // }
 
   const newGuest = new Guest({
       name

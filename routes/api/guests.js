@@ -3,7 +3,7 @@ const auth = require('../../middleware/auth');
 const router = express.Router();
 
 //Guest model
-const Guest = require('../../models/Guest');
+const User = require('../../models/User');
 
 /*
 @route  GET api/guests
@@ -11,7 +11,7 @@ const Guest = require('../../models/Guest');
 @access private
 */
 router.get('/',auth, (req,res)=>{
-    Guest.find()
+    User.find()
         .then(guests=>res.json(guests))
         .catch(err=>res.status(400).json({msg:'No Guests'}))
 });
@@ -22,9 +22,32 @@ router.get('/',auth, (req,res)=>{
 @access private
 */
 router.get('/:id',auth, (req,res)=>{
-    Guest.findById(req.params.id)
+    User.findById(req.params.id)
         .then(guest=>res.json(guest))
         .catch(err=>res.status(400).json({msg:'Guest doesn\'t exsist'}))
 });
+
+// @route    POST api/users
+// @desc     Register guest
+// @access   Public
+router.post('/', usersController.registerValidationRules(), usersController.validate, async (req, res) => {
+    const { name } = req.body;
+
+    try {
+        user = await usersController.create(name);
+
+        const payload = {
+            user: {
+                id: user.id
+            }
+        };
+
+        usersController.jwtLogin(payload, res);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 
 module.exports=router;

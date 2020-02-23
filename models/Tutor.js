@@ -11,7 +11,8 @@ const TutorSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    classrooms: [{ type: Schema.Types.ObjectId, ref: 'classroom' }]
 });
 
 module.exports = User.discriminator('Tutor', TutorSchema);

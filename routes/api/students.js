@@ -1,10 +1,11 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const adminOnly = require('../../middleware/privateRoutes');
+const {adminOnly} = require('../../middleware/privateRoutes');
 
 //Student model
 const Student = require('../../models/Student');
+const studentController = require('../../middleware/studentsController');
 
 /*
 @route  GET api/students
@@ -30,5 +31,35 @@ router.get('/:id', auth, adminOnly, (req,res)=>{
         .catch(err=>res.status(400).json({msg:'Student doesn\'t exsist'}))
 });
 
+// @route    POST api/students
+// @desc     Register student
+// @access   Public
+router.post('/', studentController.registerValidationRules(), studentController.validate, async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        // Check if a user with the same email already exists.
+        let student = await User.findOne({ email });
+        if (student) {
+            return res
+            .status(400)
+            .json({ errors: [{ msg: 'User already exists' }] });
+        }
+
+        student = new Student({ name, email, password });
+        await student.save();
+
+        const payload = {
+            user: {
+                id: student.id
+            }
+        };
+
+        studentController.jwtLogin(payload, res);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
 
 module.exports=router;
