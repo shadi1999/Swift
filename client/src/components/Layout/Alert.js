@@ -10,7 +10,7 @@ const AlertWrapper = ({alerts}) =>
         <Alert key={alert.id} message={alert.msg} type={alert.alertType} showIcon />
     ));
 
-Alert.propTypes = {
+AlertWrapper.propTypes = {
     alerts: PropTypes.array.isRequired
 };
 

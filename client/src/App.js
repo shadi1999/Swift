@@ -25,7 +25,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <Fragment>
-            <header className="App-header">
+            <header>
             </header>
           <Switch>
             {/* <Route exact path="/" component={Landing} /> */}
