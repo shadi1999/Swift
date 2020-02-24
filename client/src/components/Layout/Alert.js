@@ -10,8 +10,12 @@ const AlertWrapper = ({alerts}) =>
         <Alert key={alert.id} message={alert.msg} type={alert.alertType} showIcon />
     ));
 
-const mapStateToProps = state => {
+Alert.propTypes = {
+    alerts: PropTypes.array.isRequired
+};
+
+const mapStateToProps = state => ({
     alerts: state.alert
-}
+});
 
 export default connect(mapStateToProps)(AlertWrapper);

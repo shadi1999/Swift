@@ -10,6 +10,7 @@ import setAuthToken from './utils/setAuthToken';
 
 import logo from './logo.svg';
 import './App.css';
+import Login from './components/auth/Login';
 
 
 function App() {
@@ -23,28 +24,15 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <>
-          <div className="App">
+        <Fragment>
             <header className="App-header">
-              <img src={logo} className="App-logo" alt="logo" />
-              <p>
-                Edit <code>src/App.js</code> and save to reload.
-              </p>
-              <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Learn React
-              </a>
             </header>
-          </div>
           <Switch>
-            <Route exact path="/" component={Landing} />
+            {/* <Route exact path="/" component={Landing} /> */}
+            <Route exact path="/" component={Login} />
             <Route component={Routes} />
           </Switch>
-        </>
+        </Fragment>
       </Router>
     </Provider>
   );

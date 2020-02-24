@@ -8,19 +8,21 @@ import {
 import setAuthToken from '../utils/setAuthToken';
 import { setAlert } from './alert';
 
+const url = "http://localhost:5000";
+
 export const loadUser = () => async dispatch => {
     if (localStorage.token) {
         setAuthToken(localStorage.token);
     }
 
     try {
-        const res = await axios.get('/api/auth');
+        const res = await axios.get(url + '/api/auth');
 
         dispatch({
             type: USER_LOADED,
             payload: res.data
         });
-    } catch {
+    } catch(err) {
         dispatch({
             type: AUTH_ERROR
         });
@@ -32,7 +34,7 @@ export const login = (email, password) => async dispatch => {
     const body = JSON.stringify({email, password});
 
     try {
-        const res = await axios.post('/api/auth/', body, {headers});
+        const res = await axios.post(url + '/api/auth/', body, {headers});
 
         dispatch({
             type: LOGIN_SUCCESS,
@@ -43,7 +45,7 @@ export const login = (email, password) => async dispatch => {
         const errors = err.response.data.errors;
 
         if (errors)
-            for (error of errors)
+            for (let error of errors)
                 dispatch(setAlert(error.msg, 'danger'));
 
         dispatch({

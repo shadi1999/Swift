@@ -1,11 +1,11 @@
+import React from 'react';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login } from '../../actions/auth';
 
-// const Login = ({login, isAuthenticated, form}) => {
-const Login = ({login, isAuthenticated}) => {
+const Login = ({form, login, isAuthenticated}) => {
         const handleSubmit = async e => {
         e.preventDefault();
         form.validateFields((err, values) => {

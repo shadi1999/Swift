@@ -22,13 +22,20 @@ mongoose.connect(db,{
     process.exit(1);
   });
 
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Headers', 'x-auth-token,content-type');
+    next();
+  });
+}
+
 //Routes
 app.use('/api/students',require('./routes/api/students'));
 app.use('/api/tutors',require('./routes/api/tutors'));
 app.use('/api/administrators',require('./routes/api/administrators'));
 app.use('/api/classrooms',require('./routes/api/classrooms'));
 app.use('/api/auth',require('./routes/api/auth'));
-
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {

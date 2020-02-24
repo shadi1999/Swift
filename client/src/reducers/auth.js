@@ -22,13 +22,15 @@ export default function(state = initialState, action) {
                 isAuthenticated: true,
                 loading: false,
                 user: payload
-            }
+            };
         case LOGIN_SUCCESS:
             return {
                 ...state,
                 isAuthenticated: true,
                 loading: false,
                 ...payload
-            }
+            };
+        default: 
+            return state;
     }
 }
