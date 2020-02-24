@@ -8,10 +8,13 @@ import store from './store';
 import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import Login from './components/auth/Login';
 
+import Dashboard from './components/dashboard/Dashboard';
+import Navbar from "./components/layout/Navbar";
+import { Layout } from "antd";
+const { Header, Footer } = Layout;
 
 function App() {
   useEffect(() => {
@@ -25,13 +28,21 @@ function App() {
     <Provider store={store}>
       <Router>
         <Fragment>
-            <header>
-            </header>
-          <Switch>
-            {/* <Route exact path="/" component={Landing} /> */}
-            <Route exact path="/" component={Login} />
-            <Route component={Routes} />
-          </Switch>
+          <Layout>
+            <Header>
+              <Navbar />
+            </Header>
+            <Layout>
+              <Switch>
+                {/* <Route exact path="/" component={Landing} /> */}
+                <Route exact path="/" component={Dashboard} />
+                <Route component={Routes} />
+              </Switch>
+            </Layout>
+            <Footer>
+              Footer test.
+            </Footer>
+          </Layout>
         </Fragment>
       </Router>
     </Provider>
