@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const { tutorOnly , adminOnly } = require('../../middleware/privateRoutes');
+const Lecture = require('../../models/Lecture');
 
 //Classroom model
 const Classroom = require('../../models/Classroom');
@@ -23,8 +24,15 @@ router.get('/', auth, adminOnly, (req, res)=>{
 @access private
 */
 router.get('/:id', auth, (req, res) => {
-    Classroom.findById(req.params.id)
-        .then(classroom=>res.json(classroom))
+    Classroom.findById(req.params.id).execPopulate('liveLecture')
+        .then(classroom => {
+            // Private classrooms authorization.
+            if (classroom.private)
+                if (req.user.kind === 'guest' || (req.user.kind === 'student' && !(classroom.students.find(req.user.id))))
+                    res.status(401).json({msg:'Unauthorized'});
+
+            res.json(classroom);
+        })
         .catch(err=>res.status(400).json({msg:'Classroom doesn\'t exsist'}))
 });
 
@@ -69,6 +77,53 @@ router.delete('/', auth, adminOnly, (req, res)=>{
     }
     catch(e) {
         res.status(400).json({msg:'Error happened'});
+    }
+});
+
+/*
+@route  POST api/classrooms/:id/start
+@desc   start a new lecture in the classroom.
+@access private
+*/
+router.post('/:id/start', auth, tutorOnly, async (req, res) => {
+    try {
+        const newLecture = new Lecture({
+            startedOn: Date.now()
+        });
+        const classroom = await Classroom.findOne({id: req.params.id});
+
+        await newLecture.save();
+        classroom.liveLecture = newLecture;
+        await classroom.save();
+        // TODO: add socket.io code here...
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+/*
+@route  POST api/classrooms/:id/stop
+@desc   stop the live lecture in the classroom.
+@access private
+*/
+router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
+    try {
+        const classroom = (await Classroom.findOne({id: req.params.id})).execPopulate('liveLecture');
+        const { liveLecture } = classroom;
+        
+        if (!liveLecture.live) res.status(400).send('Lecture is already stopped.');
+        liveLecture.endDate = Date.now();
+        liveLecture.live = false;
+        await liveLecture.save();
+    
+        classroom.pastLectures.push(liveLecture);
+        classroom.liveLecture = undefined;
+        await classroom.save();
+        // TODO: add socket.io code here...
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
     }
 });
 

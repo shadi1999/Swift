@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Lecture = new Schema({
+    live: {
+        type: Boolean,
+        default: true
+    },
     startedOn: {
         type: date,
         required: true
@@ -12,9 +16,11 @@ const Lecture = new Schema({
         enteredOn: Date,
         leftOn: Date
     }],
-    // liveAttendants: [{type: Schema.Types.ObjectId, ref: 'user'}],
     slideUrl: {type: String},
-    slideHistory: [{slideNumber: Number, date: Date}]
+    slideHistory: [{slideNumber: Number, date: Date}],
+    // streamUrl: {
+    //     type: String
+    // }
 });
 
 module.exports = mongoose.model('lecture', Lecture);

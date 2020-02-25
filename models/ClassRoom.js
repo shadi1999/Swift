@@ -12,7 +12,12 @@ const Classroom = new Schema({
     private: {
         type:Boolean
     },
-    lectures: [{type: Schema.Types.ObjectId, ref: 'lecture'}]
+    liveLecture: {type: Schema.Types.ObjectId, ref: 'lecture'},
+    pastLectures: [{type: Schema.Types.ObjectId, ref: 'lecture'}],
+    recordLectures: {
+        type: Boolean,
+        default: ture
+    }
 });
 
 module.exports=mongoose.model('classroom', Classroom);
