@@ -6,6 +6,10 @@ const Lecture = new Schema({
         type: Boolean,
         default: true
     },
+    // status: {
+    //     type: String,
+    //     enum: ['live', 'ended', 'recorded']
+    // }
     startedOn: {
         type: date,
         required: true
@@ -13,8 +17,7 @@ const Lecture = new Schema({
     endedOn: {type: date},
     attendance: [{
         id: {type: Schema.Types.ObjectId, ref: 'user'},
-        enteredOn: Date,
-        leftOn: Date
+        duration: Number
     }],
     slideUrl: {type: String},
     slideHistory: [{slideNumber: Number, date: Date}],

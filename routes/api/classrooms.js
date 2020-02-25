@@ -24,11 +24,11 @@ router.get('/', auth, adminOnly, (req, res)=>{
 @access private
 */
 router.get('/:id', auth, (req, res) => {
-    Classroom.findById(req.params.id).execPopulate('liveLecture')
+    Classroom.findById(req.params.id).execPopulate('liveLecture').execPopulate('students').execPopulate('tutor')
         .then(classroom => {
             // Private classrooms authorization.
-            if (classroom.private)
-                if (req.user.kind === 'guest' || (req.user.kind === 'student' && !(classroom.students.find(req.user.id))))
+            if (classroom.private && req.user.kind !== 'Administrator')
+                if (!(classroom.students.find(req.user.id) || classroom.tutor._id === req.user.id))
                     res.status(401).json({msg:'Unauthorized'});
 
             res.json(classroom);
@@ -113,13 +113,52 @@ router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
         const { liveLecture } = classroom;
         
         if (!liveLecture.live) res.status(400).send('Lecture is already stopped.');
-        liveLecture.endDate = Date.now();
+        liveLecture.endedOn = Date.now();
         liveLecture.live = false;
         await liveLecture.save();
     
         classroom.pastLectures.push(liveLecture);
         classroom.liveLecture = undefined;
         await classroom.save();
+        // TODO: add socket.io code here...
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+/*
+@route  POST api/classrooms/:id/join
+@desc   join live classroom and intiate socket connection.
+@access private
+*/
+router.post('/:id/join', auth, async (req, res) => {
+    try {
+        const classroom = (await Classroom.findOne({id: req.params.id})).execPopulate('liveLecture');
+        const { liveLecture } = classroom;
+        
+        if (!liveLecture.live) res.status(400).send('Lecture is not live.');
+        // TODO: add socket.io code here...
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// TODO: automatically leave classroom when user closes window.
+/*
+@route  POST api/classrooms/:id/leave
+@desc   leave classroom and save attendance
+@access private
+*/
+router.post('/:id/leave', auth, async (req, res) => {
+    try {
+        const classroom = (await Classroom.findOne({id: req.params.id})).execPopulate('liveLecture');
+        const { liveLecture } = classroom;
+        
+        if (!liveLecture.live) res.status(400).send('Lecture is not live.');
+        liveLecture.attendance.push({id: req.user.id, duration: req.body.duration});
+        await liveLecture.save();
         // TODO: add socket.io code here...
     } catch(err) {
         console.error(err.message);
