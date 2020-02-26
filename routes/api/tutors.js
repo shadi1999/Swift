@@ -52,11 +52,12 @@ async (req, res) => {
             .json({ errors: [{ msg: 'User already exists' }] });
         }
 
-        user = await tutorsController.create({ name, email, password });
+        const tutor = new Tutor({ name, email, password });
+        await tutor.save();
 
         const payload = {
             user: {
-                id: user.id
+                id: tutor.id
             }
         };
 

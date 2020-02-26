@@ -11,7 +11,7 @@ import setAuthToken from './utils/setAuthToken';
 // import logo from './logo.svg';
 import './App.css';
 
-import Dashboard from './components/dashboard/Dashboard';
+import Dashboard from './components/dashboard/admin/AdminDashboard';
 import Navbar from "./components/layout/Navbar";
 import { Layout } from "antd";
 const { Header, Footer } = Layout;
@@ -36,7 +36,6 @@ function App() {
             <Layout>
               <Switch>
                 {/* <Route exact path="/" component={Landing} /> */}
-                <Route exact path="/" component={Dashboard} />
                 <Route component={Routes} />
               </Switch>
             </Layout>
