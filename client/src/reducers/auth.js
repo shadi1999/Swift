@@ -39,7 +39,7 @@ export default function(state = initialState, action) {
                 ...payload,
                 isAuthenticated: true,
                 loading: false
-                };   
+            };
         case AUTH_ERROR:
         case LOGIN_FAIL:
         case LOGOUT:

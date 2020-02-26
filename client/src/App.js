@@ -29,7 +29,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Layout theme='dark' className='main'>
+          <Layout>
             <Header>
               <Navbar />
             </Header>
