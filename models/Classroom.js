@@ -16,7 +16,7 @@ const Classroom = new Schema({
     pastLectures: [{type: Schema.Types.ObjectId, ref: 'lecture'}],
     recordLectures: {
         type: Boolean,
-        default: ture
+        default: true
     }
 });
 

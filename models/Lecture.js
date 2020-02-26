@@ -11,10 +11,10 @@ const Lecture = new Schema({
     //     enum: ['live', 'ended', 'recorded']
     // }
     startedOn: {
-        type: date,
+        type: Date,
         required: true
     },
-    endedOn: {type: date},
+    endedOn: {type: Date},
     attendance: [{
         id: {type: Schema.Types.ObjectId, ref: 'user'},
         duration: Number

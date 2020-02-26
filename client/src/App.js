@@ -24,11 +24,12 @@ function App() {
     }
   }, []);
 
+  
   return (
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Layout>
+          <Layout theme='dark' className='main'>
             <Header>
               <Navbar />
             </Header>

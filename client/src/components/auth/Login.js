@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { login } from '../../actions/auth';
 
 const Login = ({form, login, isAuthenticated}) => {
-        const handleSubmit = async e => {
+    const handleSubmit = async e => {
         e.preventDefault();
         form.validateFields((err, values) => {
             if (!err) {
@@ -22,6 +22,8 @@ const Login = ({form, login, isAuthenticated}) => {
 
     const { getFieldDecorator } = form;
     return (
+        <Fragment>
+        <h2>Login Page</h2>
         <Form onSubmit={handleSubmit} className="login-form">
             <Form.Item>
                 {getFieldDecorator('username', {
@@ -60,8 +62,10 @@ const Login = ({form, login, isAuthenticated}) => {
                 Don't have an account? <Link to='/register'>Sign Up</Link>
             </Form.Item>
         </Form>
+        </Fragment>
     );
 }
+
 
 Login.propTypes = {
     login: PropTypes.func.isRequired,
