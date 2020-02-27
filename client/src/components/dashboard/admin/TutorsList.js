@@ -1,61 +1,52 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { List, Avatar, Button, Skeleton, Icon } from 'antd';
 import {setAlert} from '../../../actions/alert';
-import axios from 'axios';
+import {getTutors} from '../../../actions/adimnActions';
 
-const TutorsList = ({ setAlert }) => {
-    let [tutors, setTutors] = useState([]);
-    let [loading, setLoading] = useState(true);
 
+const TutorsList = ({tutors, loading, getTutors}) => {
     useEffect(() => {
-        async function fetchData() {
-            try {
-                let data = await axios.get("http://localhost:5000/api/tutors");
-                setTutors(data);
-                setLoading(false);
-            } catch(err) {
-                setAlert("Couldn't load data.", "error");
-            }
-        }
-        fetchData();
+        getTutors();
     }, []);
 
     return (
+        <Skeleton avatar title={false} loading={loading} active>
         <List
             loading={loading}
             itemLayout="horizontal"
             dataSource={tutors}
             renderItem={item => (
             <List.Item
-                actions={[<a key="tutor-edit" href={`/tutor/${item.id}`}>edit</a>]}
+                actions={[<Link key="tutor-edit" to={`/dashboard/admin/tutor?id=${item._id}`}>edit</Link>]}
             >
-                <Skeleton avatar title={false} loading={item.loading} active>
                 <List.Item.Meta
                     avatar={
-                    <Avatar />
+                    <Avatar icon='user' />
                     }
-                    title={<a href={`/tutor/${item.id}`}>{item.name}</a>}
+                    title={<Link to={`/dashboard/admin/tutor?id=${item._id}`}>{item.name}</Link>}
                     //description={`About : ${item.about} `}
                 />
-                </Skeleton>
             </List.Item>
             )}
       />
+    </Skeleton>
     )
 }
-  
+
 TutorsList.propTypes = {
-    setAlert: PropTypes.func.isRequired
+    tutors: PropTypes.array,
+    loading: PropTypes.bool,
+    getTutors: PropTypes.func.isRequired
 };
-  
 
 const mapStateToProps = state => ({
+    tutors: state.admin.data,
+    loading: state.admin.loading
 });
 
 export default connect(
-    mapStateToProps,
-    { setAlert }
+    mapStateToProps, {getTutors}
 )(TutorsList);

@@ -3,11 +3,11 @@ import { Form, Icon, Input, Button } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { register } from '../../actions/auth';
+import { registerStudent } from '../../actions/auth';
 import {setAlert} from '../../actions/alert';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 
-const Register = ({ form, setAlert, register, isAuthenticated }) => {
+const Register = ({ form, setAlert, registerStudent, isAuthenticated }) => {
     const onSubmit = async e => {
       e.preventDefault();
         form.validateFields((err, values) => {
@@ -17,7 +17,7 @@ const Register = ({ form, setAlert, register, isAuthenticated }) => {
                 setAlert('Passwords do not match', 'error');
             } else if (!err) {
                 console.log('Received values of form: ', values);
-                register({ name, email, password });
+                registerStudent({ name, email, password });
             }
         });
       }
@@ -78,11 +78,11 @@ const Register = ({ form, setAlert, register, isAuthenticated }) => {
                 placeholder="Password"
                 />,
                 )}
-                <Button type="primary" htmlType="submit">
-                    Register
-                </Button>
-                Already have an account? <Link to='/login'>Login</Link>
             </Form.Item>
+            <Button type="primary" htmlType="submit">
+                Register
+            </Button>
+            Already have an account? <Link to='/login'>Login</Link>
         </Form>
         </Fragment>
     );
@@ -102,5 +102,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { setAlert, register }
+    { setAlert, registerStudent }
 )(Wrapped);

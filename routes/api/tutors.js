@@ -13,7 +13,7 @@ const tutorsController = require('../../middleware/tutorsController');
 @desc   display all tutors
 @access private
 */
-router.get('/tutors', auth, adminOnly, (req,res)=>{
+router.get('/', auth, adminOnly, (req,res)=>{
     Tutor.find()
         .select('-password')
         .then(tutors=>res.json(tutors))
@@ -25,7 +25,7 @@ router.get('/tutors', auth, adminOnly, (req,res)=>{
 @desc   display a tutor
 @access private
 */
-router.get('/tutors/:id', auth, adminOnly, (req,res)=>{
+router.get('/:id', auth, adminOnly, (req,res)=>{
     Tutor.findById(req.params.id)
         .select('-password')
         .then(tutor=>res.json(tutor))
@@ -38,8 +38,6 @@ router.get('/tutors/:id', auth, adminOnly, (req,res)=>{
 router.post('/',
 tutorsController.registerValidationRules(),
 tutorsController.validate,
-auth,
-adminOnly,
 async (req, res) => {
     const { name, email, password } = req.body;
 

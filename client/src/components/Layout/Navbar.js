@@ -15,7 +15,7 @@ const Navbar = ({isAuthenticated, user, logout}) => {
         </Menu>
     );
 
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
         welcome =
         <>
         <div className="welcome-username">

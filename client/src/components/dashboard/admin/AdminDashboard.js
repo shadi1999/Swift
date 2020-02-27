@@ -1,30 +1,42 @@
 import React, { Fragment } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
+import { useLocation,useParams} from "react-router";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TutorsList from './TutorsList';
+import AddAdmin from './AddAdmin';
 import { Layout, Menu } from "antd";
+import AdminSidebar from './AdminSidebar';
 const { Content, Sider } = Layout;
 
 const AdminDashboard = () => {
+    let { suburl } = useParams();
+
+    let content;
+    switch (suburl) {
+        case 'tutors':
+            content = <TutorsList/>
+            break;
+        case 'addAdmin':
+            content = <AddAdmin/>
+            break;
+        case 'tutor':
+            content = <h1>Tutor </h1>
+            break;
+        default:
+            content = <h1>default </h1>
+            break;
+    }
+    
     return (
-        <>
-        <h1>Test...</h1>
+        <Fragment>
         <Sider>
-            <Menu>
-                <Menu.Item>
-                    <Link to='/tutorslist'>
-                        -Tutors List-
-                    </Link>
-                </Menu.Item>
-            </Menu>
+            <AdminSidebar />
         </Sider>
         <Content>
-            <Switch>
-                <Route path="/tutorslist" component={TutorsList} />
-            </Switch>
+            { content }
         </Content>
-        </>
+        </Fragment>
     );
 }
 

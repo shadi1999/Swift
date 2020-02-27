@@ -10,10 +10,11 @@ import {
   } from './types';
 import setAuthToken from '../utils/setAuthToken';
 import { setAlert } from './alert';
+import Config from '../Config';
 
-const url = "http://localhost:5000";
+const URL = Config.URL.Server;
 
-export const register = ({ name, email, password }) => async dispatch => {
+export const registerStudent = ({ name, email, password }) => async dispatch => {
     const config = {
         headers: {
           'Content-Type': 'application/json'
@@ -23,7 +24,7 @@ export const register = ({ name, email, password }) => async dispatch => {
       const body = JSON.stringify({ name, email, password });
     
       try {
-        const res = await axios.post(url + '/api/students', body, config);
+        const res = await axios.post(URL + '/api/students', body, config);
     
         dispatch({
             type: REGISTER_SUCCESS,
@@ -44,7 +45,7 @@ export const register = ({ name, email, password }) => async dispatch => {
     }
 }
 
-export const addTutor = ({ name, email, password }) => async dispatch => {
+export const registerTutor = ({ name, email, password }) => async dispatch => {
     const config = {
         headers: {
           'Content-Type': 'application/json'
@@ -54,7 +55,7 @@ export const addTutor = ({ name, email, password }) => async dispatch => {
       const body = JSON.stringify({ name, email, password });
     
       try {
-        const res = await axios.post(url + '/api/tutors', body, config);
+        const res = await axios.post(URL + '/api/tutors', body, config);
     
         dispatch({
             type: REGISTER_SUCCESS,
@@ -74,6 +75,7 @@ export const addTutor = ({ name, email, password }) => async dispatch => {
         });
     }
 }
+
 
 export const loadUser = () => async dispatch => {
     if (localStorage.token) {
@@ -81,7 +83,7 @@ export const loadUser = () => async dispatch => {
     }
 
     try {
-        const res = await axios.get(url + '/api/auth');
+        const res = await axios.get(URL + '/api/auth');
 
         dispatch({
             type: USER_LOADED,
@@ -99,7 +101,7 @@ export const login = (email, password) => async dispatch => {
     const body = JSON.stringify({email, password});
 
     try {
-        const res = await axios.post(url + '/api/auth/', body, {headers});
+        const res = await axios.post(URL + '/api/auth/', body, {headers});
 
         dispatch({
             type: LOGIN_SUCCESS,

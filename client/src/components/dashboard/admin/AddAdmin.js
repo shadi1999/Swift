@@ -1,13 +1,12 @@
 import React from 'react';
 import { Form, Icon, Input, Button } from 'antd';
-import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { registerTutor } from '../../actions/auth';
-import {setAlert} from '../../actions/alert';
+import { addAdmin } from '../../../actions/adimnActions';
+import {setAlert} from '../../../actions/alert';
 import { Fragment } from 'react';
 
-const RegisterTutor = ({ form, setAlert, addTutor, isAuthenticated }) => {
+const AddAdmin = ({ form, setAlert, addAdmin, isAuthenticated }) => {
     const onSubmit = async e => {
       e.preventDefault();
         form.validateFields((err, values) => {
@@ -17,22 +16,17 @@ const RegisterTutor = ({ form, setAlert, addTutor, isAuthenticated }) => {
                 setAlert('Passwords do not match', 'error');
             } else if (!err) {
                 console.log('Received values of form: ', values);
-                registerTutor({ name, email, password });
+                addAdmin({ name, email, password });
             }
         });
       }
   
-    if (isAuthenticated) {
-      return <Redirect to='/dashboard' />;
-    }
+    
   
     const { getFieldDecorator } = form;
     return (
       <Fragment>
-        <h1>Add tutor</h1>
-        <p>
-          Create a tutor account.
-        </p>
+        <h1>Add Admin</h1>
         <Form onSubmit={onSubmit}>
             <Form.Item>
                 {getFieldDecorator('email', {
@@ -80,21 +74,20 @@ const RegisterTutor = ({ form, setAlert, addTutor, isAuthenticated }) => {
                 )}
             </Form.Item>
             <Button type="primary" htmlType="submit">
-                Add tutor
+                Add Admin
             </Button>
-            Already have an account? <Link to='/login'>Login</Link>
         </Form>
         </Fragment>
     );
   }
   
-RegisterTutor.propTypes = {
+AddAdmin.propTypes = {
     setAlert: PropTypes.func.isRequired,
-    registerTutor: PropTypes.func.isRequired,
+    addAdmin: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool
 };
   
-const Wrapped = Form.create({ name: 'RegisterTutor' })(RegisterTutor);
+const Wrapped = Form.create({ name: 'AddAdmin' })(AddAdmin);
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
@@ -102,5 +95,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { setAlert, registerTutor }
+    { setAlert, addAdmin }
 )(Wrapped);

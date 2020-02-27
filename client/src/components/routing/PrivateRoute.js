@@ -11,12 +11,11 @@ const PrivateRoute = ({
   loadUser,
   ...rest
 }) => {
-  await loadUser();
   return (
     <Route
       {...rest}
       render={props =>
-        isAuthenticated && userKind === user.kind ? <Component {...props} /> : console.log(isAuthenticated)
+        isAuthenticated && userKind === user.kind ? <Component {...props} /> : <Redirect to="/" />
       }
     />
   );
