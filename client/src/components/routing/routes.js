@@ -14,10 +14,11 @@ import ErrorNotFound from '../ErrotNotFound';
 
 const Routes = ({loading}) => {
     // TODO: add loading spinner instead of null...
-    let body = loading ? null :
+    let privateRoutes = loading ? null :
     <Fragment>
         <PrivateRoute userKind='Administrator' exact path='/dashboard/admin/' component={AdminDashboard} />
-        <PrivateRoute userKind='Administrator' path='/dashboard/admin/:suburl' component={AdminDashboard} />
+        <PrivateRoute userKind='Administrator' exact path='/dashboard/admin/*' component={AdminDashboard} />
+        {/* <PrivateRoute userKind='Administrator' path='/dashboard/admin/:suburl' component={AdminDashboard} /> */}
         <PrivateRoute userKind='tutor' exact path='/dashboard/tutor' component={TutorDashboard} />
         <PrivateRoute userKind='student' exact path='/dashboard/student' component={StudentDashboard} />
     </Fragment>
@@ -29,7 +30,7 @@ const Routes = ({loading}) => {
                 <Route exact path='/register/tutor' component={RegisterTutor} />
                 <Route exact path='/register/student' component={RegisterStudent} />
                 <Route exact path='/login' component={Login} />
-                {body}
+                {privateRoutes}
                 <Route  component={ErrorNotFound} />
             </Switch>
         </>

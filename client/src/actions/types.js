@@ -8,5 +8,6 @@ export const LOGOUT = 'LOGOUT';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const GET_TUTORS = 'GET_TUTORS';
+export const GET_STUDENTS = 'GET_STUDENTS';
 
 

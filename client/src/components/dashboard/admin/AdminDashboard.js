@@ -7,34 +7,25 @@ import TutorsList from './TutorsList';
 import AddAdmin from './AddAdmin';
 import { Layout, Menu } from "antd";
 import AdminSidebar from './AdminSidebar';
+import StudentsList from './StudentsList';
+import EditTutor from './EditTutor';
 const { Content, Sider } = Layout;
 
-const AdminDashboard = () => {
-    let { suburl } = useParams();
-
-    let content;
-    switch (suburl) {
-        case 'tutors':
-            content = <TutorsList/>
-            break;
-        case 'addAdmin':
-            content = <AddAdmin/>
-            break;
-        case 'tutor':
-            content = <h1>Tutor </h1>
-            break;
-        default:
-            content = <h1>default </h1>
-            break;
-    }
-    
+const AdminDashboard = () => {    
     return (
         <Fragment>
         <Sider>
             <AdminSidebar />
         </Sider>
         <Content>
-            { content }
+            {/* { content } */}
+            <Switch>
+                <Route path="/dashboard/admin/tutors" component={TutorsList} />
+                <Route path="/dashboard/admin/tutor/:id" component={EditTutor} />
+                <Route path="/dashboard/admin/addAdmin" component={AddAdmin} />
+                <Route path="/dashboard/admin/students" component={StudentsList} />
+                <Route path="/dashboard/admin/student/:id" component={<h1>Student</h1>} />
+            </Switch>
         </Content>
         </Fragment>
     );

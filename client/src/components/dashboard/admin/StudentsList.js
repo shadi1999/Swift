@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { List, Avatar, Button, Skeleton, Icon } from 'antd';
 import {setAlert} from '../../../actions/alert';
-import {getTutors} from '../../../actions/adimnActions';
+import {getStudents} from '../../../actions/adimnActions';
 
 
-const TutorsList = ({tutors, loading, getTutors}) => {
+const StudentsList = ({students, loading, getStudents}) => {
     useEffect(() => {
-        getTutors();
+        getStudents();
     }, []);
 
     return (
@@ -17,16 +17,16 @@ const TutorsList = ({tutors, loading, getTutors}) => {
         <List
             loading={loading}
             itemLayout="horizontal"
-            dataSource={tutors}
+            dataSource={students}
             renderItem={item => (
             <List.Item
-                actions={[<Link key="tutor-edit" to={`/dashboard/admin/tutor/${item._id}`}>edit</Link>]}
+                actions={[<Link key="student-edit" to={`/dashboard/admin/student/${item._id}`}>edit</Link>]}
             >
                 <List.Item.Meta
                     avatar={
                     <Avatar icon='user' />
                     }
-                    title={<Link to={`/dashboard/admin/tutor/${item._id}`}>{item.name}</Link>}
+                    title={<Link to={`/dashboard/admin/student/${item._id}`}>{item.name}</Link>}
                     //description={`About : ${item.about} `}
                 />
             </List.Item>
@@ -36,17 +36,17 @@ const TutorsList = ({tutors, loading, getTutors}) => {
     )
 }
 
-TutorsList.propTypes = {
-    tutors: PropTypes.array,
+StudentsList.propTypes = {
+    students: PropTypes.array,
     loading: PropTypes.bool,
-    getTutors: PropTypes.func.isRequired
+    getStudents: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-    tutors: state.admin.data,
+    students: state.admin.data,
     loading: state.admin.loading
 });
 
 export default connect(
-    mapStateToProps, {getTutors}
-)(TutorsList);
+    mapStateToProps, {getStudents}
+)(StudentsList);

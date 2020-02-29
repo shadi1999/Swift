@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {GET_TUTORS, REGISTER_SUCCESS, REGISTER_FAIL} from './types';
+import {GET_TUTORS, GET_STUDENTS, REGISTER_SUCCESS, REGISTER_FAIL} from './types';
 import { setAlert } from './alert';
 import {loadUser} from './auth';
 import Config from '../Config';
@@ -12,6 +12,18 @@ export const getTutors = () => async dispatch => {
         dispatch({
             type:GET_TUTORS,
             payload:tutors
+        })
+    } catch(error) {
+        dispatch(setAlert(error.msg, 'error', 100000));
+    }
+}
+
+export const getStudents = () => async dispatch => {
+    try {
+        const students = await axios.get(URL+'/api/students');
+        dispatch({
+            type:GET_STUDENTS,
+            payload:students
         })
     } catch(error) {
         dispatch(setAlert(error.msg, 'error', 100000));

@@ -6,4 +6,4 @@
 - add POST route for the tutor to add students to a classroom.
 - add tutor GET classrooms route.
 - add student GET private classrooms route.
-- 
+- add edit profile with logout

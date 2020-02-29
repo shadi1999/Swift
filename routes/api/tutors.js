@@ -66,4 +66,30 @@ async (req, res) => {
     }
 });
 
+// @route    POST api/tutors
+// @desc     Edit a tutor
+// @access   Private
+router.post('/',
+auth,
+adminOnly,
+tutorsController.registerValidationRules(),
+tutorsController.validate,
+async (req, res) => {
+    try {
+        // Check if a user with the same email already exists.
+        let tutor = await Tutor.findById(req.body.id);
+        if (!user) {
+            return res
+            .status(400)
+            .json({ errors: [{ msg: 'Tutors does not exist.' }] });
+        }
+
+        tutor = req.body;
+        await tutor.save();
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports=router;
