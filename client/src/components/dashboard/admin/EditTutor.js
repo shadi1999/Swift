@@ -7,27 +7,20 @@ import { connect } from 'react-redux';
 import {setAlert} from '../../../actions/alert';
 import { Fragment } from 'react';
 let tutorId;
-const EditTutor = ({ form, tutor, setAlert }) => {
+const EditTutor = ({ tutor, setAlert }) => {
+    const [form] = Form.useForm();
     let { id } = useParams();
     tutorId = id;
 
     useEffect(() => {
         form.setFieldsValue(tutor);
-    }, []);
+    });
 
-    const onSubmit = async e => {
-      e.preventDefault();
-        form.validateFields((err, values) => {
-            let { name, email, password, password2 } = values;
-            
-            if (password !== password2) {
-                setAlert('Passwords do not match', 'error');
-            } else if (!err) {
-                console.log('Received values of form: ', values);
-                // editTutor({ name, email, password });
-            }
-        });
-      }
+    const onFinish = values => {
+        if (values.password !== values.password2) {
+            setAlert('Passwords do not match', 'error');
+        }
+    }
     
     const { getFieldDecorator } = form;
     return (
@@ -36,7 +29,7 @@ const EditTutor = ({ form, tutor, setAlert }) => {
         <p>
           Create a tutor account.
         </p>
-        <Form onSubmit={onSubmit}>
+        <Form from={form} onFinish={onFinish}>
             <Form.Item>
                 {getFieldDecorator('email', {
                     rules: [{ required: true, message: 'Please input your email!' }],
@@ -97,8 +90,6 @@ EditTutor.propTypes = {
     // editTutor: PropTypes.func.isRequired
 };
 
-const Wrapped = Form.create({ name: 'EditTutor' })(EditTutor);
-
 const mapStateToProps = state => ({
     tutor: state.admin.data.find(elm => elm._id === tutorId)
 });
@@ -107,4 +98,4 @@ export default connect(
     mapStateToProps,
     { setAlert }
     // { setAlert, editTutor }
-)(Wrapped);
+)(EditTutor);
