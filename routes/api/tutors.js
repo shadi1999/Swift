@@ -66,18 +66,20 @@ async (req, res) => {
     }
 });
 
-// @route    POST api/tutors
+// @route    PUT api/tutors
 // @desc     Edit a tutor
 // @access   Private
-router.post('/',
+router.put('/',
 auth,
 adminOnly,
 tutorsController.registerValidationRules(),
 tutorsController.validate,
 async (req, res) => {
     try {
+        console.log('ldksfjksdljfldskjfkldjf');
+        
         // Check if a user with the same email already exists.
-        let tutor = await Tutor.findById(req.body.id);
+        let tutor = await Tutor.findById(req.body._id);
         if (!user) {
             return res
             .status(400)

@@ -62,4 +62,30 @@ router.post('/', studentController.registerValidationRules(), studentController.
     }
 });
 
+// @route    PUT api/students
+// @desc     Edit a student
+// @access   Private
+router.put('/',
+auth,
+adminOnly,
+studentController.registerValidationRules(),
+studentController.validate,
+async (req, res) => {
+    try {
+        // Check if a user with the same email already exists.
+        let student = await Student.findById(req.body.id);
+        if (!user) {
+            return res
+            .status(400)
+            .json({ errors: [{ msg: 'Students does not exist.' }] });
+        }
+
+        student = req.body;
+        await student.save();
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports=router;

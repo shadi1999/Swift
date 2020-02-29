@@ -2,7 +2,8 @@ import React, { Fragment, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { List, Avatar, Button, Skeleton, Icon } from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { List, Avatar, Button, Skeleton } from 'antd';
 import {setAlert} from '../../../actions/alert';
 import {getTutors} from '../../../actions/adimnActions';
 
@@ -24,7 +25,7 @@ const TutorsList = ({tutors, loading, getTutors}) => {
             >
                 <List.Item.Meta
                     avatar={
-                    <Avatar icon='user' />
+                    <Avatar icon={<LegacyIcon type='user' />} />
                     }
                     title={<Link to={`/dashboard/admin/tutor/${item._id}`}>{item.name}</Link>}
                     //description={`About : ${item.about} `}
@@ -33,7 +34,7 @@ const TutorsList = ({tutors, loading, getTutors}) => {
             )}
       />
     </Skeleton>
-    )
+    );
 }
 
 TutorsList.propTypes = {

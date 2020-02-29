@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Button, Checkbox } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -30,7 +32,7 @@ const Login = ({form, login, isAuthenticated}) => {
                     rules: [{ required: true, message: 'Please input your username!' }],
                 })(
                 <Input
-                prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                prefix={<LegacyIcon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 placeholder="Username"
                 />,
                 )}
@@ -41,7 +43,7 @@ const Login = ({form, login, isAuthenticated}) => {
                     rules: [{ required: true, message: 'Please input your Password!' }],
                 })(
                 <Input
-                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                prefix={<LegacyIcon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 type="password"
                 placeholder="Password"
                 />,

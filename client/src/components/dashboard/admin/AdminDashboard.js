@@ -9,6 +9,7 @@ import { Layout, Menu } from "antd";
 import AdminSidebar from './AdminSidebar';
 import StudentsList from './StudentsList';
 import EditTutor from './EditTutor';
+import EditStudent from './EditStudent';
 const { Content, Sider } = Layout;
 
 const AdminDashboard = () => {    
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
                 <Route path="/dashboard/admin/tutor/:id" component={EditTutor} />
                 <Route path="/dashboard/admin/addAdmin" component={AddAdmin} />
                 <Route path="/dashboard/admin/students" component={StudentsList} />
-                <Route path="/dashboard/admin/student/:id" component={<h1>Student</h1>} />
+                <Route path="/dashboard/admin/student/:id" component={EditStudent} />
             </Switch>
         </Content>
         </Fragment>

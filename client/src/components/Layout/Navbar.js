@@ -1,5 +1,6 @@
 import React from 'react';
-import { Menu, Icon, Dropdown, Avatar } from 'antd';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Menu, Dropdown, Avatar } from 'antd';
 // import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -19,9 +20,9 @@ const Navbar = ({isAuthenticated, user, logout}) => {
         welcome =
         <>
         <div className="welcome-username">
-        <Avatar icon="user" size="large" />
+        <Avatar icon={<LegacyIcon type="user" />} size="large" />
         <Dropdown overlay={menu}>
-            <span>Welcome, {user.name}! <Icon type="down" /></span>
+            <span>Welcome, {user.name}! <LegacyIcon type="down" /></span>
         </Dropdown>
         </div>
         </>

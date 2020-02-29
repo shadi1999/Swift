@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {GET_TUTORS, GET_STUDENTS, REGISTER_SUCCESS, REGISTER_FAIL} from './types';
+import {GET_TUTORS, GET_STUDENTS, REGISTER_SUCCESS, REGISTER_FAIL,EDIT_STUDENT,EDIT_TUTOR} from './types';
 import { setAlert } from './alert';
 import {loadUser} from './auth';
 import Config from '../Config';
@@ -12,6 +12,50 @@ export const getTutors = () => async dispatch => {
         dispatch({
             type:GET_TUTORS,
             payload:tutors
+        })
+    } catch(error) {
+        dispatch(setAlert(error.msg, 'error', 100000));
+    }
+}
+
+export const editTutor = (tutor) => async (dispatch, getState) => {
+    const { name, email,_id } = tutor;
+    const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+    };
+    
+    const body = JSON.stringify({ name, email,_id });
+    try {
+        await axios.put(URL+'/api/tutors', body, config);
+        let tutors = getState().admin.data.filter(t => t._id !== _id);
+        tutors = [...tutors, tutor];
+        dispatch({
+            type:EDIT_TUTOR,
+            payload:tutors
+        })
+    } catch(error) {
+        dispatch(setAlert(error.msg, 'error', 100000));
+    }
+}
+
+export const editStudent = ({ name, email }) => async (dispatch, getState) => {
+    const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+    };
+    
+    const body = JSON.stringify({ name, email });
+
+    try {
+        const student = await axios.put(URL+'/api/students', body, config);
+        let students = getState().admin.data.filter(t => t._id !== student._id);
+        students = [...students, student];
+        dispatch({
+            type:EDIT_STUDENT,
+            payload:students
         })
     } catch(error) {
         dispatch(setAlert(error.msg, 'error', 100000));

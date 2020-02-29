@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Button } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addAdmin } from '../../../actions/adimnActions';
@@ -25,68 +27,68 @@ const AddAdmin = ({ form, setAlert, addAdmin, isAuthenticated }) => {
   
     const { getFieldDecorator } = form;
     return (
-      <Fragment>
-        <h1>Add Admin</h1>
-        <Form onSubmit={onSubmit}>
-            <Form.Item>
-                {getFieldDecorator('email', {
-                    rules: [{ required: true, message: 'Please input your email!' }],
-                })(
-                <Input
-                prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="Email of new tutor"
-                />,
-                )}
-            </Form.Item>
+        <Fragment>
+          <h1>Add Admin</h1>
+          <Form onSubmit={onSubmit}>
+              <Form.Item>
+                  {getFieldDecorator('email', {
+                      rules: [{ required: true, message: 'Please input your email!' }],
+                  })(
+                  <Input
+                  prefix={<LegacyIcon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Email of new tutor"
+                  />,
+                  )}
+              </Form.Item>
 
-            <Form.Item>
-                {getFieldDecorator('name', {
-                    rules: [{ required: true, message: 'Please input your name!' }],
-                })(
-                <Input
-                prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="Name of tutor"
-                />,
-                )}
-            </Form.Item>
+              <Form.Item>
+                  {getFieldDecorator('name', {
+                      rules: [{ required: true, message: 'Please input your name!' }],
+                  })(
+                  <Input
+                  prefix={<LegacyIcon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Name of tutor"
+                  />,
+                  )}
+              </Form.Item>
 
-            <Form.Item>
-                {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Please input your Password!' }],
-                })(
-                <Input
-                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type="password"
-                placeholder="Password"
-                />,
-                )}
-            </Form.Item>
+              <Form.Item>
+                  {getFieldDecorator('password', {
+                      rules: [{ required: true, message: 'Please input your Password!' }],
+                  })(
+                  <Input
+                  prefix={<LegacyIcon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  type="password"
+                  placeholder="Password"
+                  />,
+                  )}
+              </Form.Item>
 
-            <Form.Item>
-            {getFieldDecorator('password2', {
-                    rules: [{ required: true, message: 'Please input your Password!' }],
-                })(
-                <Input
-                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type="password"
-                placeholder="Password"
-                />,
-                )}
-            </Form.Item>
-            <Button type="primary" htmlType="submit">
-                Add Admin
-            </Button>
-        </Form>
-        </Fragment>
+              <Form.Item>
+              {getFieldDecorator('password2', {
+                      rules: [{ required: true, message: 'Please input your Password!' }],
+                  })(
+                  <Input
+                  prefix={<LegacyIcon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  type="password"
+                  placeholder="Password"
+                  />,
+                  )}
+              </Form.Item>
+              <Button type="primary" htmlType="submit">
+                  Add Admin
+              </Button>
+          </Form>
+          </Fragment>
     );
   }
-  
+
 AddAdmin.propTypes = {
     setAlert: PropTypes.func.isRequired,
     addAdmin: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool
 };
-  
+
 const Wrapped = Form.create({ name: 'AddAdmin' })(AddAdmin);
 
 const mapStateToProps = state => ({

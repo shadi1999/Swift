@@ -1,80 +1,67 @@
 import React, { useEffect } from 'react';
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Input, Button } from 'antd';
+import { Icon } from '@ant-design/compatible';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // import { editTutor } from '../../actions/auth';
-import {setAlert} from '../../../actions/alert';
+import {editTutor} from '../../../actions/adimnActions';
 import { Fragment } from 'react';
-let tutorId;
-const EditTutor = ({ tutor, setAlert }) => {
+const EditTutor = ({ tutors, editTutor }) => {
     const [form] = Form.useForm();
     let { id } = useParams();
-    tutorId = id;
+    let tutor;
 
-    useEffect(() => {
-        form.setFieldsValue(tutor);
+    useEffect(() => {        
+        tutor = tutors.find(elm => elm._id === id);
+        
+        form.setFieldsValue({
+            email: tutor.email,
+            name: tutor.name
+        });
     });
 
     const onFinish = values => {
-        if (values.password !== values.password2) {
-            setAlert('Passwords do not match', 'error');
-        }
+        const {email, name} = values;
+        editTutor({ ...tutor, name, email });
     }
     
-    const { getFieldDecorator } = form;
     return (
       <Fragment>
         <h1>Add tutor</h1>
         <p>
           Create a tutor account.
         </p>
-        <Form from={form} onFinish={onFinish}>
-            <Form.Item>
-                {getFieldDecorator('email', {
-                    rules: [{ required: true, message: 'Please input your email!' }],
-                })(
+        <Form form={form} onFinish={onFinish}>
+            <Form.Item name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
                 <Input
                 prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 placeholder="Email of new tutor"
-                />,
-                )}
+                />
             </Form.Item>
 
-            <Form.Item>
-                {getFieldDecorator('name', {
-                    rules: [{ required: true, message: 'Please input your name!' }],
-                })(
+            <Form.Item name="name" rules={[{ required: true, message: 'Please input your name!' }]}>
                 <Input
                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 placeholder="Name of tutor"
-                />,
-                )}
+                />
             </Form.Item>
 
-            <Form.Item>
-                {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Please input your Password!' }],
-                })(
+            {/* <Form.Item name="password" rules={[{ required: true, message: 'Please input your Password!' }]}>
                 <Input
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 type="password"
                 placeholder="Password"
-                />,
-                )}
+                />
             </Form.Item>
 
-            <Form.Item>
-            {getFieldDecorator('password2', {
-                    rules: [{ required: true, message: 'Please input your Password!' }],
-                })(
+            <Form.Item name="password2" rules={[{ required: true, message: 'Please input your Password!' }]}>
                 <Input
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 type="password"
                 placeholder="Password"
-                />,
-                )}
-            </Form.Item>
+                />
+            </Form.Item> */}
             <Button type="primary" htmlType="submit">
                 Add tutor
             </Button>
@@ -85,17 +72,15 @@ const EditTutor = ({ tutor, setAlert }) => {
   }
   
 EditTutor.propTypes = {
-    tutor: PropTypes.object.isRequired,
-    setAlert: PropTypes.func.isRequired,
-    // editTutor: PropTypes.func.isRequired
+    tutors: PropTypes.array.isRequired,
+    editTutor: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-    tutor: state.admin.data.find(elm => elm._id === tutorId)
+    tutors: state.admin.data
 });
 
 export default connect(
     mapStateToProps,
-    { setAlert }
-    // { setAlert, editTutor }
+    { editTutor }
 )(EditTutor);

@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const tutorsController = require('../../middleware/tutorsController');
+const {adminOnly} = require('../../middleware/privateRoutes');
 //Administrator model
 const Administrator = require('../../models/Administrator');
 
@@ -30,10 +31,10 @@ router.get('/:id', auth,(req,res)=>{
 });
 
 
-// @route    POST api/tutors
-// @desc     Register tutor
+// @route    POST api/administrators
+// @desc     Add Administrator
 // @access   Public
-router.post('/',
+router.post('/', auth, adminOnly,
 async (req, res) => {
     const { name, email, password } = req.body;
 
