@@ -11,6 +11,5 @@ export const GET_TUTORS = 'GET_TUTORS';
 export const GET_STUDENTS = 'GET_STUDENTS';
 export const EDIT_TUTOR = 'EDIT_TOTUR';
 export const EDIT_STUDENT = 'EDIT_STUDENT';
-
-
-
+export const EDIT_TUTOR_SUCCESS = 'EDIT_TUTOR_SUCCESS';
+export const EDIT_TUTOR_FAIL = 'EDIT_TUTOR_FAIL';

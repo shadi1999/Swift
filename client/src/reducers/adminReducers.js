@@ -1,4 +1,4 @@
-import {GET_TUTORS, GET_STUDENTS, EDIT_TUTOR, EDIT_STUDENT} from '../actions/types';
+import {GET_TUTORS, GET_STUDENTS, EDIT_TUTOR, EDIT_STUDENT, EDIT_TUTOR_SUCCESS, EDIT_TUTOR_FAIL} from '../actions/types';
 
 const initialState = {
     loading: true,
@@ -9,10 +9,24 @@ const initialState = {
 export default function(state=initialState,action){
     switch(action.type){
         case GET_TUTORS:
-        case EDIT_TUTOR:
             return {
                 loading: false,
                 tutors: action.payload
+            }
+        case EDIT_TUTOR:
+            return {
+                ...state,
+                loading: true
+            }
+        case EDIT_TUTOR_SUCCESS:
+            return {
+                loading: false,
+                tutors: action.payload
+            }
+        case EDIT_TUTOR_FAIL:
+            return {
+                ...state,
+                loading: false
             }
         case GET_STUDENTS:
         case EDIT_STUDENT:        

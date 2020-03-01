@@ -75,11 +75,9 @@ adminOnly,
 tutorsController.editValidationRules(),
 tutorsController.validate,
 async (req, res) => {
-    try {
-        console.log('ldksfjksdljfldskjfkldjf');
-        
+    try {        
         // Check if a user with the same email already exists.
-        let tutor = await Tutor.findById(req.body.id);
+        let tutor = await Tutor.findById(req.body._id);
         if (!tutor) {
             return res
             .status(400)
@@ -89,6 +87,7 @@ async (req, res) => {
         tutor.email = req.body.email;
         tutor.name = req.body.name;
         await tutor.save();
+        res.status(200).send();
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
