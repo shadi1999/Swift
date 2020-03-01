@@ -19,6 +19,13 @@ module.exports = {
             check('password', 'Password is required').exists()
         ]
     },
+    editValidationRules: () => {
+        return [
+            body("email").normalizeEmail({all_lowercase: true}).trim(),
+            check("email", "Email is invalid").isEmail(),
+            check('name', 'Name is required').not().isEmpty(),
+        ]
+    },
     validate: (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

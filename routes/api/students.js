@@ -68,7 +68,7 @@ router.post('/', studentController.registerValidationRules(), studentController.
 router.put('/',
 auth,
 adminOnly,
-studentController.registerValidationRules(),
+studentController.editValidationRules(),
 studentController.validate,
 async (req, res) => {
     try {

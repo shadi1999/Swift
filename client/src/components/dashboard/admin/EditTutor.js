@@ -23,7 +23,8 @@ const EditTutor = ({ tutors, editTutor }) => {
 
     const onFinish = values => {
         const {email, name} = values;
-        editTutor({ ...tutor, name, email });
+        const id = tutor._id;
+        editTutor({ id, name, email });
     }
     
     return (
@@ -77,7 +78,7 @@ EditTutor.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    tutors: state.admin.data
+    tutors: state.admin.tutors
 });
 
 export default connect(

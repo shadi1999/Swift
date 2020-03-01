@@ -44,7 +44,7 @@ TutorsList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    tutors: state.admin.data,
+    tutors: state.admin.tutors,
     loading: state.admin.loading
 });
 

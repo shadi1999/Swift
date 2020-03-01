@@ -11,7 +11,7 @@ export const getTutors = () => async dispatch => {
         const tutors = await axios.get(URL+'/api/tutors');
         dispatch({
             type:GET_TUTORS,
-            payload:tutors
+            payload: tutors.data
         })
     } catch(error) {
         dispatch(setAlert(error.msg, 'error', 100000));
@@ -19,22 +19,18 @@ export const getTutors = () => async dispatch => {
 }
 
 export const editTutor = (tutor) => async (dispatch, getState) => {
-    const { name, email,_id } = tutor;
+    const { name, email, id } = tutor;
     const config = {
         headers: {
           'Content-Type': 'application/json'
         }
     };
     
-    const body = JSON.stringify({ name, email,_id });
+    const body = JSON.stringify({ name, email,id });
     try {
         await axios.put(URL+'/api/tutors', body, config);
-        let tutors = getState().admin.data.filter(t => t._id !== _id);
+        let tutors = getState().admin.data.filter(t => t._id !== id);
         tutors = [...tutors, tutor];
-        dispatch({
-            type:EDIT_TUTOR,
-            payload:tutors
-        })
     } catch(error) {
         dispatch(setAlert(error.msg, 'error', 100000));
     }

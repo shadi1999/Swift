@@ -72,21 +72,22 @@ async (req, res) => {
 router.put('/',
 auth,
 adminOnly,
-tutorsController.registerValidationRules(),
+tutorsController.editValidationRules(),
 tutorsController.validate,
 async (req, res) => {
     try {
         console.log('ldksfjksdljfldskjfkldjf');
         
         // Check if a user with the same email already exists.
-        let tutor = await Tutor.findById(req.body._id);
-        if (!user) {
+        let tutor = await Tutor.findById(req.body.id);
+        if (!tutor) {
             return res
             .status(400)
             .json({ errors: [{ msg: 'Tutors does not exist.' }] });
         }
 
-        tutor = req.body;
+        tutor.email = req.body.email;
+        tutor.name = req.body.name;
         await tutor.save();
     } catch (err) {
         console.error(err.message);
