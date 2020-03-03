@@ -21,11 +21,11 @@ const AdminDashboard = () => {
         <Content>
             {/* { content } */}
             <Switch>
-                <Route path="/dashboard/admin/tutors" component={TutorsList} />
-                <Route path="/dashboard/admin/tutor/:id" component={EditTutor} />
-                <Route path="/dashboard/admin/addAdmin" component={AddAdmin} />
-                <Route path="/dashboard/admin/students" component={StudentsList} />
-                <Route path="/dashboard/admin/student/:id" component={EditStudent} />
+                <Route path="/dashboard/tutors" component={TutorsList} />
+                <Route path="/dashboard/tutor/:id" component={EditTutor} />
+                <Route path="/dashboard/addAdmin" component={AddAdmin} />
+                <Route path="/dashboard/students" component={StudentsList} />
+                <Route path="/dashboard/student/:id" component={EditStudent} />
             </Switch>
         </Content>
         </Fragment>

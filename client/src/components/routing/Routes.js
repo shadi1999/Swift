@@ -11,35 +11,33 @@ import RegisterStudent from '../auth/RegisterStudent';
 import PrivateRoute from './PrivateRoute';
 import ErrorNotFound from '../ErrotNotFound';
 import { Skeleton } from 'antd';
+import MainDashboard from '../dashboard/MainDashboard';
 
 
-const Routes = ({loading}) => {
-    let privateRoutes = loading ? null :
+const Routes = ({auth}) => {
+    let privateRoutes = auth.loading ? null :
     <Fragment>
-        <PrivateRoute userKind='Administrator'  path='/dashboard/admin' component={AdminDashboard} />
-        {/* <PrivateRoute userKind='Administrator' path='/dashboard/admin/:suburl' component={AdminDashboard} /> */}
-        <PrivateRoute userKind='Tutor'  path='/dashboard/tutor' component={TutorDashboard} />
-        <PrivateRoute userKind='Student'  path='/dashboard/student' component={StudentDashboard} />
+        <Route path='/dashboard' render={(props)=><MainDashboard {...props} userKind={auth.user.kind} />}/>
     </Fragment>
 
     return (
         <>
             <AlertWrapper />
-            <Skeleton active loading={loading}>
+            {/* <Skeleton active loading={loading}> */}
                 <Switch>
-                    <Route exact path='/register/tutor' component={RegisterTutor} />
-                    <Route exact path='/register/student' component={RegisterStudent} />
-                    <Route exact path='/login' component={Login} />
                     {privateRoutes}
+                    <Route path='/register/tutor' component={RegisterTutor} />
+                    <Route path='/register/student' component={RegisterStudent} />
+                    <Route path='/login' component={Login} />
                     <Route component={ErrorNotFound} />
                 </Switch>
-            </Skeleton>
+            {/* </Skeleton> */}
         </>
     )
 }
 
 const mapStateToProps = (state) => ({
-    loading: state.auth.loading
+    auth: state.auth
 })
   
 export default connect(mapStateToProps)(Routes);

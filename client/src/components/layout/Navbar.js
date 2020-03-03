@@ -5,6 +5,7 @@ import { Menu, Dropdown, Avatar } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
+import Logo from '../../logo.png';
 
 const Navbar = ({isAuthenticated, user, logout}) => {
     let welcome;
@@ -30,7 +31,7 @@ const Navbar = ({isAuthenticated, user, logout}) => {
 
     return (
     <>
-        <div className="logo logo-placeholder"></div>
+        <img src={Logo} className="logo-placeholder"></img>
         {/* // <Menu
         //     theme="dark"
         //     mode="horizontal"

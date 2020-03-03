@@ -1,8 +1,8 @@
 
 .logo-placeholder {
-  width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
+  width: 250px;
+  height: 100px;
+  background: rgb(255, 255, 255);
   margin: 16px 24px 16px 0;
   float: left;
 }
@@ -10,6 +10,7 @@
 .welcome-username {
   float: right;
   color: #fff;
+  margin: 25px 24px 16px 0;
 }
 
 body{

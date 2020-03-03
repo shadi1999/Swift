@@ -8,22 +8,22 @@ const AdminSidebar = () =>{
         <Fragment>
             <Menu theme="dark" mode="inline" >
                 <Menu.Item key="home">
-                    <Link to="/dashboard/admin">
+                    <Link to="/dashboard">
                     <LegacyIcon type="user" />
                     Home</Link>
                 </Menu.Item>
                 <Menu.Item key="tutors-list">
-                    <Link to="/dashboard/admin/tutors">
+                    <Link to="/dashboard/tutors">
                     <LegacyIcon type="user" />
                     Tutors List</Link>
                 </Menu.Item>
                 <Menu.Item key="students-list">
-                    <Link to="/dashboard/admin/students">
+                    <Link to="/dashboard/students">
                     <LegacyIcon type="video-camera" />
                     Students List</Link>
                 </Menu.Item>
                 <Menu.Item key="add-extra-admin">
-                    <Link to="/dashboard/admin/addAdmin">
+                    <Link to="/dashboard/addAdmin">
                     <LegacyIcon type="video-camera" />
                     Add an extra admin</Link>
                 </Menu.Item>

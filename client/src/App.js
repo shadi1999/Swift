@@ -30,7 +30,7 @@ function App() {
       <Router>
         <Fragment>
           <Layout>
-            <Header>
+            <Header   style={{height: '130px'}}>
               <Navbar />
             </Header>
             <Layout>
