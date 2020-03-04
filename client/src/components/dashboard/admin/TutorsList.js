@@ -23,13 +23,13 @@ const TutorsList = ({tutors, loading, getTutors}) => {
             dataSource={tutors}
             renderItem={item => (
             <List.Item
-                actions={[<Link key="tutor-edit" to={`/dashboard/admin/tutor/${item._id}`}>edit</Link>]}
+                actions={[<Link key="tutor-edit" to={`/dashboard/tutor/${item._id}`}>edit</Link>]}
             >
                 <List.Item.Meta
                     avatar={
                     <Avatar icon={<LegacyIcon type='user' />} />
                     }
-                    title={<Link to={`/dashboard/admin/tutor/${item._id}`}>{item.name}</Link>}
+                    title={<Link to={`/dashboard/tutor/${item._id}`}>{item.name}</Link>}
                     //description={`About : ${item.about} `}
                 />
             </List.Item>

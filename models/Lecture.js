@@ -17,13 +17,24 @@ const Lecture = new Schema({
     endedOn: {type: Date},
     attendance: [{
         id: {type: Schema.Types.ObjectId, ref: 'user'},
-        duration: Number
+        duration: {
+            type: Number,
+            default: 0
+        }
     }],
     slideUrl: {type: String},
     slideHistory: [{slideNumber: Number, date: Date}],
     // streamUrl: {
     //     type: String
     // }
+    chatMessages:[{
+        time:{
+            type:Date,
+            default:Date.now()
+        },
+        text:String,
+        sender:{type: Schema.Types.ObjectId, ref: 'user'}
+    }]
 });
 
 module.exports = mongoose.model('lecture', Lecture);

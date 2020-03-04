@@ -32,7 +32,7 @@ const EditTutor = ({ tutors, editTutor, loading }) => {
             email,
             name
         }
-        editTutor(tutor, history, '/dashboard/admin/tutors/');
+        editTutor(tutor, history, '/dashboard/tutors/');
     }
     
     return (

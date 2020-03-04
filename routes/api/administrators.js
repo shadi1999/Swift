@@ -11,7 +11,7 @@ const Administrator = require('../../models/Administrator');
 @desc   display all administrators
 @access private
 */
-router.get('/',auth, (req,res)=>{
+router.get('/',auth, adminOnly,(req,res)=>{
     Administrator.find()
         .select('-password')
         .then(administrators=>res.json(administrators))
@@ -23,7 +23,7 @@ router.get('/',auth, (req,res)=>{
 @desc   display an administrator
 @access private
 */
-router.get('/:id', auth,(req,res)=>{
+router.get('/:id', auth,adminOnly,(req,res)=>{
     Administrator.findById(req.params.id)
         .select('-password')
         .then(administrator=>res.json(administrator))
