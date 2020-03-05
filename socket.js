@@ -1,7 +1,7 @@
 const Classroom = require('./models/Classroom');
 
 
-module.exports =async io =>  {
+module.exports = async io => {
     // io.on('connection', function(socket) {
     //     socket.join(socket.classroomId);
     //     const classroom = await Classroom.findById(socket.classroomId);
