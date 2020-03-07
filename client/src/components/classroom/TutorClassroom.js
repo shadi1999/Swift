@@ -11,6 +11,10 @@ import {HistoryOutlined} from '@ant-design/icons';
 const TutorClassroom = ({joinClassroom, lectureStarted}) => {
     const {id} = useParams();
 
+    const startLecture = () => {
+        
+    }
+
     useEffect(() => {
         if(lectureStarted) {
             joinClassroom(id);
@@ -19,7 +23,7 @@ const TutorClassroom = ({joinClassroom, lectureStarted}) => {
                 <Result
                     icon={<HistoryOutlined />}
                     title="The lecture has not started yet."
-                    extra={<Button type="primary">Start a Lecture</Button>}
+                    extra={<Button type="primary" onClick={}>Start a Lecture</Button>}
                 />
             )
         }
