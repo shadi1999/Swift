@@ -19,4 +19,4 @@ function socketAuth(socket, next) {
     }
 }
 
-module.exports = auth;
+module.exports = socketAuth;

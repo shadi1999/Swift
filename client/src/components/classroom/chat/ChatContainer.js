@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button,Input} from 'antd';
 import ChatMessage from './ChatMessage';
 import {connect} from 'react-redux';
@@ -13,9 +13,17 @@ const ChatContainer = ({messages, sendMessage}) => {
         sendMessage(msg);
     }
 
+    let content=<></>;
+    
+    useEffect(()=>{
+        for(let m of messages){
+            content += <ChatMessage message={m.text} senderFirstName={m.sender} />
+        }
+    }, [messages]);
+
     return(
         <div>
-            <ChatMessage message="sk;dfjldjf" senderFirstName="sdfgegegswf" />
+            <>{content}</>
             <div>
                 <Input onChange={e => setMsg(e.target.value)} />
                 <Button type="submit" onClick={onClick}>

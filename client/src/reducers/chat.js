@@ -19,6 +19,11 @@ export default function(state = initState, action) {
                 ...state,
                 lectureStarted: true
             }
+        case GET_MESSAGES:
+            return{
+                ...state,
+                messages: payload
+            }
         default:
             return state;
     }

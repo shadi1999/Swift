@@ -97,15 +97,18 @@ router.delete('/', auth, adminOnly, (req, res)=>{
 */
 router.post('/:id/start', auth, tutorOnly, async (req, res) => {
     try {
-        const newLecture = new Lecture({
+            const newLecture = new Lecture({
             startedOn: Date.now()
         });
         const classroom = await Classroom.findOne({id: req.params.id});
 
+        if(req.user._id !== classroom.tutor) {
+            return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
+        }
+
         await newLecture.save();
         classroom.liveLecture = newLecture;
         await classroom.save();
-        // TODO: add socket.io code here...
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -130,7 +133,6 @@ router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
         classroom.pastLectures.push(liveLecture);
         classroom.liveLecture = undefined;
         await classroom.save();
-        // TODO: add socket.io code here...
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -148,7 +150,6 @@ router.post('/:id/join', auth, async (req, res) => {
         const { liveLecture } = classroom;
         
         if (!liveLecture.live) res.status(400).send('Lecture is not live.');
-        // TODO: add socket.io code here...
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -169,7 +170,6 @@ router.post('/:id/leave', auth, async (req, res) => {
         if (!liveLecture.live) res.status(400).send('Lecture is not live.');
         liveLecture.attendance.push({id: req.user.id, duration: req.body.duration});
         await liveLecture.save();
-        // TODO: add socket.io code here...
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');

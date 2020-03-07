@@ -14,10 +14,12 @@ module.exports = async io => {
         
     // })
 
-    io.on('connect',  (socket) => {
-        socket.on('join',async ({ classroom }, callback) => {
+    io.on('connect', async (socket) => {
+        let classroomId = socket.handshake.query.classroom;
+        socket.classroom = await Classroom.findOne({id: classroomId});
+
+        socket.on('join', async ({}, callback) => {
             // TODO: add error handling.
-            socket.classroom = await Classroom.findOne({id: classroom});
             socket.classroom.liveLecture.attendance.push({id: socket.user._id});
             socket.join(classroom);
 
@@ -42,6 +44,12 @@ module.exports = async io => {
 
             callback();
         });
+
+        socket.on('startLecture', async () => {
+            const tutor = await Tutor.findById(socket.id);
+            if(tutor)
+                io.to(socket.classroom).emit('startLecture');
+        });
       
         socket.on('disconnect', async () => {
             let duration = Date.now() - socket.joinDate;
@@ -54,6 +62,6 @@ module.exports = async io => {
             //     io.to(user.classroom).emit('message', { user: 'Admin', text: `${user.name} has left.` });
             //     io.to(user.classroom).emit('roomData', { classroom: user.classroom, users: getUsersInRoom(user.classroom)});
             // }
-        })
-      });      
+        });
+      });
 }

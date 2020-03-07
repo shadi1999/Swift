@@ -16,9 +16,7 @@ import Classroom from '../classroom/Classroom';
 
 const Routes = ({auth}) => {
     let privateRoutes = auth.loading ? null :
-    <Fragment>
         <Route path='/dashboard' render={(props)=><MainDashboard {...props} userKind={auth.user.kind} />}/>
-    </Fragment>
 
     return (
         <>
