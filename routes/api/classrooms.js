@@ -41,20 +41,30 @@ router.get('/:id', auth, (req, res) => {
 @desc   Add a classroom
 @access private
 */
-router.post('/', auth, adminOnly, (req, res)=>{
-    const {course} = req.body;
+router.post('/', auth, adminOnly, async (req, res) => {
+    const {id, private, recordLectures} = req.body;
     try {
-        const classroom = Classroom.findOne(course);
+        const classroom = await Classroom.findOne({id});
         if(classroom) {
-            return res.status(400).json({msg:`A course with name ${course} is exsisted`});
+            return res.status(400).json({msg:`A course with the ID ${id} already exists.`});
         }
         const newClass = new Classroom({
-            name:course
+            id,
+            private,
+            recordLectures
         });
-        const saved = newClass.save();
+
+        if (private) {
+            for(let student of req.body.students) {
+                newClass.students.push(student);
+            }
+        }
+
+        const saved = await newClass.save();
         res.status(200).json(saved);
     }
-    catch(e) {
+    catch(err) {
+        console.error(err.message);
         res.status(400).json({msg:'Error happened'});
     }
 });

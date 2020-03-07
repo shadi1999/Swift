@@ -8,8 +8,8 @@ const ChatMessage = ({message, senderFirstName,color}) => {
             <Avatar style={{ backgroundColor: color, verticalAlign: 'middle' }} size="large">
                 {senderFirstName}
             </Avatar>
-            <div class="talk-bubble tri-right left-in round">
-                <div class="talktext">
+            <div className="talk-bubble tri-right left-in round">
+                <div className="talktext">
                     <p>{ message }</p>
                 </div>
             </div>

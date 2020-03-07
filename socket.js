@@ -1,6 +1,5 @@
 const Classroom = require('./models/Classroom');
 
-
 module.exports = async io => {
     // io.on('connection', function(socket) {
     //     socket.join(socket.classroomId);
@@ -16,18 +15,19 @@ module.exports = async io => {
     // })
 
     io.on('connect',  (socket) => {
-        socket.on('join',async ({ _id, classroom }, callback) => {
-            socket.classroom = await Classroom.findById(classroom);
-            socket.classroom.liveLecture.attendance.push({_id});
+        socket.on('join',async ({ classroom }, callback) => {
+            // TODO: add error handling.
+            socket.classroom = await Classroom.findOne({id: classroom});
+            socket.classroom.liveLecture.attendance.push({id: socket.user._id});
             socket.join(classroom);
 
             socket.lecture = socket.classroom.liveLecture;
-            socket.id = _id;
+            socket.id = socket.user._id;
             socket.joinDate = Date.now();
         
             // socket.broadcast.to(classroom).emit('message', { user: 'admin', text: `${user.name} has joined!` });
         
-            io.to(classroom).emit('roomData', { classroom: user.classroom, users: getUsersInRoom(user.classroom) });
+            // io.to(classroom).emit('roomData', { classroom: user.classroom, users: getUsersInRoom(user.classroom) });
         
             callback();
         });
@@ -43,10 +43,11 @@ module.exports = async io => {
             callback();
         });
       
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             let duration = Date.now() - socket.joinDate;
-            let user = socket.lecture.attendance.findOne({id:socket.id})
-            user.duration=user.duration+duration;
+            let attendant = socket.lecture.attendance.findOne({id:socket.id})
+            attendant.duration = user.duration + duration;
+            await attendant.save();
             // const user = removeUser(socket.id);
       
             // if(user) {

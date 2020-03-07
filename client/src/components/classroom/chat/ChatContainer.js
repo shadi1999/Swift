@@ -15,7 +15,7 @@ const ChatContainer = ({messages, sendMessage}) => {
 
     return(
         <div>
-            <ChatMessage/>
+            <ChatMessage message="sk;dfjldjf" senderFirstName="sdfgegegswf" />
             <div>
                 <Input onChange={e => setMsg(e.target.value)} />
                 <Button type="submit" onClick={onClick}>

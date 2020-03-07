@@ -3,14 +3,16 @@ const Schema = mongoose.Schema;
 
 const Classroom = new Schema({
     id: {
-        type:String,
-        required:true
+        type: String,
+        required: true,
+        unique: true
     },
     students: [{ type: Schema.Types.ObjectId, ref: 'student' }],
     tutor: {type: Schema.Types.ObjectId, ref: 'tutor'},
     // chat: ...
     private: {
-        type:Boolean
+        type: Boolean,
+        required: true
     },
     liveLecture: {type: Schema.Types.ObjectId, ref: 'lecture'},
     pastLectures: [{type: Schema.Types.ObjectId, ref: 'lecture'}],
@@ -20,4 +22,4 @@ const Classroom = new Schema({
     }
 });
 
-module.exports=mongoose.model('classroom', Classroom);
+module.exports = mongoose.model('classroom', Classroom);
