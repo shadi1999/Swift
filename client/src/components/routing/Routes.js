@@ -13,6 +13,7 @@ import ErrorNotFound from '../ErrotNotFound';
 import { Skeleton } from 'antd';
 import MainDashboard from '../dashboard/MainDashboard';
 import Classroom from '../classroom/Classroom';
+import TutorClassroom from '../classroom/TutorClassroom';
 
 const Routes = ({auth}) => {
     let privateRoutes = auth.loading ? null :
@@ -27,6 +28,7 @@ const Routes = ({auth}) => {
                     <Route path='/register/tutor' component={RegisterTutor} />
                     <Route path='/register/student' component={RegisterStudent} />
                     <Route path='/login' component={Login} />
+                    <Route path='/classroom/:id/tutor' component={TutorClassroom} />
                     <Route path='/classroom/:id' component={Classroom} />
                     <Route component={ErrorNotFound} />
                 </Switch>

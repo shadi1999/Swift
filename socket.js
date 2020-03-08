@@ -1,4 +1,5 @@
 const Classroom = require('./models/Classroom');
+const Tutor = require('./models/Tutor');
 
 module.exports = async io => {
     // io.on('connection', function(socket) {
@@ -16,15 +17,16 @@ module.exports = async io => {
 
     io.on('connect', async (socket) => {
         let classroomId = socket.handshake.query.classroom;
-        socket.classroom = await Classroom.findOne({id: classroomId});
+        socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
+        socket.join(classroomId);        
 
         socket.on('join', async ({}, callback) => {
             // TODO: add error handling.
+            console.log(socket.classroom);
+            
             socket.classroom.liveLecture.attendance.push({id: socket.user._id});
-            socket.join(classroom);
 
             socket.lecture = socket.classroom.liveLecture;
-            socket.id = socket.user._id;
             socket.joinDate = Date.now();
         
             // socket.broadcast.to(classroom).emit('message', { user: 'admin', text: `${user.name} has joined!` });
@@ -40,20 +42,21 @@ module.exports = async io => {
             socket.lecture.chatMessages.push(msg);
             await socket.lecture.save();
 
-            io.to(socket.classroom).emit('message', msg);
+            io.to(classroomId).emit('message', msg);
 
             callback();
         });
 
-        socket.on('startLecture', async () => {
-            const tutor = await Tutor.findById(socket.id);
-            if(tutor)
-                io.to(socket.classroom).emit('startLecture');
+        socket.on('startLecture', async () => {      
+            const tutor = await Tutor.findById(socket.user.id);
+            if(tutor) {
+                io.to(classroomId).emit('startLecture');
+            }
         });
       
         socket.on('disconnect', async () => {
             let duration = Date.now() - socket.joinDate;
-            let attendant = socket.lecture.attendance.findOne({id:socket.id})
+            let attendant = socket.classroom.liveLecture.attendance.findOne({id:socket.id})
             attendant.duration = user.duration + duration;
             await attendant.save();
             // const user = removeUser(socket.id);

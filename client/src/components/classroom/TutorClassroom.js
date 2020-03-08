@@ -10,7 +10,8 @@ import {HistoryOutlined} from '@ant-design/icons';
 
 const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, startLecture}) => {
     const {id} = useParams();    
-
+    console.log(id);
+    
     useEffect(() => {
         initSocket(token, id);
     }, [token, id]);
@@ -20,6 +21,10 @@ const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, start
             joinClassroom();
         }
     }, [lectureStarted, id]);
+
+    const onClick = () => {
+        startLecture(id);
+    }
 
     return (
         <Layout.Content>
@@ -37,7 +42,7 @@ const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, start
                 <Result
                 icon={<HistoryOutlined />}
                 title="The lecture has not started yet."
-                extra={<Button type="primary" onClick={startLecture(id)}>Start a Lecture</Button>}
+                extra={<Button type="primary" onClick={onClick}>Start a Lecture</Button>}
                 />
             )}
         </Layout.Content>

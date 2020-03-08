@@ -97,10 +97,14 @@ router.delete('/', auth, adminOnly, (req, res)=>{
 */
 router.post('/:id/start', auth, tutorOnly, async (req, res) => {
     try {
+        const classroom = await Classroom.findOne({id: req.params.id});
+            if(Classroom.liveLecture){
+                return res.status(500).json('lecture already started');
+            }
             const newLecture = new Lecture({
             startedOn: Date.now()
         });
-        const classroom = await Classroom.findOne({id: req.params.id});
+        
 
         if(req.user._id !== classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
@@ -109,6 +113,8 @@ router.post('/:id/start', auth, tutorOnly, async (req, res) => {
         await newLecture.save();
         classroom.liveLecture = newLecture;
         await classroom.save();
+
+        res.status(200).send();
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');

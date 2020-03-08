@@ -33,7 +33,7 @@ router.get('/:id', auth,adminOnly,(req,res)=>{
 
 // @route    POST api/administrators
 // @desc     Add Administrator
-// @access   Public
+// @access   Private
 router.post('/', auth, adminOnly,
 async (req, res) => {
     const { name, email, password } = req.body;

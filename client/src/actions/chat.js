@@ -13,6 +13,8 @@ export const initSocket = (token, classroomId) => dispatch => {
   });
 
   socket.on('startLecture', () => {
+    console.log('lecture has started...');
+    
     dispatch({
       type: START_LECTURE
     });
@@ -45,7 +47,7 @@ export const sendMessage = (m) =>{
   });
 }
 
-export const startLecture = ({id}) => async dispatch => {
-  await axios.post(`${config.URL.Server}/classrooms/${id}/start`);
+export const startLecture = (id) => async dispatch => {
+  await axios.post(`${config.URL.Server}/api/classrooms/${id}/start`);
   socket.emit('startLecture');
 }
