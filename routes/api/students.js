@@ -5,7 +5,7 @@ const {adminOnly} = require('../../middleware/privateRoutes');
 
 //Student model
 const Student = require('../../models/Student');
-const studentController = require('../../middleware/studentsController');
+const studentsController = require('../../middleware/studentsController');
 
 /*
 @route  GET api/students
@@ -34,7 +34,7 @@ router.get('/:id', auth, adminOnly, (req,res)=>{
 // @route    POST api/students
 // @desc     Register student
 // @access   Public
-router.post('/', studentController.registerValidationRules(), studentController.validate, async (req, res) => {
+router.post('/', studentsController.registerValidationRules(), studentsController.validate, async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
@@ -68,20 +68,22 @@ router.post('/', studentController.registerValidationRules(), studentController.
 router.put('/',
 auth,
 adminOnly,
-studentController.editValidationRules(),
-studentController.validate,
+studentsController.editValidationRules(),
+studentsController.validate,
 async (req, res) => {
-    try {
+    try {        
         // Check if a user with the same email already exists.
-        let student = await Student.findById(req.body.id);
-        if (!user) {
+        let student = await Student.findById(req.body._id);
+        if (!student) {
             return res
             .status(400)
             .json({ errors: [{ msg: 'Students does not exist.' }] });
         }
 
-        student = req.body;
+        student.email = req.body.email;
+        student.name = req.body.name;
         await student.save();
+        res.status(200).send();
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');

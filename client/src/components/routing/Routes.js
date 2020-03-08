@@ -22,16 +22,18 @@ const Routes = ({auth}) => {
     return (
         <>
             <AlertWrapper />
-            {/* <Skeleton active loading={loading}> */}
-                <Switch>
-                    {privateRoutes}
-                    <Route path='/register/tutor' component={RegisterTutor} />
-                    <Route path='/register/student' component={RegisterStudent} />
-                    <Route path='/login' component={Login} />
-                    <Route path='/classroom/:id/tutor' component={TutorClassroom} />
-                    <Route path='/classroom/:id' component={Classroom} />
-                    <Route component={ErrorNotFound} />
-                </Switch>
+            {/* <Skeleton active loading={auth.loading}> */}
+            <Switch>
+                <Route path='/register/tutor' component={RegisterTutor} />
+                <Route path='/register/student' component={RegisterStudent} />
+                <Route path='/login' component={Login} />
+                <Skeleton active loading={auth.loading}>
+                {privateRoutes}
+                <Route path='/classroom/:id/tutor' component={TutorClassroom} />
+                <Route path='/classroom/:id' component={Classroom} />
+                </Skeleton>
+                <Route component={ErrorNotFound} />
+            </Switch>
             {/* </Skeleton> */}
         </>
     )
@@ -42,4 +44,3 @@ const mapStateToProps = (state) => ({
 })
   
 export default connect(mapStateToProps)(Routes);
-  

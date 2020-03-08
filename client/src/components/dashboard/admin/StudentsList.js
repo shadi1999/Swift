@@ -44,7 +44,7 @@ StudentsList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    students: state.admin.data,
+    students: state.admin.students,
     loading: state.admin.loading
 });
 

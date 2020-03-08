@@ -1,4 +1,13 @@
-import {GET_TUTORS, GET_STUDENTS, EDIT_TUTOR, EDIT_STUDENT, EDIT_TUTOR_SUCCESS, EDIT_TUTOR_FAIL} from '../actions/types';
+import {
+    GET_TUTORS,
+    GET_STUDENTS,
+    EDIT_TUTOR,
+    EDIT_STUDENT,
+    EDIT_TUTOR_SUCCESS,
+    EDIT_TUTOR_FAIL,
+    EDIT_STUDENT_SUCCESS,
+    EDIT_STUDENT_FAIL
+}from '../actions/types';
 
 const initialState = {
     loading: true,
@@ -13,7 +22,13 @@ export default function(state=initialState,action){
                 loading: false,
                 tutors: action.payload
             }
+        case GET_STUDENTS:
+            return {
+                loading: false,
+                students: action.payload
+            }
         case EDIT_TUTOR:
+        case EDIT_STUDENT:
             return {
                 ...state,
                 loading: true
@@ -23,16 +38,16 @@ export default function(state=initialState,action){
                 loading: false,
                 tutors: action.payload
             }
-        case EDIT_TUTOR_FAIL:
-            return {
-                ...state,
-                loading: false
-            }
-        case GET_STUDENTS:
-        case EDIT_STUDENT:        
+        case EDIT_STUDENT_SUCCESS:
             return {
                 loading: false,
                 students: action.payload
+            }
+        case EDIT_TUTOR_FAIL:
+        case EDIT_STUDENT_FAIL:
+            return {
+                ...state,
+                loading: false
             }
         default:
             return initialState;

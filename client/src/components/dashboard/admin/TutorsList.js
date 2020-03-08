@@ -10,9 +10,7 @@ import {getTutors} from '../../../actions/adimnActions';
 
 const TutorsList = ({tutors, loading, getTutors}) => {
     useEffect(() => {
-        // If the tutors array is empty, try to get the tutors data from the server.
-        if (tutors.length === 0) // TODO: Remove if statement?
-            getTutors();
+        getTutors();
     }, []);
 
     return (

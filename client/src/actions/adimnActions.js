@@ -1,5 +1,16 @@
 import axios from 'axios';
-import {GET_TUTORS, GET_STUDENTS, REGISTER_SUCCESS, REGISTER_FAIL,EDIT_STUDENT,EDIT_TUTOR,EDIT_TUTOR_SUCCESS,EDIT_TUTOR_FAIL} from './types';
+import {
+    GET_TUTORS,
+    GET_STUDENTS,
+    REGISTER_SUCCESS,
+    REGISTER_FAIL,
+    EDIT_STUDENT,
+    EDIT_TUTOR,
+    EDIT_TUTOR_SUCCESS,
+    EDIT_TUTOR_FAIL,
+    EDIT_STUDENT_SUCCESS,
+    EDIT_STUDENT_FAIL
+} from './types';
 import { setAlert } from './alert';
 import {loadUser} from './auth';
 import Config from '../Config';
@@ -72,39 +83,76 @@ export const editTutor = (tutor, history, redirectPath) => async (dispatch, getS
     }
 }
 
-export const editStudent = ({ name, email }) => async (dispatch, getState) => {
+export const editStudent = (student, history, redirectPath) => async (dispatch, getState) => {
+    const { name, email, _id } = student;
     const config = {
         headers: {
           'Content-Type': 'application/json'
         }
     };
     
-    const body = JSON.stringify({ name, email });
-
+    const body = JSON.stringify({ name, email, _id });
     try {
-        const student = await axios.put(URL+'/api/students', body, config);
-        let students = getState().admin.data.filter(t => t._id !== student._id);
-        students = [...students, student];
         dispatch({
-            type:EDIT_STUDENT,
-            payload:students
-        })
-    } catch(error) {
-        dispatch(setAlert(error.msg, 'error', 100000));
+            type: EDIT_STUDENT
+        });    
+        await axios.put(URL+'/api/students', body, config);
+
+        let students = getState().admin.students.filter(t => t._id !== _id);
+        students = [...students, student];
+
+        // Fake delay to test the Spin component.
+        // TODO: remove fake delay.
+        setTimeout(() => {
+            dispatch({
+                type: EDIT_STUDENT_SUCCESS,
+                payload: students
+            });    
+            history.push(redirectPath);
+        }, 2000)
+
+        // dispatch({
+        //     type: EDIT_STUDENT,
+        //     payload: students
+        // });
+        // history.push(redirectPath);
+    } catch(err) {
+        if (err.response) {
+            const errors = err.response.data.errors;
+            for (let error of errors)
+                dispatch(setAlert(error.msg, 'error', 12000));    
+        }
+
+        console.log('Error', err);
+
+        dispatch({
+            type: EDIT_STUDENT_FAIL
+        });
     }
 }
+
+
 
 export const getStudents = () => async dispatch => {
     try {
         const students = await axios.get(URL+'/api/students');
         dispatch({
             type:GET_STUDENTS,
-            payload:students
+            payload: students.data
         })
-    } catch(error) {
-        dispatch(setAlert(error.msg, 'error', 100000));
+    } catch(err) {
+        if (err.response) {
+            const errors = err.response.data.errors;
+            for (let error of errors)
+                dispatch(setAlert(error.msg, 'error', 12000));    
+        }
+
+        console.log('Error', err);
     }
 }
+
+
+
 
 export const addAdmin = ({ name, email, password }) => async dispatch => {
     const config = {
