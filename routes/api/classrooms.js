@@ -2,7 +2,8 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const { tutorOnly , adminOnly } = require('../../middleware/privateRoutes');
-const Lecture = require('../../models/Lecture');
+const {Lecture} = require('../../models/Lecture');
+const Tutor = require('../../models/Tutor');
 
 //Classroom model
 const Classroom = require('../../models/Classroom');
@@ -42,16 +43,25 @@ router.get('/:id', auth, (req, res) => {
 @access private
 */
 router.post('/', auth, adminOnly, async (req, res) => {
-    const {id, private, recordLectures} = req.body;
+    const {id, private, recordLectures, tutorId} = req.body;
     try {
         const classroom = await Classroom.findOne({id});
         if(classroom) {
             return res.status(400).json({msg:`A course with the ID ${id} already exists.`});
         }
+
+        const tutor = await Tutor.findById(tutorId);
+        if(!tutor) {
+            return res.status(400).json({msg:`There's no Tutor in this id: ${tutorId}`})
+        }
+
+
+
         const newClass = new Classroom({
             id,
             private,
-            recordLectures
+            recordLectures,
+            tutor: tutorId
         });
 
         if (private) {
@@ -98,15 +108,19 @@ router.delete('/', auth, adminOnly, (req, res)=>{
 router.post('/:id/start', auth, tutorOnly, async (req, res) => {
     try {
         const classroom = await Classroom.findOne({id: req.params.id});
-            if(Classroom.liveLecture){
+            if(classroom.liveLecture) {
+                console.log('lecture has already been started...');
+                
                 return res.status(500).json('lecture already started');
             }
             const newLecture = new Lecture({
             startedOn: Date.now()
         });
         
-
-        if(req.user._id !== classroom.tutor) {
+        console.log(req.user.id, classroom.tutor);
+        
+        if(req.user.id != classroom.tutor) {
+            console.log('tutor not allowedddddddddddddddd');
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
 
@@ -179,6 +193,23 @@ router.post('/:id/leave', auth, async (req, res) => {
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
+    }
+});
+
+router.get('/:id/getlivechat', auth, async (req, res) => {
+    try{
+        const classroomId = req.params.id;
+        console.log(classroomId);
+        
+        const classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
+        console.log(classroom);
+        
+        if(!classroom.liveLecture){
+            return res.status(404).json('not found');
+        }
+        return res.status(200).json(classroom.liveLecture.chatMessages);
+    } catch(e){
+        return res.status(500).json('Error');
     }
 });
 

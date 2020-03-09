@@ -7,8 +7,8 @@ const Classroom = new Schema({
         required: true,
         unique: true
     },
-    students: [{ type: Schema.Types.ObjectId, ref: 'student' }],
-    tutor: {type: Schema.Types.ObjectId, ref: 'tutor'},
+    students: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
+    tutor: {type: Schema.Types.ObjectId, ref: 'Tutor'},
     // chat: ...
     private: {
         type: Boolean,

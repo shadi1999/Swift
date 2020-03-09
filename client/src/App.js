@@ -14,6 +14,7 @@ import './App.css';
 import Dashboard from './components/dashboard/admin/AdminDashboard';
 import Navbar from "./components/layout/Navbar";
 import { Layout } from "antd";
+import Downbar from './components/layout/Downbar';
 const { Header, Footer } = Layout;
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
               </Switch>
             </Layout>
             <Footer>
-              Footer test.
+              <Downbar/>
             </Footer>
           </Layout>
         </Fragment>

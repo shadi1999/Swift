@@ -19,7 +19,7 @@ const TutorDashboard = () => {
                 </Switch>
             </Content>
         </Fragment>
-    )
+    );
 }
 
 

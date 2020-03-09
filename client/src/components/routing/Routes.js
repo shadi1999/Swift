@@ -28,9 +28,9 @@ const Routes = ({auth}) => {
                 <Route path='/register/student' component={RegisterStudent} />
                 <Route path='/login' component={Login} />
                 <Skeleton active loading={auth.loading}>
-                {privateRoutes}
                 <Route path='/classroom/:id/tutor' component={TutorClassroom} />
-                <Route path='/classroom/:id' component={Classroom} />
+                <Route exact path='/classroom/:id/' component={Classroom} />
+                {privateRoutes}
                 </Skeleton>
                 <Route component={ErrorNotFound} />
             </Switch>

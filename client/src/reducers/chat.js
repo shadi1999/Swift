@@ -1,4 +1,4 @@
-import { RECEIVE_MESSAGE, ADD_MESSAGE, SEND_MESSAGE, GET_MESSAGES, SET_MESSAGES, JOIN_CLASSROOM, JOIN_CLASSROOM_FAIL, JOIN_CLASSROOM_SUCCESS, START_LECTURE, STOP_LECTURE } from '../actions/types';
+import { RECEIVE_MESSAGE, ADD_MESSAGE, SEND_MESSAGE, GET_MESSAGES, SET_MESSAGES, JOIN_CLASSROOM, JOIN_CLASSROOM_FAIL, JOIN_CLASSROOM_SUCCESS, START_LECTURE, STOP_LECTURE, LOAD_LECTURE } from '../actions/types';
 
 const initState = {
     loading: true,
@@ -22,8 +22,14 @@ export default function(state = initState, action) {
         case GET_MESSAGES:
             return{
                 ...state,
-                messages: payload
+                messages: payload.data
             }
+        case LOAD_LECTURE:
+            return{
+                ...state,
+                lectureStarted: payload
+            }
+        case SEND_MESSAGE:
         default:
             return state;
     }

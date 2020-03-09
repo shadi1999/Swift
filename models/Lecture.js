@@ -1,6 +1,23 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const Attendance = new Schema({
+    user: {type: Schema.Types.ObjectId, ref: 'User'},
+    duration: {
+        type: Number,
+        default: 0
+    }
+});
+
+const ChatMessage = new Schema({
+    time: {
+        type:Date,
+        default:Date.now()
+    },
+    text: String,
+    sender: {type: Schema.Types.ObjectId, ref: 'User'}
+});
+
 const Lecture = new Schema({
     live: {
         type: Boolean,
@@ -15,26 +32,17 @@ const Lecture = new Schema({
         required: true
     },
     endedOn: {type: Date},
-    attendance: [{
-        id: {type: Schema.Types.ObjectId, ref: 'user'},
-        duration: {
-            type: Number,
-            default: 0
-        }
-    }],
+    attendance: [Attendance],
     slideUrl: {type: String},
     slideHistory: [{slideNumber: Number, date: Date}],
     // streamUrl: {
     //     type: String
     // }
-    chatMessages:[{
-        time:{
-            type:Date,
-            default:Date.now()
-        },
-        text:String,
-        sender:{type: Schema.Types.ObjectId, ref: 'user'}
-    }]
+    chatMessages:[ChatMessage]
 });
 
-module.exports = mongoose.model('lecture', Lecture);
+module.exports = {
+    Lecture: mongoose.model('lecture', Lecture),
+    ChatMessage: mongoose.model('chat-message', ChatMessage),
+    Attendance: mongoose.model('attendance', Attendance)
+}

@@ -20,31 +20,28 @@ module.exports = async io => {
         socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
         socket.join(classroomId);        
 
-        socket.on('join', async (data, callback) => {
-            // TODO: add error handling.
-            console.log(socket.classroom);
-            
+        socket.on('join', async (data) => {
+            // TODO: add error handling.            
             socket.classroom.liveLecture.attendance.push({id: socket.user._id});
 
             socket.lecture = socket.classroom.liveLecture;
+            
             socket.joinDate = Date.now();
         
             // socket.broadcast.to(classroom).emit('message', { user: 'admin', text: `${user.name} has joined!` });
         
             // io.to(classroom).emit('roomData', { classroom: user.classroom, users: getUsersInRoom(user.classroom) });
         
-            callback();
+            // callback();
         });
       
-        socket.on('sendMessage', async (msg, callback) => {
-            msg = { sender: socket.id, text: msg }
+        socket.on('sendMessage', async (msg) => {
+            msg = { sender: socket.user.id, text: msg }
 
             socket.lecture.chatMessages.push(msg);
             await socket.lecture.save();
 
             io.to(classroomId).emit('message', msg);
-
-            callback();
         });
 
         socket.on('startLecture', async () => {      
@@ -52,6 +49,10 @@ module.exports = async io => {
             if(tutor) {
                 io.to(classroomId).emit('startLecture');
             }
+        });
+
+        socket.on('loadLecture', (data, callback) => {            
+            callback(Boolean(socket.classroom.liveLecture));
         });
       
         socket.on('disconnect', async () => {
