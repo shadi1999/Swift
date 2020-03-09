@@ -63,12 +63,12 @@ export const registerTutor = ({ name, email, password }) => async dispatch => {
         });
         dispatch(loadUser());
       } catch(err) {
-        console.log(err);
-        const errors = err.response.data.errors;
-
-        if (errors)
+        if (err.response) {
+            const errors = err.response.data.errors;
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error', 12000));    
+        }
+        console.log('Error', err);
 
         dispatch({
             type: REGISTER_FAIL

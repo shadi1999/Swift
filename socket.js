@@ -20,7 +20,7 @@ module.exports = async io => {
         socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
         socket.join(classroomId);        
 
-        socket.on('join', async ({}, callback) => {
+        socket.on('join', async (data, callback) => {
             // TODO: add error handling.
             console.log(socket.classroom);
             
