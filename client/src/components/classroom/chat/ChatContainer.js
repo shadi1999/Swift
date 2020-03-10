@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 import {Button,Input} from 'antd';
 import ChatMessage from './ChatMessage';
 import {connect} from 'react-redux';
-import {sendMessage,loadMessages} from '../../../actions/chat';
+import {sendMessage,loadMessages} from '../../../actions/lecture';
 import PropTypes from 'prop-types';
 import {v1} from 'uuid';
 

@@ -3,7 +3,7 @@ import { Layout, Row, Col } from 'antd';
 import {useParams} from 'react-router-dom';
 import ChatContainer from './chat/ChatContainer';
 import {connect} from 'react-redux';
-import {initSocket, joinClassroom, startLecture,stopLecture} from '../../actions/chat';
+import {initSocket, joinClassroom, startLecture,stopLecture} from '../../actions/lecture';
 import PropTypes from 'prop-types';
 import { Result, Button } from 'antd';
 import {HistoryOutlined} from '@ant-design/icons';
