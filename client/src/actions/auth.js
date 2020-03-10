@@ -121,6 +121,31 @@ export const login = (email, password) => async dispatch => {
     }
 }
 
+export const loginAsGuest = name => async dispatch => {
+    const headers = {'Content-Type': 'application/json'};
+    const body = JSON.stringify({name});
+
+    try {
+        const res = await axios.post(URL + '/api/auth/guest', body, {headers});
+
+        dispatch({
+            type: LOGIN_SUCCESS,
+            payload: res.data
+        });
+        // dispatch(loadUser());
+    } catch(err) {
+        const errors = err.response.data.errors;
+
+        if (errors)
+            for (let error of errors)
+                dispatch(setAlert(error.msg, 'error', 100000));
+
+        dispatch({
+            type: LOGIN_FAIL
+        });
+    }
+}
+
 export const logout = () => async dispatch => {
     dispatch({ type: LOGOUT });
 }

@@ -18,7 +18,6 @@ const RegisterTutor = ({ form, setAlert, registerTutor, isAuthenticated }) => {
             if (password !== password2) {
                 setAlert('Passwords do not match', 'error');
             } else if (!err) {
-                console.log('Received values of form: ', values);
                 registerTutor({ name, email, password });
             }
         });

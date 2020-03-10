@@ -109,7 +109,6 @@ router.post('/:id/start', auth, tutorOnly, async (req, res) => {
     try {
         const classroom = await Classroom.findOne({id: req.params.id});
             if(classroom.liveLecture) {
-                console.log('lecture has already been started...');
                 
                 return res.status(500).json('lecture already started');
             }
@@ -117,10 +116,8 @@ router.post('/:id/start', auth, tutorOnly, async (req, res) => {
             startedOn: Date.now()
         });
         
-        console.log(req.user.id, classroom.tutor);
         
         if(req.user.id != classroom.tutor) {
-            console.log('tutor not allowedddddddddddddddd');
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
 
@@ -142,17 +139,23 @@ router.post('/:id/start', auth, tutorOnly, async (req, res) => {
 */
 router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
     try {
-        const classroom = (await Classroom.findOne({id: req.params.id})).execPopulate('liveLecture');
-        const { liveLecture } = classroom;
-        
-        if (!liveLecture.live) res.status(400).send('Lecture is already stopped.');
-        liveLecture.endedOn = Date.now();
-        liveLecture.live = false;
-        await liveLecture.save();
-    
-        classroom.pastLectures.push(liveLecture);
-        classroom.liveLecture = undefined;
+        const classroom = await Classroom.findOne({id: req.params.id});
+        if(!classroom.liveLecture) {
+            
+            return res.status(500).json('lecture already stop');
+        }
+        if(req.user.id != classroom.tutor) {
+            return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
+        }
+        let theLecture = await Lecture.findById(classroom.liveLecture);
+        theLecture.endedOn = Date.now();
+        await theLecture.save();
+        if(classroom.recordLectures){
+            classroom.pastLectures.push(classroom.liveLecture);
+        }
+        classroom.liveLecture = null;
         await classroom.save();
+        res.status(200).send();
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -199,10 +202,8 @@ router.post('/:id/leave', auth, async (req, res) => {
 router.get('/:id/getlivechat', auth, async (req, res) => {
     try{
         const classroomId = req.params.id;
-        console.log(classroomId);
         
         const classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
-        console.log(classroom);
         
         if(!classroom.liveLecture){
             return res.status(404).json('not found');

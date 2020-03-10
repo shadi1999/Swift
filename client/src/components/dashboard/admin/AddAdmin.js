@@ -17,7 +17,6 @@ const AddAdmin = ({ form, setAlert, addAdmin, isAuthenticated }) => {
             if (password !== password2) {
                 setAlert('Passwords do not match', 'error');
             } else if (!err) {
-                console.log('Received values of form: ', values);
                 addAdmin({ name, email, password });
             }
         });

@@ -12,7 +12,6 @@ const Login = ({form, login, isAuthenticated}) => {
         e.preventDefault();
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
                 login(values.username, values.password);
             }
         });

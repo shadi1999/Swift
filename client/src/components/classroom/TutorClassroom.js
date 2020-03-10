@@ -3,14 +3,13 @@ import { Layout, Row, Col } from 'antd';
 import {useParams} from 'react-router-dom';
 import ChatContainer from './chat/ChatContainer';
 import {connect} from 'react-redux';
-import {initSocket, joinClassroom, startLecture} from '../../actions/chat';
+import {initSocket, joinClassroom, startLecture,stopLecture} from '../../actions/chat';
 import PropTypes from 'prop-types';
 import { Result, Button } from 'antd';
 import {HistoryOutlined} from '@ant-design/icons';
 
-const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, startLecture}) => {
+const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, startLecture,stopLecture}) => {
     const {id} = useParams();    
-    console.log(id);
     
     useEffect(() => {
         initSocket(token, id);
@@ -22,8 +21,12 @@ const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, start
         }
     }, [lectureStarted, id]);
 
-    const onClick = () => {
+    const StartLecture = () => {
         startLecture(id);
+    }
+
+    const StopLecture = () => {
+        stopLecture(id);
     }
 
     return (
@@ -35,6 +38,7 @@ const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, start
                          <ChatContainer />
                      </Col>
                      <Col span={16}>
+                         <Button type="primary" onClick={StopLecture}>Stop Lecture</Button>
                      </Col>
                  </Row>
                  </>
@@ -42,7 +46,7 @@ const TutorClassroom = ({initSocket, joinClassroom, token, lectureStarted, start
                 <Result
                 icon={<HistoryOutlined />}
                 title="The lecture has not started yet."
-                extra={<Button type="primary" onClick={onClick}>Start a Lecture</Button>}
+                extra={<Button type="primary" onClick={StartLecture}>Start a Lecture</Button>}
                 />
             )}
         </Layout.Content>
@@ -53,7 +57,8 @@ TutorClassroom.propTypes={
     token: PropTypes.string.isRequired,
     lectureStarted: PropTypes.bool.isRequired,
     joinClassroom: PropTypes.func.isRequired,
-    startLecture: PropTypes.func.isRequired
+    startLecture: PropTypes.func.isRequired,
+    stopLecture: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -61,4 +66,4 @@ const mapStateToProps = (state) => ({
     lectureStarted: state.chat.lectureStarted
 });
 
-export default connect(mapStateToProps, {initSocket, joinClassroom, startLecture})(TutorClassroom);
+export default connect(mapStateToProps, {initSocket, joinClassroom, startLecture,stopLecture})(TutorClassroom);

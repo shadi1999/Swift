@@ -48,7 +48,6 @@ router.post('/', usersController.loginValidationRules(), usersController.validat
           id: user.id
         }
       };
-
       usersController.jwtLogin(payload, res);
     } catch (err) {
       console.error(err.message);
@@ -56,6 +55,26 @@ router.post('/', usersController.loginValidationRules(), usersController.validat
     }
   }
 );
+
+
+// @route    POST api/guest
+// @desc     Login for guest students
+// @access   Public
+router.post('/guest', async (req, res) => {
+  try {
+    const newUser = await User.create({name: req.body.name});
+
+    const payload = {
+      user: {
+        id: newUser.id
+      }
+    };
+    usersController.jwtLogin(payload, res);
+  } catch(err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
 
 /*
 @route  POST api/auth/attend

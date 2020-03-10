@@ -2,9 +2,9 @@
 
 ## Now:
 - the dashboards
-- stop lecture
+- stop lecture DONE
 - chat style and user names and colors
-- guest students login
+- guest students login DONE
 - private classrooms
 - *webcam/screen sharing*
 - 

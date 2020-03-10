@@ -1,9 +1,10 @@
-import { RECEIVE_MESSAGE, ADD_MESSAGE, SEND_MESSAGE, GET_MESSAGES, SET_MESSAGES, JOIN_CLASSROOM, JOIN_CLASSROOM_FAIL, JOIN_CLASSROOM_SUCCESS, START_LECTURE, STOP_LECTURE, LOAD_LECTURE } from '../actions/types';
+import { RECEIVE_MESSAGE, ADD_MESSAGE, SEND_MESSAGE,USER_LEFT, GET_MESSAGES, USER_JOINED, SET_MESSAGES, JOIN_CLASSROOM, JOIN_CLASSROOM_FAIL, JOIN_CLASSROOM_SUCCESS, START_LECTURE, STOP_LECTURE, LOAD_LECTURE } from '../actions/types';
 
 const initState = {
     loading: true,
     messages: [],
-    lectureStarted: false
+    lectureStarted: false,
+    onlineUsers: []
 }
 
 export default function(state = initState, action) {
@@ -19,6 +20,11 @@ export default function(state = initState, action) {
                 ...state,
                 lectureStarted: true
             }
+        case STOP_LECTURE:
+            return{
+                ...state,
+                lectureStarted: false
+            }
         case GET_MESSAGES:
             return{
                 ...state,
@@ -27,7 +33,19 @@ export default function(state = initState, action) {
         case LOAD_LECTURE:
             return{
                 ...state,
-                lectureStarted: payload
+                lectureStarted: payload.hasStarted,
+                onlineUsers: payload.onlineUsers
+            }
+        case USER_JOINED:
+            return {
+                ...state,
+                onlineUsers: [...state.onlineUsers, payload]
+            }
+        case USER_LEFT:
+            let users = state.onlineUsers.filter(u => u._id !== payload._id);
+            return{
+                ...state,
+                onlineUsers: users
             }
         case SEND_MESSAGE:
         default:

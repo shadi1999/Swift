@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Attendance = new Schema({
-    user: {type: Schema.Types.ObjectId, ref: 'User'},
+    user: {type: Schema.Types.ObjectId, ref: 'user', unique: true},
     duration: {
         type: Number,
         default: 0
@@ -15,7 +15,7 @@ const ChatMessage = new Schema({
         default:Date.now()
     },
     text: String,
-    sender: {type: Schema.Types.ObjectId, ref: 'User'}
+    sender: {type: Schema.Types.ObjectId, ref: 'user'}
 });
 
 const Lecture = new Schema({
@@ -38,7 +38,8 @@ const Lecture = new Schema({
     // streamUrl: {
     //     type: String
     // }
-    chatMessages:[ChatMessage]
+    chatMessages:[ChatMessage],
+    onlineUsers: [{type: Schema.Types.ObjectId, ref: 'user'}]
 });
 
 module.exports = {

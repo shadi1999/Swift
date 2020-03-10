@@ -14,6 +14,7 @@ import { Skeleton } from 'antd';
 import MainDashboard from '../dashboard/MainDashboard';
 import Classroom from '../classroom/Classroom';
 import TutorClassroom from '../classroom/TutorClassroom';
+import LoginAsGuest from '../auth/LoginAsGuest';
 
 const Routes = ({auth}) => {
     let privateRoutes = auth.loading ? null :
@@ -26,6 +27,7 @@ const Routes = ({auth}) => {
             <Switch>
                 <Route path='/register/tutor' component={RegisterTutor} />
                 <Route path='/register/student' component={RegisterStudent} />
+                <Route path='/login/guest' component={LoginAsGuest} />
                 <Route path='/login' component={Login} />
                 <Skeleton active loading={auth.loading}>
                 <Route path='/classroom/:id/tutor' component={TutorClassroom} />
