@@ -1,9 +1,22 @@
 # To-do list
 
-- create registration component
-- create sidebar component for dashboard.
-- enable admin to add classes and register tutors in the dashboard.
-- add POST route for the tutor to add students to a classroom.
-- add tutor GET classrooms route.
-- add student GET private classrooms route.
-- add edit profile with logout
+## Now:
+- the dashboards
+- stop lecture
+- chat style and user names and colors
+- guest students login
+- private classrooms
+- *webcam/screen sharing*
+- 
+
+## Later:
+- PDF slides
+- sending files in the chat
+- ban a student from the chat
+- 
+
+## Some day:
+- private chat
+- profile photo and info
+- home page
+- 
