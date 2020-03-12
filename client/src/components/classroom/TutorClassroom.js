@@ -63,7 +63,7 @@ TutorClassroom.propTypes={
 
 const mapStateToProps = (state) => ({
     token: state.auth.token,
-    lectureStarted: state.chat.lectureStarted
+    lectureStarted: state.lecture.lectureStarted
 });
 
 export default connect(mapStateToProps, {initSocket, joinClassroom, startLecture,stopLecture})(TutorClassroom);

@@ -24,6 +24,7 @@ module.exports = async io => {
 
         socket.on('join', async (data) => {
             // TODO: add error handling.
+            socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate(); 
             let attendant = socket.classroom.liveLecture.attendance.find(a => a.user == socket.user.id);
             if (!attendant) {
                 socket.classroom.liveLecture.attendance.push({user: socket.user.id});
@@ -67,7 +68,10 @@ module.exports = async io => {
             }
         });
 
-        socket.on('loadLecture', async (data, callback) => {   
+        socket.on('loadLecture', async (data, callback) => {
+            socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate(); 
+            console.log(socket.classroom);
+            
             let lecture = await Lecture.findById(socket.classroom.liveLecture._id, {'onlineUsers.name': 1, 'onlineUsers._id': 1}).populate('onlineUsers');
             lecture = await lecture.execPopulate();            
             let onlineUsers = lecture.onlineUsers

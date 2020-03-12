@@ -37,9 +37,11 @@ export default function(state = initState, action) {
                 onlineUsers: payload.onlineUsers
             }
         case USER_JOINED:
-            return {
-                ...state,
-                onlineUsers: [...state.onlineUsers, payload]
+            if(!state.onlineUsers.find(u => u._id === payload._id)) {
+                return {
+                    ...state,
+                    onlineUsers: [...state.onlineUsers, payload]
+                }
             }
         case USER_LEFT:
             let users = state.onlineUsers.filter(u => u._id !== payload._id);
