@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Attendance = new Schema({
-    user: {type: Schema.Types.ObjectId, ref: 'user', unique: true},
+    user: {type: Schema.Types.ObjectId, ref: 'user'},
     duration: {
         type: Number,
         default: 0

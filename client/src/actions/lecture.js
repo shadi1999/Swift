@@ -19,7 +19,7 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
     });
   });
 
-  socket.on('message', msg => {
+  socket.on('message', msg => {    
     dispatch({
       type: ADD_MESSAGE,
       payload: msg
@@ -63,13 +63,17 @@ const assignColors = (users) => {
     if(deletedIndexes.includes(i))
       continue;
 
-    let sameName = users.find(other => user.name === other.name);
-    if(sameName) {
-      deletedIndexes.push(users.indexOf(sameName));
-      user.color = colors[0];
-      sameName.color = colors[1];
+    if(users.some(other => user.name === other.name)) {
+      let colorsCopy = [...colors]
+      for(let other of users) {
+        if(user.name === other.name) {
+          other.color = colorsCopy.pop();
+          deletedIndexes.push(users.indexOf(other));
+        }
+      }
+      user.color = colorsCopy.pop();
     } else {
-      user.color = colors[Math.random() * colors.length];      
+      user.color = colors[Math.floor(Math.random() * colors.length)];      
     }
   }
 
@@ -80,15 +84,12 @@ const assignColor = (user, users) => {
   let sameName = users.find(other => user.name === other.name);
 
   if(sameName !== undefined) {
-    while(true) {
-      user.color = colors[Math.random() * colors.length];
+    do {
+      user.color = colors[Math.floor(Math.random() * colors.length)];
       console.log(user.color, sameName.color);
-      
-      if(user.color !== sameName.color)
-        break;
-    }
+    } while(user.color === sameName.color);
   } else {
-    user.color = colors[Math.random() * colors.length];
+    user.color = colors[Math.floor(Math.random() * colors.length)];
   }
 
   return user;

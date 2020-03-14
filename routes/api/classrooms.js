@@ -55,8 +55,6 @@ router.post('/', auth, adminOnly, async (req, res) => {
             return res.status(400).json({msg:`There's no Tutor in this id: ${tutorId}`})
         }
 
-
-
         const newClass = new Classroom({
             id,
             private,
@@ -105,21 +103,20 @@ router.delete('/', auth, adminOnly, (req, res)=>{
 @desc   start a new lecture in the classroom.
 @access private
 */
-router.post('/:id/start', auth, tutorOnly, async (req, res) => {
+router.post('/:id/start', auth, async (req, res) => {
     try {
         const classroom = await Classroom.findOne({id: req.params.id});
-            if(classroom.liveLecture) {
-                
-                return res.status(500).json('lecture already started');
-            }
-            const newLecture = new Lecture({
-            startedOn: Date.now()
-        });
-        
-        
+
         if(req.user.id != classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
+
+        if(classroom.liveLecture) {
+            return res.status(500).json('lecture already started');
+        }
+        const newLecture = new Lecture({
+            startedOn: Date.now()
+        });
 
         await newLecture.save();
         classroom.liveLecture = newLecture;
@@ -137,7 +134,7 @@ router.post('/:id/start', auth, tutorOnly, async (req, res) => {
 @desc   stop the live lecture in the classroom.
 @access private
 */
-router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
+router.post('/:id/stop', auth, async (req, res) => {
     try {
         const classroom = await Classroom.findOne({id: req.params.id});
         if(!classroom.liveLecture) {

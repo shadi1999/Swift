@@ -28,7 +28,8 @@ export default function(state = initState, action) {
         case GET_MESSAGES:
             return{
                 ...state,
-                messages: payload.data
+                messages: payload.data,
+                loading: false
             }
         case LOAD_LECTURE:
             return{
@@ -42,6 +43,8 @@ export default function(state = initState, action) {
                     ...state,
                     onlineUsers: [...state.onlineUsers, payload]
                 }
+            } else {
+                return state;
             }
         case USER_LEFT:
             let users = state.onlineUsers.filter(u => u._id !== payload._id);

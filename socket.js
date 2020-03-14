@@ -35,7 +35,6 @@ module.exports = async io => {
             socket.joinDate = Date.now();
 
             socket.lecture.onlineUsers.push(socket.user.id);
-
             await socket.lecture.save();
 
             let user = await User.findById(socket.user.id, {'name': 1});
@@ -48,9 +47,9 @@ module.exports = async io => {
         socket.on('sendMessage', async (msg) => {
             msg = { sender: socket.user.id, text: msg }
 
-            socket.lecture.chatMessages.push(msg);
-            await socket.lecture.save();
-
+            socket.classroom.liveLecture.chatMessages.push(msg);
+            await socket.classroom.liveLecture.save();
+            
             io.to(classroomId).emit('message', msg);
         });
 
@@ -70,36 +69,39 @@ module.exports = async io => {
 
         socket.on('loadLecture', async (data, callback) => {
             socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate(); 
-            console.log(socket.classroom);
             
-            let lecture = await Lecture.findById(socket.classroom.liveLecture._id, {'onlineUsers.name': 1, 'onlineUsers._id': 1}).populate('onlineUsers');
-            lecture = await lecture.execPopulate();            
-            let onlineUsers = lecture.onlineUsers
-            console.log(onlineUsers);
-            
-            if(onlineUsers.length !== 0){
-                onlineUsers = onlineUsers.map(user => ({_id: user._id, name: user.name, kind: user.kind}));
+            let onlineUsers = [];
+            if(socket.classroom.liveLecture) {
+                let lecture = await Lecture.findById(socket.classroom.liveLecture._id, {'onlineUsers.name': 1, 'onlineUsers._id': 1}).populate('onlineUsers');
+                lecture = await lecture.execPopulate();   
+
+                onlineUsers = lecture.onlineUsers
+                if(onlineUsers.length !== 0){
+                    onlineUsers = onlineUsers.map(user => ({_id: user._id, name: user.name, kind: user.kind}));
+                }
             }
             
             callback(Boolean(socket.classroom.liveLecture), onlineUsers);
         });
       
         socket.on('disconnect', async () => {
-            let duration = Date.now() - socket.joinDate;
-            let attendant = socket.classroom.liveLecture.attendance.find(a => a.user == socket.user.id);
-            attendant.duration = attendant.duration + duration;
-            await Lecture.findOneAndUpdate({"_id":socket.lecture._id,"attendance.user":attendant.user},
-            {
-                "$set":{
-                    "attendance.$.duration": attendant.duration
-                }
-            });
-            await Lecture.findOneAndUpdate({"_id":socket.lecture._id},
-            {
-                "$pull":{
-                    "onlineUsers": socket.user.id
-                }
-            });
+            if(socket.lecture) {
+                let duration = Date.now() - socket.joinDate;
+                let attendant = socket.lecture.attendance.find(a => a.user == socket.user.id);
+                attendant.duration = attendant.duration + duration;
+                await Lecture.findOneAndUpdate({"_id":socket.lecture._id,"attendance.user":attendant.user},
+                {
+                    "$set":{
+                        "attendance.$.duration": attendant.duration
+                    }
+                });
+                await Lecture.findOneAndUpdate({"_id":socket.lecture._id},
+                {
+                    "$pull":{
+                        "onlineUsers": socket.user.id
+                    }
+                });    
+            }
             io.to(classroomId).emit('userLeft', {_id: socket.user.id });
             // const user = removeUser(socket.id);
       

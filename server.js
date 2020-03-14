@@ -15,7 +15,8 @@ const db = config.get('mongoURI');
 mongoose.connect(db,{
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 }).then(()=> console.log('Mongo DB connected...'))
   .catch(err => {
     console.log(err);

@@ -19,6 +19,8 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted}) => {
         if(lectureStarted) {
             joinClassroom();
         }
+
+        // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
 
     return (
