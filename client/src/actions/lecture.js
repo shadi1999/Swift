@@ -33,6 +33,8 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
   });
 
   socket.on('stopLecture', () => {
+    socket.disconnect();
+
     dispatch({
       type: STOP_LECTURE
     });
