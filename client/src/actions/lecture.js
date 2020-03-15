@@ -33,7 +33,7 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
   });
 
   socket.on('stopLecture', () => {
-    socket.disconnect();
+    socket.emit('leave');
 
     dispatch({
       type: STOP_LECTURE
@@ -99,6 +99,7 @@ const assignColor = (user, users) => {
 
 const colors = ['#000', '#ccc', '#aaa', '#0ec']
 
+// TODO: add error handling for axios requests.
 export const loadMessages = (classroomId) => async dispatch =>{
   const M=await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}/getlivechat`);
 

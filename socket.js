@@ -84,7 +84,7 @@ module.exports = async io => {
             callback(Boolean(socket.classroom.liveLecture), onlineUsers);
         });
       
-        socket.on('disconnect', async () => {
+        const leave = async () => {
             if(socket.lecture) {
                 let duration = Date.now() - socket.joinDate;
                 let attendant = socket.lecture.attendance.find(a => a.user == socket.user.id);
@@ -103,12 +103,10 @@ module.exports = async io => {
                 });    
             }
             io.to(classroomId).emit('userLeft', {_id: socket.user.id });
-            // const user = removeUser(socket.id);
-      
-            // if(user) {
-            //     io.to(user.classroom).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-            //     io.to(user.classroom).emit('roomData', { classroom: user.classroom, users: getUsersInRoom(user.classroom)});
-            // }
-        });
+        }
+
+        socket.on('leave', leave);
+
+        socket.on('disconnect', leave);
       });
 }
