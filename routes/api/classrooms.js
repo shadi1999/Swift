@@ -1,8 +1,8 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const { tutorOnly , adminOnly } = require('../../middleware/privateRoutes');
-const {Lecture} = require('../../models/Lecture');
+const { tutorOnly, adminOnly } = require('../../middleware/privateRoutes');
+const { Lecture } = require('../../models/Lecture');
 const Tutor = require('../../models/Tutor');
 
 //Classroom model
@@ -13,10 +13,10 @@ const Classroom = require('../../models/Classroom');
 @desc   get all classrooms data
 @access private
 */
-router.get('/', auth, adminOnly, (req, res)=>{
+router.get('/', auth, adminOnly, (req, res) => {
     Classroom.find()
-        .then(classrooms=>res.json(classrooms))
-        .catch(err=>res.status(400).json({msg:'No Classrooms'}))
+        .then(classrooms => res.json(classrooms))
+        .catch(err => res.status(400).json({ msg: 'No Classrooms' }))
 });
 
 /*
@@ -30,11 +30,11 @@ router.get('/:id', auth, (req, res) => {
             // Private classrooms authorization.
             if (classroom.private && req.user.kind !== 'Administrator')
                 if (!(classroom.students.find(req.user.id) || classroom.tutor._id === req.user.id))
-                    res.status(401).json({msg:'Unauthorized'});
+                    res.status(401).json({ msg: 'Unauthorized' });
 
             res.json(classroom);
         })
-        .catch(err=>res.status(400).json({msg:'Classroom doesn\'t exsist'}))
+        .catch(err => res.status(400).json({ msg: 'Classroom doesn\'t exsist' }))
 });
 
 /*
@@ -43,16 +43,16 @@ router.get('/:id', auth, (req, res) => {
 @access private
 */
 router.post('/', auth, adminOnly, async (req, res) => {
-    const {id, private, recordLectures, tutorId} = req.body;
+    const { id, private, recordLectures, tutorId } = req.body;
     try {
-        const classroom = await Classroom.findOne({id});
-        if(classroom) {
-            return res.status(400).json({msg:`A course with the ID ${id} already exists.`});
+        const classroom = await Classroom.findOne({ id });
+        if (classroom) {
+            return res.status(400).json({ msg: `A course with the ID ${id} already exists.` });
         }
 
         const tutor = await Tutor.findById(tutorId);
-        if(!tutor) {
-            return res.status(400).json({msg:`There's no Tutor in this id: ${tutorId}`})
+        if (!tutor) {
+            return res.status(400).json({ msg: `There's no Tutor in this id: ${tutorId}` })
         }
 
         const newClass = new Classroom({
@@ -63,7 +63,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
         });
 
         if (private) {
-            for(let student of req.body.students) {
+            for (let student of req.body.students) {
                 newClass.students.push(student);
             }
         }
@@ -71,9 +71,9 @@ router.post('/', auth, adminOnly, async (req, res) => {
         const saved = await newClass.save();
         res.status(200).json(saved);
     }
-    catch(err) {
+    catch (err) {
         console.error(err.message);
-        res.status(400).json({msg:'Error happened'});
+        res.status(400).json({ msg: 'Error happened' });
     }
 });
 
@@ -82,19 +82,19 @@ router.post('/', auth, adminOnly, async (req, res) => {
 @desc   delete a classroom
 @access private
 */
-router.delete('/', auth, adminOnly, (req, res)=>{
-    const {course} = req.body;
+router.delete('/', auth, adminOnly, (req, res) => {
+    const { course } = req.body;
 
     try {
         const classroom = Classroom.findOne(course);
-        if(!classroom) {
-            return res.status(400).json({msg:`No course with name ${course} was exsist`});
+        if (!classroom) {
+            return res.status(400).json({ msg: `No course with name ${course} was exsist` });
         }
-        Classroom.remove({name:course});
-        res.status(200).json({msg:'Done'});
+        Classroom.remove({ name: course });
+        res.status(200).json({ msg: 'Done' });
     }
-    catch(e) {
-        res.status(400).json({msg:'Error happened'});
+    catch (e) {
+        res.status(400).json({ msg: 'Error happened' });
     }
 });
 
@@ -105,13 +105,13 @@ router.delete('/', auth, adminOnly, (req, res)=>{
 */
 router.post('/:id/start', auth, async (req, res) => {
     try {
-        const classroom = await Classroom.findOne({id: req.params.id});
+        const classroom = await Classroom.findOne({ id: req.params.id });
 
-        if(req.user.id != classroom.tutor) {
+        if (req.user.id != classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
 
-        if(classroom.liveLecture) {
+        if (classroom.liveLecture) {
             return res.status(500).json('lecture already started');
         }
         const newLecture = new Lecture({
@@ -123,7 +123,7 @@ router.post('/:id/start', auth, async (req, res) => {
         await classroom.save();
 
         res.status(200).send();
-    } catch(err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
@@ -136,24 +136,24 @@ router.post('/:id/start', auth, async (req, res) => {
 */
 router.post('/:id/stop', auth, async (req, res) => {
     try {
-        const classroom = await Classroom.findOne({id: req.params.id});
-        if(!classroom.liveLecture) {
-            
+        const classroom = await Classroom.findOne({ id: req.params.id });
+        if (!classroom.liveLecture) {
+
             return res.status(500).json('lecture already stop');
         }
-        if(req.user.id != classroom.tutor) {
+        if (req.user.id != classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
         let theLecture = await Lecture.findById(classroom.liveLecture);
         theLecture.endedOn = Date.now();
         await theLecture.save();
-        if(classroom.recordLectures){
+        if (classroom.recordLectures) {
             classroom.pastLectures.push(classroom.liveLecture);
         }
         classroom.liveLecture = null;
         await classroom.save();
         res.status(200).send();
-    } catch(err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
@@ -166,11 +166,11 @@ router.post('/:id/stop', auth, async (req, res) => {
 */
 router.post('/:id/join', auth, async (req, res) => {
     try {
-        const classroom = (await Classroom.findOne({id: req.params.id})).execPopulate('liveLecture');
+        const classroom = (await Classroom.findOne({ id: req.params.id })).execPopulate('liveLecture');
         const { liveLecture } = classroom;
-        
+
         if (!liveLecture.live) res.status(400).send('Lecture is not live.');
-    } catch(err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
@@ -184,31 +184,127 @@ router.post('/:id/join', auth, async (req, res) => {
 */
 router.post('/:id/leave', auth, async (req, res) => {
     try {
-        const classroom = (await Classroom.findOne({id: req.params.id})).execPopulate('liveLecture');
+        const classroom = (await Classroom.findOne({ id: req.params.id })).execPopulate('liveLecture');
         const { liveLecture } = classroom;
-        
+
         if (!liveLecture.live) res.status(400).send('Lecture is not live.');
-        liveLecture.attendance.push({id: req.user.id, duration: req.body.duration});
+        liveLecture.attendance.push({ id: req.user.id, duration: req.body.duration });
         await liveLecture.save();
-    } catch(err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
 
 router.get('/:id/getlivechat', auth, async (req, res) => {
-    try{
+    try {
         const classroomId = req.params.id;
-        
-        const classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
-        
-        if(!classroom.liveLecture){
+
+        const classroom = await (await Classroom.findOne({ id: classroomId })).populate('liveLecture').execPopulate();
+
+        if (!classroom.liveLecture) {
             return res.status(404).json('not found');
         }
         return res.status(200).json(classroom.liveLecture.chatMessages);
-    } catch(e){
+    } catch (e) {
         return res.status(500).json('Error');
     }
 });
 
-module.exports=router;
+/*
+@route  GET api/classrooms/tutor/:id
+@desc   get a tutor's classrooms
+@access private
+*/
+router.get('/tutor/:id/lectures', auth, tutorOnly, async (req, res) => {
+    try {
+        let tutorId = req.params.id;
+        let lectures = [];
+        const classrooms = await Classroom.find();
+        for (var classroom of classrooms) {
+            if (classroom.tutor == tutorId) {
+                let lecture = await classroom.populate('pastLectures').execPopulate();
+                lectures.push(lecture);
+            }
+        }
+        return res.status(200).json(lectures);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+/*
+@route  GET api/classrooms/tutor/:id
+@desc   get a tutor's classrooms
+@access private
+*/
+router.get('/tutor/:id', auth, tutorOnly, async (req, res) => {
+    try {
+        let tutorId = req.params.id;
+        let classes = [];
+        const classrooms = await Classroom.find();
+        for (var classroom of classrooms) {
+            if (classroom.tutor == tutorId) {
+                classes.push(classroom);
+            }
+        }
+        return res.status(200).json(classes);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+
+//STUDENT
+/*
+@route  GET api/classrooms/student/:id
+@desc   get a student's classrooms
+@access private
+*/
+router.get('/student/:id/lectures', auth, async (req, res) => {
+    try {
+        let studentId = req.params.id;
+        let lectures = [];
+        const classrooms = await Classroom.find();
+        for (var classroom of classrooms) {
+            for (var student of classroom.students) {
+                if (student == studentId) {
+                    let lecture = await classroom.populate('pastLectures').execPopulate();
+                    lectures.push(lecture);
+                }
+            }
+        }
+        return res.status(200).json(lectures);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+/*
+@route  GET api/classrooms/student/:id
+@desc   get a student's classrooms
+@access private
+*/
+router.get('/student/:id', auth, async (req, res) => {
+    try {
+        let studentId = req.params.id;
+        let classes = [];
+        const classrooms = await Classroom.find();
+        for (var classroom of classrooms) {
+            for (var student of classroom.students) {
+                if (student == studentId) {
+                    classes.push(classroom);
+                }
+            }
+        }
+        return res.status(200).json(classes);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+module.exports = router;
