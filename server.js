@@ -5,19 +5,23 @@ const path = require('path');
 const app = express();
 
 //Middlewares
-app.use(express.json({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({
+  extended: true
+}));
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(express.static('public'));
 
 //Database congigration & connection 
 const db = config.get('mongoURI');
 
 mongoose.connect(db, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-}).then(() => console.log('Mongo DB connected...'))
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  }).then(() => console.log('Mongo DB connected...'))
   .catch(err => {
     console.log(err);
     process.exit(1);
@@ -31,6 +35,9 @@ if (process.env.NODE_ENV !== 'production') {
     next();
   });
 }
+
+
+
 
 //Routes
 app.use('/api/files', require('./routes/api/files'));

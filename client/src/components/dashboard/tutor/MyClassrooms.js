@@ -1,13 +1,13 @@
 import React, { Fragment, useEffect } from 'react';
 import { List, Card, Button } from 'antd';
 import { connect } from 'react-redux';
-import { getLectures } from '../../../actions/tutorActions';
+import { getClassrooms } from '../../../actions/tutorActions';
 import PropTypes from 'prop-types';
 
-const MyLectures = ({ tutor, lectures, loading, getLectures }) => {
+const MyClassrooms = ({ tutor, classrooms, loading, getClassrooms }) => {
 
     useEffect(() => {
-        getLectures(tutor);
+        getClassrooms(tutor);
     }, []);
 
     return (
@@ -15,10 +15,10 @@ const MyLectures = ({ tutor, lectures, loading, getLectures }) => {
             <List
                 loading={loading}
                 grid={{ gutter: 16, column: 4 }}
-                dataSource={lectures}
+                dataSource={classrooms}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.startedOn}>Card content</Card>
+                        <Card title={item.id}>Card content</Card>
                     </List.Item>
                 )}
             />
@@ -26,17 +26,17 @@ const MyLectures = ({ tutor, lectures, loading, getLectures }) => {
     )
 }
 
-MyLectures.propTypes = {
-    lectures: PropTypes.array,
+MyClassrooms.propTypes = {
+    classrooms: PropTypes.array,
     loading: PropTypes.bool,
-    getLectures: PropTypes.func.isRequired,
+    getClassrooms: PropTypes.func.isRequired,
     tutor: PropTypes.object
 };
 
 const mapStateToProps = (state) => ({
     tutor: state.auth.user,
-    lectures: state.tutor.lectures,
+    classrooms: state.tutor.classrooms,
     loading: state.tutor.loading
 })
 
-export default connect(mapStateToProps, { getLectures })(MyLectures);
+export default connect(mapStateToProps, { getClassrooms })(MyClassrooms);
