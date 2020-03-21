@@ -35,4 +35,10 @@ export const JOIN_CLASSROOM_FAIL = 'JOIN_CLASSROOM_FAIL';
 export const USER_JOINED = 'USER_JOINED';
 export const USER_LEFT = 'USER_LEFT';
 
+export const UPLOAD_FILE = 'UPLOAD_FILE';
+export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';
+export const UPLOAD_FILE_FAIL = 'UPLOAD_FILE_FAIL';
+export const DOWNLOAD_FILE = 'DOWNLOAD_FILE';
+
+
 // export const BAN_STUDENT = 'BAN_STUDENT';

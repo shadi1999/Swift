@@ -14,6 +14,7 @@ const ChatMessage = new Schema({
         type:Date,
         default:Date.now()
     },
+    type: String,
     text: String,
     sender: {type: Schema.Types.ObjectId, ref: 'user'}
 });

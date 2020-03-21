@@ -45,7 +45,7 @@ module.exports = async io => {
         });
       
         socket.on('sendMessage', async (msg) => {
-            msg = { sender: socket.user.id, text: msg }
+            msg = { ...msg, sender: socket.user.id }
 
             socket.classroom.liveLecture.chatMessages.push(msg);
             await socket.classroom.liveLecture.save();

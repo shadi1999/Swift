@@ -4,6 +4,7 @@ const router = express.Router();
 const { tutorOnly , adminOnly } = require('../../middleware/privateRoutes');
 const {Lecture} = require('../../models/Lecture');
 const Tutor = require('../../models/Tutor');
+const fs = require('fs')
 
 //Classroom model
 const Classroom = require('../../models/Classroom');
@@ -68,6 +69,9 @@ router.post('/', auth, adminOnly, async (req, res) => {
             }
         }
 
+        // Create a new directory for saving chat attachments.
+        fs.mkdirSync('public/files/' + id);
+
         const saved = await newClass.save();
         res.status(200).json(saved);
     }
@@ -105,7 +109,8 @@ router.delete('/', auth, adminOnly, (req, res)=>{
 */
 router.post('/:id/start', auth, async (req, res) => {
     try {
-        const classroom = await Classroom.findOne({id: req.params.id});
+        const classroomId = req.params.id;
+        const classroom = await Classroom.findOne({id:classroomId});
 
         if(req.user.id != classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
@@ -114,11 +119,15 @@ router.post('/:id/start', auth, async (req, res) => {
         if(classroom.liveLecture) {
             return res.status(500).json('lecture already started');
         }
-        const newLecture = new Lecture({
+
+        let newLecture = new Lecture({
             startedOn: Date.now()
         });
+        newLecture = await newLecture.save();
 
-        await newLecture.save();
+        // Create a new directory for saving chat attachments.
+        fs.mkdirSync(`public/files/${classroomId}/${newLecture._id}`);
+
         classroom.liveLecture = newLecture;
         await classroom.save();
 

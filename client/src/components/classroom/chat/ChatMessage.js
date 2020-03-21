@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
 
-const ChatMessage = ({message, senderFirstName,color}) => {
+const ChatMessage = ({ message, senderFirstName, color, type }) => {
     return (
         <div className="chat-message">
             <Avatar style={{ backgroundColor: color, verticalAlign: 'middle' }} size="large">
@@ -10,7 +10,7 @@ const ChatMessage = ({message, senderFirstName,color}) => {
             </Avatar>
             <div className="talk-bubble tri-right left-in round">
                 <div className="talktext">
-                    <p>{ message }</p>
+                    <p>{message}</p>
                 </div>
             </div>
         </div>
