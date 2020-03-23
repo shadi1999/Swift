@@ -1,17 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar } from 'antd';
+import { Avatar, Button, Radio } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import config from '../../../Config';
 
 const ChatMessage = ({ message, senderFirstName, color, type }) => {
+    const m = () => {
+        switch (type) {
+            case "text":
+                return (
+                    <div className="talktext">
+                        <p>{message}</p>
+                    </div>
+                );
+            case "image":
+                return (
+                    <img className="img-attachment" src={`${config.URL.Server}/files/${message}`} />
+                );
+            case "file":
+                let filename = /([^\/]+$)/.exec(message)[0];
+                return (
+                    <Button className="file-attachment" type="link" href={`${config.URL.Server}/files/${message}`} target="_blank">{filename} <DownloadOutlined /></Button>
+                );
+        }
+    }
+
     return (
         <div className="chat-message">
-            <Avatar style={{ backgroundColor: color, verticalAlign: 'middle' }} size="large">
-                {senderFirstName}
-            </Avatar>
+            <div className="avatar">
+                <Avatar style={{ backgroundColor: color, verticalAlign: 'middle' }} size="large">
+                    {senderFirstName}
+                </Avatar>
+            </div>
             <div className="talk-bubble tri-right left-in round">
-                <div className="talktext">
-                    <p>{message}</p>
-                </div>
+                {m()}
             </div>
         </div>
     )

@@ -1,3 +1,5 @@
 node_modules
 mongo-db
 .vscode
+files
+public/files

@@ -1,4 +1,3 @@
-
 .logo-placeholder {
   width: 250px;
   height: 100px;
@@ -13,7 +12,7 @@
   margin: 25px 24px 16px 0;
 }
 
-body{
+body {
   background-color: rgb(65, 105, 225);
   color: white;
   font-family: Arial;
@@ -26,42 +25,72 @@ body{
 }
 
 
-/* Chat */
+/*
+--- Chat
+*/
 
 /* Chat Message */
+.chat-message {
+  display: flex;
+  align-items: center;
+}
+
+/* TODO: fix long one word messages. */
 .talk-bubble {
-	margin: 40px;
+  margin: 10px 32px;
   display: inline-block;
   position: relative;
-	width: 200px;
-	height: auto;
-	background-color: lightyellow;
+  height: auto;
+  background-color: #fff;
+  box-shadow: 3px 7px 10px rgba(0, 0, 0, .1);
 }
-.round{
-  border-radius: 30px;
-	-webkit-border-radius: 30px;
-	-moz-border-radius: 30px;
+
+.round {
+  border-radius: 18px;
+  -webkit-border-radius: 18px;
+  -moz-border-radius: 18px;
 }
-.tri-right.left-in:after{
-	content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
+
+.tri-right.left-in:after {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
   left: -20px;
-	right: auto;
-  top: 38px;
-	bottom: auto;
-	border: 12px solid;
-	border-color: lightyellow lightyellow transparent transparent;
+  right: auto;
+  top: 50%;
+  bottom: auto;
+  border: 12px solid;
+  border-color: #fff #fff transparent transparent;
+  transform: rotateX(60deg);
 }
-/* talk bubble contents */
-.talktext{
+
+/* Text message */
+.talktext {
   padding: 1em;
-	text-align: left;
+  text-align: left;
   line-height: 1.5em;
+  color: #000;
 }
-.talktext p{
+
+.talktext p {
   /* remove webkit p margins */
   -webkit-margin-before: 0em;
   -webkit-margin-after: 0em;
+  margin-bottom: 0;
+}
+
+/* Image message */
+.img-attachment {
+  max-width: 80%;
+}
+
+/* File attachment (download button) */
+.file-attachment {
+  margin: 12px
+}
+
+/* Chat input */
+.ant-input-group-addon {
+  padding: 0;
 }

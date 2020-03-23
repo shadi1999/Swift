@@ -37,12 +37,8 @@ const ChatContainer = ({
     loading,
     token
 }) => {
-    const {
-        id
-    } = useParams();
-    const [msg,
-        setMsg
-    ] = useState('');
+    const { id } = useParams();
+    const [msg, setMsg] = useState('');
 
     const onClick = () => {
         sendMessage(msg);
@@ -71,16 +67,31 @@ const ChatContainer = ({
                 } else {
                     type = 'file';
                 }
-                sendMessage({
-                    text: info.file.response.filename,
-                    type
-                });
+
+                let lectureId = /([^\/]+$)/.exec(info.file.response.destination)[0];
+                let text = `${id}/${lectureId}/${info.file.response.filename}`;
+                sendMessage({ text, type });
                 message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
             }
         }
     };
+
+    const btns = (
+        <>
+            <Button type="submit" onClick={onClick}>
+                Send</Button>
+            <Upload {...props}>
+                <Button>
+                    <UploadOutlined />
+                </Button>
+            </Upload>
+        </>
+    );
+
+
+    // TODO: submit on clicking enter.
 
     return (
         <div>
@@ -90,14 +101,7 @@ const ChatContainer = ({
                 return <ChatMessage key={i} message={m.text} senderFirstName={user.name} color={user.color} type={m.type} />
             }) : <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}></Spin>
             }
-            <Input onChange={e => setMsg({ text: e.target.value, type: 'text' })} />
-            <Button type="submit" onClick={onClick}>
-                Send</Button>
-            <Upload {...props}>
-                <Button>
-                    <UploadOutlined />
-                </Button>
-            </Upload>
+            <Input onChange={e => setMsg({ text: e.target.value, type: 'text' })} addonAfter={btns} />
         </div>
     )
 }
