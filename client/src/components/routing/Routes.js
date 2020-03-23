@@ -16,9 +16,9 @@ import Classroom from '../classroom/Classroom';
 import TutorClassroom from '../classroom/TutorClassroom';
 import LoginAsGuest from '../auth/LoginAsGuest';
 
-const Routes = ({auth}) => {
+const Routes = ({ auth }) => {
     let privateRoutes = auth.loading ? null :
-        <Route path='/dashboard' render={(props)=><MainDashboard {...props} userKind={auth.user.kind} />}/>
+        <Route path='/dashboard' render={(props) => <MainDashboard {...props} userKind={auth.user.kind} />} />
 
     return (
         <>
@@ -30,9 +30,9 @@ const Routes = ({auth}) => {
                 <Route path='/login/guest' component={LoginAsGuest} />
                 <Route path='/login' component={Login} />
                 <Skeleton active loading={auth.loading}>
-                <Route path='/classroom/:id/tutor' component={TutorClassroom} />
-                <Route exact path='/classroom/:id/' component={Classroom} />
-                {privateRoutes}
+                    <Route path='/classroom/:id/tutor' component={TutorClassroom} />
+                    <Route exact path='/classroom/:id/' component={Classroom} />
+                    {privateRoutes}
                 </Skeleton>
                 <Route component={ErrorNotFound} />
             </Switch>
@@ -44,5 +44,5 @@ const Routes = ({auth}) => {
 const mapStateToProps = (state) => ({
     auth: state.auth
 })
-  
+
 export default connect(mapStateToProps)(Routes);

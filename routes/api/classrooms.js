@@ -57,9 +57,9 @@ router.get('/:id', auth, (req, res) => {
 router.post('/', auth, adminOnly, async (req, res) => {
     const {
         id,
-        private,
+        Private,
         recordLectures,
-        tutorId
+        tutor
     } = req.body;
     try {
         const classroom = await Classroom.findOne({
@@ -71,21 +71,21 @@ router.post('/', auth, adminOnly, async (req, res) => {
             });
         }
 
-        const tutor = await Tutor.findById(tutorId);
-        if (!tutor) {
+        const thetutor = await Tutor.findOne({ email: tutor });
+        if (!thetutor) {
             return res.status(400).json({
-                msg: `There's no Tutor in this id: ${tutorId}`
+                msg: `There's no Tutor in this id: ${thetutor._id}`
             })
         }
 
         const newClass = new Classroom({
             id,
-            private,
+            Private,
             recordLectures,
-            tutor: tutorId
+            tutor: thetutor
         });
 
-        if (private) {
+        if (Private) {
             for (let student of req.body.students) {
                 newClass.students.push(student);
             }

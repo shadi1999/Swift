@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const {adminOnly} = require('../../middleware/privateRoutes');
+const { adminOnly } = require('../../middleware/privateRoutes');
 
 // Tutor model
 const Tutor = require('../../models/Tutor');
@@ -13,11 +13,11 @@ const tutorsController = require('../../middleware/tutorsController');
 @desc   display all tutors
 @access private
 */
-router.get('/', auth, adminOnly, (req,res)=>{
+router.get('/', auth, adminOnly, (req, res) => {
     Tutor.find()
         .select('-password')
-        .then(tutors=>res.json(tutors))
-        .catch(err=>res.status(400).json({msg:'No Tutors'}))
+        .then(tutors => res.json(tutors))
+        .catch(err => res.status(400).json({ msg: 'No Tutors' }))
 });
 
 /*
@@ -25,73 +25,77 @@ router.get('/', auth, adminOnly, (req,res)=>{
 @desc   display a tutor
 @access private
 */
-router.get('/:id', auth, adminOnly, (req,res)=>{
+router.get('/:id', auth, adminOnly, (req, res) => {
     Tutor.findById(req.params.id)
         .select('-password')
-        .then(tutor=>res.json(tutor))
-        .catch(err=>res.status(400).json({msg:'Tutor doesn\'t exsist'}))
+        .then(tutor => res.json(tutor))
+        .catch(err => res.status(400).json({ msg: 'Tutor doesn\'t exsist' }))
 });
 
 // @route    POST api/tutors
 // @desc     Register tutor
 // @access   Public
 router.post('/',
-tutorsController.registerValidationRules(),
-tutorsController.validate,
-async (req, res) => {
-    const { name, email, password } = req.body;
+    tutorsController.registerValidationRules(),
+    tutorsController.validate,
+    async (req, res) => {
+        const { name, email, password } = req.body;
 
-    try {
-        // Check if a user with the same email already exists.
-        let user = await User.findOne({ email });
-        if (user) {
-            return res
-            .status(400)
-            .json({ errors: [{ msg: 'User already exists' }] });
-        }
-
-        const tutor = new Tutor({ name, email, password });
-        await tutor.save();
-
-        const payload = {
-            user: {
-                id: tutor.id
+        try {
+            // Check if a user with the same email already exists.
+            let user = await User.findOne({ email });
+            if (user) {
+                return res
+                    .status(400)
+                    .json({ errors: [{ msg: 'User already exists' }] });
             }
-        };
 
-        tutorsController.jwtLogin(payload, res);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
-    }
-});
+            const tutor = new Tutor({ name, email, password });
+            const salt = await bcrypt.genSalt(10);
+
+            tutor.password = await bcrypt.hash(password, salt);
+
+            await tutor.save();
+
+            const payload = {
+                user: {
+                    id: tutor.id
+                }
+            };
+
+            tutorsController.jwtLogin(payload, res);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
+        }
+    });
 
 // @route    PUT api/tutors
 // @desc     Edit a tutor
 // @access   Private
 router.put('/',
-auth,
-adminOnly,
-tutorsController.editValidationRules(),
-tutorsController.validate,
-async (req, res) => {
-    try {        
-        // Check if a user with the same email already exists.
-        let tutor = await Tutor.findById(req.body._id);
-        if (!tutor) {
-            return res
-            .status(400)
-            .json({ errors: [{ msg: 'Tutors does not exist.' }] });
+    auth,
+    adminOnly,
+    tutorsController.editValidationRules(),
+    tutorsController.validate,
+    async (req, res) => {
+        try {
+            // Check if a user with the same email already exists.
+            let tutor = await Tutor.findById(req.body._id);
+            if (!tutor) {
+                return res
+                    .status(400)
+                    .json({ errors: [{ msg: 'Tutors does not exist.' }] });
+            }
+
+            tutor.email = req.body.email;
+            tutor.name = req.body.name;
+            await tutor.save();
+            res.status(200).send();
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
         }
+    });
 
-        tutor.email = req.body.email;
-        tutor.name = req.body.name;
-        await tutor.save();
-        res.status(200).send();
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
-    }
-});
-
-module.exports=router;
+module.exports = router;

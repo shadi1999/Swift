@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const {adminOnly} = require('../../middleware/privateRoutes');
+const { adminOnly } = require('../../middleware/privateRoutes');
 
 //Student model
 const Student = require('../../models/Student');
@@ -12,11 +12,11 @@ const studentsController = require('../../middleware/studentsController');
 @desc   display all students
 @access private
 */
-router.get('/', auth, adminOnly, (req,res)=>{
+router.get('/', auth, adminOnly, (req, res) => {
     Student.find()
         .select('-password')
-        .then(students=>res.json(students))
-        .catch(err=>res.status(400).json({msg:'No Students'}))
+        .then(students => res.json(students))
+        .catch(err => res.status(400).json({ msg: 'No Students' }))
 });
 
 /*
@@ -24,11 +24,11 @@ router.get('/', auth, adminOnly, (req,res)=>{
 @desc   display a student
 @access private
 */
-router.get('/:id', auth, adminOnly, (req,res)=>{
+router.get('/:id', auth, adminOnly, (req, res) => {
     Student.findById(req.params.id)
         .select('-password')
-        .then(student=>res.json(student))
-        .catch(err=>res.status(400).json({msg:'Student doesn\'t exsist'}))
+        .then(student => res.json(student))
+        .catch(err => res.status(400).json({ msg: 'Student doesn\'t exsist' }))
 });
 
 // @route    POST api/students
@@ -42,11 +42,15 @@ router.post('/', studentsController.registerValidationRules(), studentsControlle
         let student = await User.findOne({ email });
         if (student) {
             return res
-            .status(400)
-            .json({ errors: [{ msg: 'User already exists' }] });
+                .status(400)
+                .json({ errors: [{ msg: 'User already exists' }] });
         }
 
         student = new Student({ name, email, password });
+        const salt = await bcrypt.genSalt(10);
+
+        student.password = await bcrypt.hash(password, salt);
+
         await student.save();
 
         const payload = {
@@ -66,28 +70,28 @@ router.post('/', studentsController.registerValidationRules(), studentsControlle
 // @desc     Edit a student
 // @access   Private
 router.put('/',
-auth,
-adminOnly,
-studentsController.editValidationRules(),
-studentsController.validate,
-async (req, res) => {
-    try {        
-        // Check if a user with the same email already exists.
-        let student = await Student.findById(req.body._id);
-        if (!student) {
-            return res
-            .status(400)
-            .json({ errors: [{ msg: 'Students does not exist.' }] });
+    auth,
+    adminOnly,
+    studentsController.editValidationRules(),
+    studentsController.validate,
+    async (req, res) => {
+        try {
+            // Check if a user with the same email already exists.
+            let student = await Student.findById(req.body._id);
+            if (!student) {
+                return res
+                    .status(400)
+                    .json({ errors: [{ msg: 'Students does not exist.' }] });
+            }
+
+            student.email = req.body.email;
+            student.name = req.body.name;
+            await student.save();
+            res.status(200).send();
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
         }
+    });
 
-        student.email = req.body.email;
-        student.name = req.body.name;
-        await student.save();
-        res.status(200).send();
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
-    }
-});
-
-module.exports=router;
+module.exports = router;

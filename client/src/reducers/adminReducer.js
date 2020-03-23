@@ -6,17 +6,20 @@ import {
     EDIT_TUTOR_SUCCESS,
     EDIT_TUTOR_FAIL,
     EDIT_STUDENT_SUCCESS,
-    EDIT_STUDENT_FAIL
-}from '../actions/types';
+    EDIT_STUDENT_FAIL,
+    ADD_CLASSROOM,
+    GET_CLASSROOMS
+} from '../actions/types';
 
 const initialState = {
     loading: true,
     tutors: [],
-    students: []
+    students: [],
+    classrooms: []
 };
 
-export default function(state=initialState,action){
-    switch(action.type){
+export default function (state = initialState, action) {
+    switch (action.type) {
         case GET_TUTORS:
             return {
                 loading: false,
@@ -48,6 +51,16 @@ export default function(state=initialState,action){
             return {
                 ...state,
                 loading: false
+            }
+        case GET_CLASSROOMS:
+            return {
+                loading: false,
+                classrooms: action.payload
+            }
+        case ADD_CLASSROOM:
+            return {
+                loading: false,
+                classrooms: [...state.classrooms, action.payload]
             }
         default:
             return initialState;
