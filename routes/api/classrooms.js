@@ -10,6 +10,8 @@ const {
 } = require('../../models/Lecture');
 const Tutor = require('../../models/Tutor');
 const fs = require('fs')
+const os = require('os');
+const axios = require('axios');
 
 //Classroom model
 const Classroom = require('../../models/Classroom');
@@ -33,21 +35,44 @@ router.get('/', auth, adminOnly, (req, res) => {
 @access private
 */
 router.get('/:id', auth, (req, res) => {
-    Classroom.findById(req.params.id).execPopulate('liveLecture').execPopulate('students').execPopulate('tutor')
+    Classroom.findOne({
+            id: req.params.id
+        }).populate('liveLecture').populate('students').populate('tutor')
         .then(classroom => {
             // Private classrooms authorization.
-            if (classroom.private && req.user.kind !== 'Administrator')
-                if (!(classroom.students.find(req.user.id) || classroom.tutor._id === req.user.id))
-                    res.status(401).json({
-                        msg: 'Unauthorized'
-                    });
+            if (classroom.private) {
+                switch (req.user.kind) {
+                    case 'Tutor':
+                        if (classroom.tutor == req.user.id)
+                            res.status(200).json(classroom);
+                        break;
+                    case 'Administrator':
+                        res.status(200).json(classroom);
+                        break;
+                    case 'Student':
+                        if (classroom.students.some(student => student._id == req.user.id)) {
+                            res.status(200).json(classroom);
+                            break;
+                        }
+                        default:
+                            res.status(401).json({
+                                msg: 'Unauthorized'
+                            });
+                            break;
+                }
+            }
 
             res.json(classroom);
         })
-        .catch(err => res.status(400).json({
-            msg: 'Classroom doesn\'t exsist'
+        .catch(err => res.status(500).json({
+            msg: 'Internal server error.'
         }))
 });
+
+
+// TODO: move to config.
+const url = `https://${os.hostname()}`
+
 
 /*
 @route  POST api/classrooms
@@ -86,10 +111,20 @@ router.post('/', auth, adminOnly, async (req, res) => {
         });
 
         if (private) {
+            // Add the students allowed to attend the class.
             for (let student of req.body.students) {
                 newClass.students.push(student);
             }
         }
+
+        // TODO: remove stream from the media server in /classrooms DELETE route.
+        // Create a new stream in the media server.
+        const mediaServerApp = recordLectures ? 'WebRTCApp' : 'LiveApp';
+        newClass.mediaServerApp = mediaServerApp;
+        const newStream = await axios.post(`${url}/${mediaServerApp}/rest/v2/broadcasts/create`, {
+            name: id,
+            publicStream: false
+        });
 
         // Create a new directory for saving chat attachments.
         fs.mkdirSync('public/files/' + id);
@@ -204,6 +239,8 @@ router.post('/:id/stop', auth, async (req, res) => {
     }
 });
 
+
+// TODO: remove join and leave routes.
 /*
 @route  POST api/classrooms/:id/join
 @desc   join live classroom and intiate socket connection.

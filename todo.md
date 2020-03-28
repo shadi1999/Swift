@@ -7,11 +7,13 @@
 - guest students login DONE
 - private classrooms
 - *webcam/screen sharing*
+- play recordings
+- delete recordings periodically
 - 
 
 ## Later:
 - PDF slides
-- sending files in the chat
+- sending files in the chat DONE
 - ban a student from the chat
 - 
 

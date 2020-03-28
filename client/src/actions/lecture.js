@@ -1,4 +1,20 @@
-import { RECEIVE_MESSAGE, ADD_MESSAGE, SEND_MESSAGE,USER_LEFT, GET_MESSAGES, USER_JOINED, SET_MESSAGES, JOIN_CLASSROOM, JOIN_CLASSROOM_FAIL, JOIN_CLASSROOM_SUCCESS, START_LECTURE, STOP_LECTURE, LOAD_LECTURE } from './types';
+import {
+  RECEIVE_MESSAGE,
+  ADD_MESSAGE,
+  SEND_MESSAGE,
+  USER_LEFT,
+  GET_MESSAGES,
+  USER_JOINED,
+  SET_MESSAGES,
+  JOIN_CLASSROOM,
+  JOIN_CLASSROOM_FAIL,
+  JOIN_CLASSROOM_SUCCESS,
+  START_LECTURE,
+  STOP_LECTURE,
+  LOAD_LECTURE,
+  GET_PUBLISH_TOKEN,
+  GET_PLAY_TOKEN
+} from './types';
 import io from 'socket.io-client';
 import config from '../Config';
 import axios from 'axios';
@@ -14,21 +30,31 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
 
       dispatch({
         type: LOAD_LECTURE,
-        payload: {hasStarted, onlineUsers}
+        payload: {
+          hasStarted,
+          onlineUsers
+        }
       });
     });
   });
 
-  socket.on('message', msg => {    
+  socket.on('message', msg => {
     dispatch({
       type: ADD_MESSAGE,
       payload: msg
     });
   });
 
-  socket.on('startLecture', () => {
+  socket.on('startLecture', async () => {
     dispatch({
       type: START_LECTURE
+    });
+
+    // Get a token from the media server to authorize for playing the stream.
+    const playToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${classroomId}`);
+    dispatch({
+      type: GET_PLAY_TOKEN,
+      payload: playToken
     });
   });
 
@@ -47,7 +73,7 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
       payload: user
     })
   });
-  
+
   socket.on('userLeft', user => {
     dispatch({
       type: USER_LEFT,
@@ -61,21 +87,21 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
 const assignColors = (users) => {
   const deletedIndexes = [];
 
-  for(const [i, user] of users.entries()) {
-    if(deletedIndexes.includes(i))
+  for (const [i, user] of users.entries()) {
+    if (deletedIndexes.includes(i))
       continue;
 
-    if(users.some(other => user.name === other.name)) {
+    if (users.some(other => user.name === other.name)) {
       let colorsCopy = [...colors]
-      for(let other of users) {
-        if(user.name === other.name) {
+      for (let other of users) {
+        if (user.name === other.name) {
           other.color = colorsCopy.pop();
           deletedIndexes.push(users.indexOf(other));
         }
       }
       user.color = colorsCopy.pop();
     } else {
-      user.color = colors[Math.floor(Math.random() * colors.length)];      
+      user.color = colors[Math.floor(Math.random() * colors.length)];
     }
   }
 
@@ -85,11 +111,11 @@ const assignColors = (users) => {
 const assignColor = (user, users) => {
   let sameName = users.find(other => user.name === other.name);
 
-  if(sameName !== undefined) {
+  if (sameName !== undefined) {
     do {
       user.color = colors[Math.floor(Math.random() * colors.length)];
       console.log(user.color, sameName.color);
-    } while(user.color === sameName.color);
+    } while (user.color === sameName.color);
   } else {
     user.color = colors[Math.floor(Math.random() * colors.length)];
   }
@@ -100,12 +126,12 @@ const assignColor = (user, users) => {
 const colors = ['#000', '#ccc', '#aaa', '#0ec']
 
 // TODO: add error handling for axios requests.
-export const loadMessages = (classroomId) => async dispatch =>{
-  const M=await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}/getlivechat`);
+export const loadMessages = (classroomId) => async dispatch => {
+  const M = await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}/getlivechat`);
 
   dispatch({
-    type:GET_MESSAGES,
-    payload:M
+    type: GET_MESSAGES,
+    payload: M
   });
 }
 
@@ -118,8 +144,20 @@ export const sendMessage = (m) => dispatch => {
 }
 
 export const startLecture = (id) => async dispatch => {
-  await axios.post(`${config.URL.Server}/api/classrooms/${id}/start`);
-  socket.emit('startLecture');
+  try {
+    await axios.post(`${config.URL.Server}/api/classrooms/${id}/start`);
+    socket.emit('startLecture');
+
+    // Get a token from the media server to authorize for publishing a stream.
+    const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${id}`);
+    dispatch({
+      type: GET_PUBLISH_TOKEN,
+      payload: publishToken
+    });
+  } catch (error) {
+    // TODO: add an alert.
+    console.error('Error starting the lecture', error);
+  }
 }
 
 export const stopLecture = (id) => async dispatch => {

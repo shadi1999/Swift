@@ -7,18 +7,33 @@ const Classroom = new Schema({
         required: true,
         unique: true
     },
-    students: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-    tutor: {type: Schema.Types.ObjectId, ref: 'Tutor'},
+    students: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Student'
+    }],
+    tutor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Tutor'
+    },
     // chat: ...
     private: {
         type: Boolean,
         required: true
     },
-    liveLecture: {type: Schema.Types.ObjectId, ref: 'lecture'},
-    pastLectures: [{type: Schema.Types.ObjectId, ref: 'lecture'}],
+    liveLecture: {
+        type: Schema.Types.ObjectId,
+        ref: 'lecture'
+    },
+    pastLectures: [{
+        type: Schema.Types.ObjectId,
+        ref: 'lecture'
+    }],
     recordLectures: {
         type: Boolean,
         default: true
+    },
+    mediaServerApp: {
+        type: String
     }
 });
 
