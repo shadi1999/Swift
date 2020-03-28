@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import TutorSidebar from './TutorSidebar';
 import MyLectures from './MyLectures';
 import MyClassrooms from './MyClassrooms'
+import HomeDashboard from '../HomeDashboard';
 
 const { Content, Sider } = Layout;
 
@@ -18,6 +19,7 @@ const TutorDashboard = () => {
                 <Switch>
                     <Route path="/dashboard/myLectures" component={MyLectures} />
                     <Route path="/dashboard/myClassrooms" component={MyClassrooms} />
+                    <Route path='/dashboard' component={HomeDashboard} />
                 </Switch>
             </Content>
         </Fragment>

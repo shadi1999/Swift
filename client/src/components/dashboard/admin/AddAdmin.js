@@ -1,100 +1,80 @@
-import React from 'react';
-import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
-import { Input, Button } from 'antd';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Input, Button, Form, Spin } from 'antd';
+import { Icon } from '@ant-design/compatible';
+import { setAlert } from '../../../actions/alert';
 import { addAdmin } from '../../../actions/adimnActions';
-import {setAlert} from '../../../actions/alert';
-import { Fragment } from 'react';
+import { useHistory } from 'react-router-dom';
+import { LoadingOutlined } from '@ant-design/icons';
 
-const AddAdmin = ({ form, setAlert, addAdmin, isAuthenticated }) => {
-    const onSubmit = async e => {
-      e.preventDefault();
-        form.validateFields((err, values) => {
-            let { name, email, password, password2 } = values;
-            
-            if (password !== password2) {
-                setAlert('Passwords do not match', 'error');
-            } else if (!err) {
-                addAdmin({ name, email, password });
-            }
-        });
-      }
-  
-    
-  
-    const { getFieldDecorator } = form;
+
+
+const AddAdmin = ({ setAlert, addAdmin, loading }) => {
+    const history = useHistory();
+    const [form] = Form.useForm();
+    const onFinish = values => {
+        let { name, email, password, password2 } = values;
+
+        if (password !== password2) {
+            setAlert('Passwords do not match', 'error');
+        } else {
+            addAdmin({ name, email, password }, history, '/dashboard');
+        }
+    }
+
     return (
         <Fragment>
-          <h1>Add Admin</h1>
-          <Form onSubmit={onSubmit}>
-              <Form.Item>
-                  {getFieldDecorator('email', {
-                      rules: [{ required: true, message: 'Please input your email!' }],
-                  })(
-                  <Input
-                  prefix={<LegacyIcon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="Email of new tutor"
-                  />,
-                  )}
-              </Form.Item>
+            <h1>Add Extra Administrator</h1>
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}>
+                <Form form={form} onFinish={onFinish} initialValues={{ Private: false, record: false }}>
+                    <Form.Item name="email" rules={[{ required: true, message: 'Please input the admin email!' }]}>
+                        <Input
+                            prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            placeholder="email of the new administrator"
+                        />
+                    </Form.Item>
 
-              <Form.Item>
-                  {getFieldDecorator('name', {
-                      rules: [{ required: true, message: 'Please input your name!' }],
-                  })(
-                  <Input
-                  prefix={<LegacyIcon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="Name of tutor"
-                  />,
-                  )}
-              </Form.Item>
+                    <Form.Item name="name" rules={[{ required: true, message: 'Please input the admin name!' }]}>
+                        <Input
+                            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            placeholder="name of the new administrator"
+                        />
+                    </Form.Item>
 
-              <Form.Item>
-                  {getFieldDecorator('password', {
-                      rules: [{ required: true, message: 'Please input your Password!' }],
-                  })(
-                  <Input
-                  prefix={<LegacyIcon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  type="password"
-                  placeholder="Password"
-                  />,
-                  )}
-              </Form.Item>
+                    <Form.Item name="password" rules={[{ required: true, message: 'Please input the password!' }]}>
+                        <Input
+                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            placeholder="password"
+                        />
+                    </Form.Item>
 
-              <Form.Item>
-              {getFieldDecorator('password2', {
-                      rules: [{ required: true, message: 'Please input your Password!' }],
-                  })(
-                  <Input
-                  prefix={<LegacyIcon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  type="password"
-                  placeholder="Password"
-                  />,
-                  )}
-              </Form.Item>
-              <Button type="primary" htmlType="submit">
-                  Add Admin
-              </Button>
-          </Form>
-          </Fragment>
+                    <Form.Item name="password2" rules={[{ required: true, message: 'Please input the password again!' }]}>
+                        <Input
+                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            placeholder="password confirm"
+                        />
+                    </Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Add Administrator
+                </Button>
+                </Form>
+            </Spin>
+        </Fragment>
     );
-  }
+}
 
 AddAdmin.propTypes = {
-    setAlert: PropTypes.func.isRequired,
-    addAdmin: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool
-};
+    admin: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    addAdmin: PropTypes.func.isRequired
+}
 
-const Wrapped = Form.create({ name: 'AddAdmin' })(AddAdmin);
+const mapStateToProps = (state) => ({
+    admin: state.auth.user,
+    loading: state.auth.loading
+})
 
-const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
-});
+// const Wrapped = Form.create({ name: 'AddClassroom' })(AddClassroom);
 
-export default connect(
-    mapStateToProps,
-    { setAlert, addAdmin }
-)(Wrapped);
+export default connect(mapStateToProps, { setAlert, addAdmin })(AddAdmin);

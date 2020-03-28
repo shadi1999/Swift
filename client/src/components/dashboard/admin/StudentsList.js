@@ -1,39 +1,38 @@
-import React, { Fragment, useEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon as LegacyIcon } from '@ant-design/compatible';
-import { List, Avatar, Button, Skeleton } from 'antd';
-import {setAlert} from '../../../actions/alert';
-import {getStudents} from '../../../actions/adimnActions';
+import { List, Avatar, Skeleton } from 'antd';
+import { getStudents } from '../../../actions/adimnActions';
 
 
-const StudentsList = ({students, loading, getStudents}) => {
+const StudentsList = ({ students, loading, getStudents }) => {
     useEffect(() => {
         getStudents();
     }, []);
 
     return (
         <Skeleton avatar title={false} loading={loading} active>
-        <List
-            loading={loading}
-            itemLayout="horizontal"
-            dataSource={students}
-            renderItem={item => (
-            <List.Item
-                actions={[<Link key="student-edit" to={`/dashboard/student/${item._id}`}>edit</Link>]}
-            >
-                <List.Item.Meta
-                    avatar={
-                    <Avatar icon={<LegacyIcon type='user' />} />
-                    }
-                    title={<Link to={`/dashboard/student/${item._id}`}>{item.name}</Link>}
-                    //description={`About : ${item.about} `}
-                />
-            </List.Item>
-            )}
-      />
-    </Skeleton>
+            <List
+                loading={loading}
+                itemLayout="horizontal"
+                dataSource={students}
+                renderItem={item => (
+                    <List.Item
+                        actions={[<Link key="student-edit" to={`/dashboard/student/${item._id}`}>edit</Link>]}
+                    >
+                        <List.Item.Meta
+                            avatar={
+                                <Avatar icon={<LegacyIcon type='user' />} />
+                            }
+                            title={<Link to={`/dashboard/student/${item._id}`}>{item.name}</Link>}
+                        //description={`About : ${item.about} `}
+                        />
+                    </List.Item>
+                )}
+            />
+        </Skeleton>
     );
 }
 
@@ -49,5 +48,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps, {getStudents}
+    mapStateToProps, { getStudents }
 )(StudentsList);

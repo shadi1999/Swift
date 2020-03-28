@@ -19,6 +19,14 @@
 
 ## Some day:
 - private chat
-- profile photo and info
-- home page
+- profile photo and info DONE
+- home page DONE
 - 
+
+## New List:
+- private classrooms
+- PDF slides
+- ban a student from the chat
+- private chat
+- forget password
+- my recorded lectures
