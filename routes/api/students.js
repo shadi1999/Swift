@@ -2,7 +2,6 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const { adminOnly } = require('../../middleware/privateRoutes');
-const bcrypt = require('bcryptjs')
 //Student model
 const Student = require('../../models/Student');
 const studentsController = require('../../middleware/studentsController');
@@ -47,9 +46,6 @@ router.post('/', studentsController.registerValidationRules(), studentsControlle
         }
 
         student = new Student({ name, email, password });
-        const salt = await bcrypt.genSalt(10);
-
-        student.password = await bcrypt.hash(password, salt);
 
         await student.save();
 
