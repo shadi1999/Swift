@@ -11,10 +11,9 @@ import setAuthToken from './utils/setAuthToken';
 // import logo from './logo.svg';
 import './App.css';
 
-import Dashboard from './components/dashboard/admin/AdminDashboard';
 import Navbar from "./components/layout/Navbar";
 import { Layout } from "antd";
-import Downbar from './components/layout/Downbar';
+import ContactUs from './components/layout/ContactUs';
 const { Header, Footer } = Layout;
 
 function App() {
@@ -25,13 +24,13 @@ function App() {
     }
   }, []);
 
-  
+
   return (
     <Provider store={store}>
       <Router>
         <Fragment>
           <Layout>
-            <Header   style={{height: '130px'}}>
+            <Header style={{ height: '130px' }}>
               <Navbar />
             </Header>
             <Layout>
@@ -41,7 +40,7 @@ function App() {
               </Switch>
             </Layout>
             <Footer>
-              <Downbar/>
+              <ContactUs />
             </Footer>
           </Layout>
         </Fragment>

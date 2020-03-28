@@ -1,68 +1,64 @@
 import React, { Fragment } from 'react';
-import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import { Form, Input, Button, Checkbox } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import '@ant-design/compatible/assets/index.css';
-import { Input, Button, Checkbox } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login } from '../../actions/auth';
 
-const Login = ({form, login, isAuthenticated}) => {
-    const handleSubmit = async e => {
-        e.preventDefault();
-        form.validateFields((err, values) => {
-            if (!err) {
-                login(values.username, values.password);
-            }
-        });
-    };
+const Login = ({ login, isAuthenticated }) => {
+    const [form] = Form.useForm();
+    const onFinish = values => {
+        const { email, password } = values;
+        login(email, password);
+    }
 
     if (isAuthenticated) {
         return <Redirect to='/dashboard' />;
     }
 
-    const { getFieldDecorator } = form;
     return (
         <Fragment>
-        <h2>Login Page</h2>
-        <Form onSubmit={handleSubmit} className="login-form">
-            <Form.Item>
-                {getFieldDecorator('username', {
-                    rules: [{ required: true, message: 'Please input your username!' }],
-                })(
-                <Input
-                prefix={<LegacyIcon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="Username"
-                />,
-                )}
-            </Form.Item>
+            <h1>Login page</h1>
+            <Form
+                form={form}
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+            >
+                <Form.Item
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                >
+                    <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email" />
+                </Form.Item>
+                <Form.Item
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your Password!' }]}
+                >
+                    <Input
+                        prefix={<LockOutlined className="site-form-item-icon" />}
+                        type="password"
+                        placeholder="Password"
+                    />
+                </Form.Item>
+                <Form.Item>
+                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                        <Checkbox>Remember me</Checkbox>
+                    </Form.Item>
 
-            <Form.Item>
-                {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Please input your Password!' }],
-                })(
-                <Input
-                prefix={<LegacyIcon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type="password"
-                placeholder="Password"
-                />,
-                )}
-            </Form.Item>
+                    <a className="login-form-forgot" href="">
+                        Forgot password
+        </a>
+                </Form.Item>
 
-            <Form.Item>
-                {getFieldDecorator('remember', {
-                    valuePropName: 'checked',
-                    initialValue: true,
-                })(<Checkbox>Remember me</Checkbox>)}
-                <a className="login-form-forgot" href="">
-                    Forgot password
-                </a>
-                <Button type="primary" htmlType="submit" className="login-form-button">
-                    Log in
-                </Button>
-                Don't have an account? <Link to='/register'>Sign Up</Link>
-            </Form.Item>
-        </Form>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" className="login-form-button">
+                        Log in
+        </Button><br></br><br></br>
+        Don't have an account? <Link to='/register/student'>Sign Up as student</Link> or <Link to='/register/tutor'>Sign Up as tutor</Link>
+                </Form.Item>
+            </Form>
         </Fragment>
     );
 }
@@ -73,10 +69,9 @@ Login.propTypes = {
     isAuthenticated: PropTypes.bool
 }
 
-const Wrapped = Form.create({ name: 'login' })(Login);
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, {login})(Wrapped);
+export default connect(mapStateToProps, { login })(Login);

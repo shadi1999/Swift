@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { List, Card, Button } from 'antd';
+import { List, Card } from 'antd';
 import { connect } from 'react-redux';
 import { getLectures } from '../../../actions/studentActions';
 import PropTypes from 'prop-types';

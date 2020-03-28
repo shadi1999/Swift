@@ -20,7 +20,7 @@ const Classroom = require('../../models/Classroom');
 @access private
 */
 router.get('/', auth, adminOnly, (req, res) => {
-    Classroom.find()
+    Classroom.find().populate('tutor')
         .then(classrooms => res.json(classrooms))
         .catch(err => res.status(400).json({
             msg: 'No Classrooms'
@@ -58,7 +58,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
     const {
         id,
         Private,
-        recordLectures,
+        record,
         tutor
     } = req.body;
     try {
@@ -79,17 +79,11 @@ router.post('/', auth, adminOnly, async (req, res) => {
         }
 
         const newClass = new Classroom({
-            id,
-            Private,
-            recordLectures,
-            tutor: thetutor
+            id: id,
+            private: Private,
+            recordLectures: record,
+            tutor: thetutor._id
         });
-
-        if (Private) {
-            for (let student of req.body.students) {
-                newClass.students.push(student);
-            }
-        }
 
         // Create a new directory for saving chat attachments.
         fs.mkdirSync('public/files/' + id);
@@ -105,25 +99,23 @@ router.post('/', auth, adminOnly, async (req, res) => {
 });
 
 /*
-@route  POST api/classrooms
+@route  DELETE api/classrooms
 @desc   delete a classroom
 @access private
 */
-router.delete('/', auth, adminOnly, (req, res) => {
+router.delete('/:id', auth, adminOnly, async (req, res) => {
     const {
-        course
-    } = req.body;
+        id
+    } = req.params;
 
     try {
-        const classroom = Classroom.findOne(course);
+        const classroom = Classroom.findOne({ id });
         if (!classroom) {
             return res.status(400).json({
-                msg: `No course with name ${course} was exsist`
+                msg: `No course with name ${id} was exsist`
             });
         }
-        Classroom.remove({
-            name: course
-        });
+        await Classroom.deleteOne({ id });
         res.status(200).json({
             msg: 'Done'
         });
@@ -131,6 +123,31 @@ router.delete('/', auth, adminOnly, (req, res) => {
         res.status(400).json({
             msg: 'Error happened'
         });
+    }
+});
+
+/*
+@route  PUT api/classrooms
+@desc   Edit a classroom
+@access private
+*/
+router.put('/', auth, adminOnly, async (req, res) => {
+    const { id, email, Private, record, newid } = req.body;
+    try {
+        const classroom = await Classroom.findOne({ id });
+        const thetutor = await Tutor.findOne({ email: email });
+        if (!thetutor) {
+            return res.status(400).json('Tutor is not exsist');
+        }
+        classroom.id = newid;
+        classroom.tutor = thetutor._id;
+        classroom.private = Private;
+        classroom.recordLectures = record;
+        await classroom.save();
+        res.status(200).json("classroom updated successfuly");
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ msg: "Error happened" });
     }
 });
 
@@ -270,7 +287,7 @@ router.get('/:id/getlivechat', auth, async (req, res) => {
 });
 
 /*
-@route  GET api/classrooms/tutor/:id
+@route  GET api/classrooms/tutor/:id/lectures
 @desc   get a tutor's classrooms
 @access private
 */
@@ -317,7 +334,7 @@ router.get('/tutor/:id', auth, tutorOnly, async (req, res) => {
 
 //STUDENT
 /*
-@route  GET api/classrooms/student/:id
+@route  GET api/classrooms/student/:id/lectures
 @desc   get a student's classrooms
 @access private
 */

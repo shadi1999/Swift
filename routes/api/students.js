@@ -2,7 +2,7 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const { adminOnly } = require('../../middleware/privateRoutes');
-
+const bcrypt = require('bcryptjs')
 //Student model
 const Student = require('../../models/Student');
 const studentsController = require('../../middleware/studentsController');
@@ -71,7 +71,6 @@ router.post('/', studentsController.registerValidationRules(), studentsControlle
 // @access   Private
 router.put('/',
     auth,
-    adminOnly,
     studentsController.editValidationRules(),
     studentsController.validate,
     async (req, res) => {
@@ -87,6 +86,29 @@ router.put('/',
             student.email = req.body.email;
             student.name = req.body.name;
             await student.save();
+            res.status(200).send();
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
+        }
+    });
+
+// @route    DELETE api/students/:id
+// @desc     delete a student
+// @access   Private
+router.delete('/:id',
+    auth,
+    async (req, res) => {
+        try {
+            // Check if a user with the same email already exists.
+            let student = await Student.findById(req.params.id);
+            if (!student) {
+                return res
+                    .status(400)
+                    .json({ errors: [{ msg: 'Students does not exist.' }] });
+            }
+
+            await Student.deleteOne({ email: student.email });
             res.status(200).send();
         } catch (err) {
             console.error(err.message);

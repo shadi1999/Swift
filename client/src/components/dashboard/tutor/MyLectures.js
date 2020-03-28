@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { List, Card, Button } from 'antd';
+import { List, Card } from 'antd';
 import { connect } from 'react-redux';
 import { getLectures } from '../../../actions/tutorActions';
 import PropTypes from 'prop-types';
@@ -18,7 +18,10 @@ const MyLectures = ({ tutor, lectures, loading, getLectures }) => {
                 dataSource={lectures}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.startedOn}>Card content</Card>
+                        <Card title={item.id}><div>Started On: {item.pastLectures.startedOn}<br></br> Ended On: {item.pastLectures.endedOn}</div>
+                            <div>Attendance:<br></br> {
+                                item.pastLectures.attendance ?
+                                    item.pastLectures.attendance.map(t => <Fragment><p>{'user:' + t.user + ' duration:' + t.duration}</p></Fragment>) : null}</div></Card>
                     </List.Item>
                 )}
             />

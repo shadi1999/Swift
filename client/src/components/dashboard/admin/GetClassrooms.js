@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { List, Card, Button } from 'antd';
+import { List, Card } from 'antd';
 import { connect } from 'react-redux';
 import { getClassrooms } from '../../../actions/adimnActions';
+import { Link } from 'react-router-dom';
 
 const GetClassrooms = ({ getClassrooms, loading, classrooms }) => {
     useEffect(() => {
@@ -17,7 +18,7 @@ const GetClassrooms = ({ getClassrooms, loading, classrooms }) => {
                 dataSource={classrooms}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.id}>Card content</Card>
+                        <Card title={item.id}><Link to={`/dashboard/classrooms/${item.id}`}>View Classroom Information</Link></Card>
                     </List.Item>
                 )}
             />

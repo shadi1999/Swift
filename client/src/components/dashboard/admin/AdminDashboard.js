@@ -1,9 +1,5 @@
 import React, { Fragment } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { useLocation, useParams } from "react-router";
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
 
 import TutorsList from './TutorsList';
 import AddAdmin from './AddAdmin';
@@ -15,6 +11,7 @@ import EditStudent from './EditStudent';
 import HomeDashboard from '../HomeDashboard';
 import AddClassroom from './AddClassroom';
 import GetClassrooms from './GetClassrooms';
+import EditClassroom from './EditClassroom';
 
 
 const { Content, Sider } = Layout;
@@ -28,12 +25,13 @@ const AdminDashboard = () => {
             <Content>
                 {/* { content } */}
                 <Switch>
-                    <Route path="/dashboard/tutors" component={TutorsList} />
                     <Route path="/dashboard/tutor/:id" component={EditTutor} />
+                    <Route path="/dashboard/tutors" component={TutorsList} />
                     <Route path="/dashboard/addAdmin" component={AddAdmin} />
-                    <Route path="/dashboard/students" component={StudentsList} />
                     <Route path="/dashboard/student/:id" component={EditStudent} />
+                    <Route path="/dashboard/students" component={StudentsList} />
                     <Route path="/dashboard/addClassroom" component={AddClassroom} />
+                    <Route path="/dashboard/classrooms/:id" component={EditClassroom} />
                     <Route path="/dashboard/classrooms" component={GetClassrooms} />
                     <Route path='/dashboard' component={HomeDashboard} />
                 </Switch>

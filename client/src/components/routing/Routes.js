@@ -1,20 +1,18 @@
-import React, { Fragment, useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from '../auth/Login';
 import AlertWrapper from '../layout/Alert';
-import AdminDashboard from '../dashboard/admin/AdminDashboard';
-import TutorDashboard from '../dashboard/tutor/TutorDashboard';
-import StudentDashboard from '../dashboard/student/StudentDashboard';
 import RegisterTutor from '../auth/RegisterTutor';
 import RegisterStudent from '../auth/RegisterStudent';
-import PrivateRoute from './PrivateRoute';
 import ErrorNotFound from '../ErrotNotFound';
 import { Skeleton } from 'antd';
 import MainDashboard from '../dashboard/MainDashboard';
 import Classroom from '../classroom/Classroom';
 import TutorClassroom from '../classroom/TutorClassroom';
 import LoginAsGuest from '../auth/LoginAsGuest';
+import Home from '../Home';
+import Profile from '../layout/Profile';
 
 const Routes = ({ auth }) => {
     let privateRoutes = auth.loading ? null :
@@ -22,21 +20,24 @@ const Routes = ({ auth }) => {
 
     return (
         <>
-            <AlertWrapper />
-            {/* <Skeleton active loading={auth.loading}> */}
-            <Switch>
-                <Route path='/register/tutor' component={RegisterTutor} />
-                <Route path='/register/student' component={RegisterStudent} />
-                <Route path='/login/guest' component={LoginAsGuest} />
-                <Route path='/login' component={Login} />
-                <Skeleton active loading={auth.loading}>
+
+            <Skeleton active loading={auth.loading}>
+                <AlertWrapper />
+
+                <Switch>
+                    <Route path='/myProfile' component={Profile} />
+                    <Route path='/register/tutor' component={RegisterTutor} />
+                    <Route path='/register/student' component={RegisterStudent} />
+                    <Route path='/login/guest' component={LoginAsGuest} />
+                    <Route path='/login' component={Login} />
                     <Route path='/classroom/:id/tutor' component={TutorClassroom} />
                     <Route exact path='/classroom/:id/' component={Classroom} />
                     {privateRoutes}
-                </Skeleton>
-                <Route component={ErrorNotFound} />
-            </Switch>
-            {/* </Skeleton> */}
+                    <Route exact path="/" component={Home} />
+                    <Route component={ErrorNotFound} />
+                </Switch>
+            </Skeleton>
+
         </>
     )
 }
