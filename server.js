@@ -2,9 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const config = require('config');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 
-//Middlewares
+// SSL files
+const cert = fs.readFileSync('./ssl/swiftcourse-cert.crt');
+const key = fs.readFileSync('./ssl/private-key.pem');
+
+// Middleware
 app.use(express.json({
   extended: true
 }));
@@ -13,7 +18,7 @@ app.use(express.urlencoded({
 }));
 app.use(express.static('public'));
 
-//Database congigration & connection 
+// Database connection 
 const db = config.get('mongoURI');
 
 mongoose.connect(db, {
@@ -42,7 +47,7 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-//Routes
+// Routes
 app.use('/api/files', require('./routes/api/files'));
 app.use('/api/students', require('./routes/api/students'));
 app.use('/api/tutors', require('./routes/api/tutors'));
@@ -60,22 +65,25 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-//socket.io configration ...
+// socket.io configuration ...
 const socket = require('./socket');
 let http;
 if (process.env.NODE_ENV !== 'production') {
   http = require('http').Server(app);
 } else {
-  http = require('https').Server(app);
+  http = require('https').Server({
+    cert,
+    key
+  }, app);
 }
-const http = require('http').Server(app)
+const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const socketAuth = require('./middleware/socket.io/auth');
 // Authenticate every socket connection user.
 io.use(socketAuth);
 socket(io);
 
-//Server port
+// Server port
 let port = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production') {
