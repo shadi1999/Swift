@@ -34,10 +34,13 @@ if (process.env.NODE_ENV !== 'production') {
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
     next();
   });
+} else {
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Headers', 'x-auth-token,content-type,x-requested-with');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    next();
+  });
 }
-
-
-
 
 //Routes
 app.use('/api/files', require('./routes/api/files'));
@@ -59,6 +62,12 @@ if (process.env.NODE_ENV === 'production') {
 
 //socket.io configration ...
 const socket = require('./socket');
+let http;
+if (process.env.NODE_ENV !== 'production') {
+  http = require('http').Server(app);
+} else {
+  http = require('https').Server(app);
+}
 const http = require('http').Server(app)
 const io = require('socket.io')(http);
 const socketAuth = require('./middleware/socket.io/auth');
@@ -67,6 +76,18 @@ io.use(socketAuth);
 socket(io);
 
 //Server port
-const port = process.env.PORT || 5000;
+let port = process.env.PORT || 5000;
+
+if (process.env.NODE_ENV === 'production') {
+  port = 443;
+
+  // redirect to https.
+  app.use((req, res, next) => {
+    if (req.protocol === 'http') {
+      res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
 
 http.listen(port, () => console.log(`Server started on port ${port}...`))
