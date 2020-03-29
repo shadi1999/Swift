@@ -76,7 +76,6 @@ if (process.env.NODE_ENV !== 'production') {
     key
   }, app);
 }
-const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const socketAuth = require('./middleware/socket.io/auth');
 // Authenticate every socket connection user.
