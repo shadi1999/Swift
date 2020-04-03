@@ -2,7 +2,6 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const { adminOnly } = require('../../middleware/privateRoutes');
-const bcrypt = require('bcryptjs')
 // Tutor model
 const Tutor = require('../../models/Tutor');
 
@@ -51,10 +50,6 @@ router.post('/',
             }
 
             const tutor = new Tutor({ name, email, password });
-            const salt = await bcrypt.genSalt(10);
-
-            tutor.password = await bcrypt.hash(password, salt);
-
             await tutor.save();
 
             const payload = {

@@ -36,8 +36,8 @@ router.get('/', auth, adminOnly, (req, res) => {
 */
 router.get('/:id', auth, (req, res) => {
     Classroom.findOne({
-            id: req.params.id
-        }).populate('liveLecture').populate('students').populate('tutor')
+        id: req.params.id
+    }).populate('liveLecture').populate('students').populate('tutor')
         .then(classroom => {
             // Private classrooms authorization.
             if (classroom.private) {
@@ -54,11 +54,11 @@ router.get('/:id', auth, (req, res) => {
                             res.status(200).json(classroom);
                             break;
                         }
-                        default:
-                            res.status(401).json({
-                                msg: 'Unauthorized'
-                            });
-                            break;
+                    default:
+                        res.status(401).json({
+                            msg: 'Unauthorized'
+                        });
+                        break;
                 }
             }
 
@@ -71,7 +71,8 @@ router.get('/:id', auth, (req, res) => {
 
 
 // TODO: move to config.
-const url = `https://${os.hostname()}`
+// TODO: change this url to https.
+const url = `http://www.swiftcourse.me:5080`
 
 
 /*
@@ -112,7 +113,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
             tutor: thetutor._id
         });
 
-        if (private) {
+        if (Private) {
             // Add the students allowed to attend the class.
             for (let student of req.body.students) {
                 newClass.students.push(student);
@@ -121,7 +122,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
 
         // TODO: remove stream from the media server in /classrooms DELETE route.
         // Create a new stream in the media server.
-        const mediaServerApp = recordLectures ? 'WebRTCApp' : 'LiveApp';
+        const mediaServerApp = record ? 'WebRTCApp' : 'LiveApp';
         newClass.mediaServerApp = mediaServerApp;
         const newStream = await axios.post(`${url}/${mediaServerApp}/rest/v2/broadcasts/create`, {
             name: id,

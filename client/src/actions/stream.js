@@ -21,7 +21,7 @@ let webRTCAdaptor;
 export const initWebrtc = (classroomId) => async (dispatch) => {
     try {
         const classroom = await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}`);
-        const websocketURL = `wss://${window.location.hostname}:5443/${classroom.mediaServerApp}/websocket`;
+        const websocketURL = `wss://${window.location.hostname}:5443/${classroom.data.mediaServerApp}/websocket`;
 
         webRTCAdaptor = new WebRTCAdaptor({
             websocket_url: websocketURL,

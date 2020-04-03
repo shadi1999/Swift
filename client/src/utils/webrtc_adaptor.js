@@ -170,8 +170,8 @@ export default function WebRTCAdaptor(initialValues) {
                 });
         } else {
             navigator.mediaDevices.getUserMedia({
-                    audio: true
-                })
+                audio: true
+            })
                 .then(function (audioStream) {
                     stream.addTrack(audioStream.getAudioTracks()[0]);
                     thiz.gotStream(stream);
@@ -695,8 +695,8 @@ export default function WebRTCAdaptor(initialValues) {
                     if (thiz.remotePeerConnection[streamId].iceConnectionState == "connected") {
 
                         thiz.changeBandwidth(thiz.bandwidth, streamId).then(() => {
-                                console.log("Bandwidth is changed to " + thiz.bandwidth);
-                            })
+                            console.log("Bandwidth is changed to " + thiz.bandwidth);
+                        })
                             .catch(e => console.error(e));
                     }
                 }
@@ -932,6 +932,31 @@ export default function WebRTCAdaptor(initialValues) {
             });
     };
 
+	/**
+	 * If we have multiple video tracks in coming versions, this method may cause some issues
+	 */
+    this.getVideoSender = function (streamId) {
+
+        var videoSender = null;
+        // if ((adapter.browserDetails.browser === 'chrome' ||
+        // 		(adapter.browserDetails.browser === 'firefox' &&
+        // 				adapter.browserDetails.version >= 64)) &&
+        // 				'RTCRtpSender' in window &&
+        // 				'setParameters' in window.RTCRtpSender.prototype)  
+        // {
+        const senders = thiz.remotePeerConnection[streamId].getSenders();
+
+        for (let i = 0; i < senders.length; i++) {
+            if (senders[i].track != null && senders[i].track.kind == "video") {
+                videoSender = senders[i];
+                break;
+            }
+        }
+
+        // }
+        return videoSender;
+    }
+
     /**
      * bandwidth is in kbps
      */
@@ -939,7 +964,7 @@ export default function WebRTCAdaptor(initialValues) {
 
         var errorDefinition = "";
 
-        var videoSender = null;
+        var videoSender = thiz.getVideoSender(streamId);
 
         if (videoSender != null) {
             const parameters = videoSender.getParameters();

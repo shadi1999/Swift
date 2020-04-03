@@ -7,7 +7,7 @@ const axios = require('axios');
 const router = express.Router();
 
 // TODO: move to config.
-const url = `https://${os.hostname()}`
+const url = `http://www.swiftcourse.me:5080`
 
 /*
 @route  GET api/streams/publishToken?classroomId=string

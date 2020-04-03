@@ -8,6 +8,7 @@ const app = express();
 // SSL files
 const cert = fs.readFileSync('./ssl/swiftcourse-cert.crt');
 const key = fs.readFileSync('./ssl/private-key.pem');
+const ca = fs.readFileSync('./ssl/www_swiftcourse_me.ca-bundle');
 
 // Middleware
 app.use(express.json({
@@ -16,17 +17,16 @@ app.use(express.json({
 app.use(express.urlencoded({
   extended: true
 }));
-app.use(express.static('public'));
 
 // Database connection 
 const db = config.get('mongoURI');
 
 mongoose.connect(db, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  }).then(() => console.log('Mongo DB connected...'))
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+}).then(() => console.log('Mongo DB connected...'))
   .catch(err => {
     console.log(err);
     process.exit(1);
@@ -58,10 +58,10 @@ app.use('/api/auth', require('./routes/api/auth'));
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
-  app.use(express.static('client/build'));
+  app.use(express.static('public'));
 
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
   });
 }
 
@@ -73,8 +73,10 @@ if (process.env.NODE_ENV !== 'production') {
 } else {
   http = require('https').Server({
     cert,
-    key
+    key,
+    ca
   }, app);
+  console.log('production mode.....');
 }
 const io = require('socket.io')(http);
 const socketAuth = require('./middleware/socket.io/auth');

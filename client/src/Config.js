@@ -1,6 +1,6 @@
 const Config = {
     URL: {
-        Server: 'https://localhost',
+        Server: 'https://www.swiftcourse.me',
         Client: 'http://localhost:3000'
     }
 }
