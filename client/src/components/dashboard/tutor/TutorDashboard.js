@@ -6,6 +6,7 @@ import TutorSidebar from './TutorSidebar';
 import MyLectures from './MyLectures';
 import MyClassrooms from './MyClassrooms'
 import HomeDashboard from '../HomeDashboard';
+import MyClassroomInfo from './MyClassroomInfo';
 
 const { Content, Sider } = Layout;
 
@@ -17,7 +18,8 @@ const TutorDashboard = () => {
             </Sider>
             <Content>
                 <Switch>
-                    <Route path="/dashboard/myLectures" component={MyLectures} />
+                    <Route path="/dashboard/classroom/:id/info" component={MyClassroomInfo} />
+                    <Route path="/dashboard/classroom/:id/lectures" component={MyLectures} />
                     <Route path="/dashboard/myClassrooms" component={MyClassrooms} />
                     <Route path='/dashboard' component={HomeDashboard} />
                 </Switch>
