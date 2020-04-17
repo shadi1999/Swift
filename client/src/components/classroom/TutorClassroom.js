@@ -8,8 +8,23 @@ import PropTypes from 'prop-types';
 import { Result, Button, List, Avatar, Radio, Tooltip } from 'antd';
 import { HistoryOutlined } from '@ant-design/icons';
 import Stream from './Stream';
+import VideoPlayer from "./VideoPlayer";
+import axios from 'axios';
+import config from '../Config';
 
-const TutorClassroom = ({ initSocket, joinClassroom, token, lectureStarted, startLecture, stopLecture, onlineUsers, streamState }) => {
+const TutorClassroom = ({
+    initSocket,
+    joinClassroom,
+    token,
+    lectureStarted,
+    startLecture,
+    stopLecture,
+    onlineUsers,
+    streamState,
+    VideoPlayer,
+    playToken
+}) => {
+    let mediaServerApp;
     const { id } = useParams();
 
     useEffect(() => {
@@ -24,6 +39,15 @@ const TutorClassroom = ({ initSocket, joinClassroom, token, lectureStarted, star
 
         // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
+
+    useEffect(() => {
+        try {
+            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}`);
+            mediaServerApp = data.mediaServerApp;
+        } catch(e) {
+            console.log(e);
+        }
+    }, []);
 
     const StartLecture = () => {
         startLecture(id);
@@ -45,7 +69,7 @@ const TutorClassroom = ({ initSocket, joinClassroom, token, lectureStarted, star
                             <Button type="danger" onClick={StopLecture}>Stop Lecture</Button>
                             <List
                                 bordered
-                                header={<Stream classroomId={id} />}
+                                header={<Stream />}
                                 dataSource={onlineUsers}
                                 renderItem={item => (
                                     <List.Item key={item._id} actions={[<a key="options">...</a>]}>
@@ -63,6 +87,8 @@ const TutorClassroom = ({ initSocket, joinClassroom, token, lectureStarted, star
                             />
                         </Col>
                     </Row>
+                    <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
+                    {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
                 </>
             ) : (
                     <Result
@@ -71,8 +97,7 @@ const TutorClassroom = ({ initSocket, joinClassroom, token, lectureStarted, star
                         extra={<Button type="primary" onClick={StartLecture}>Start a Lecture</Button>}
                     />
                 )}
-        </Layout.Content>
-    )
+        </Layout.Content>)
 }
 
 TutorClassroom.propTypes = {
@@ -89,7 +114,13 @@ const mapStateToProps = (state) => ({
     token: state.auth.token,
     lectureStarted: state.lecture.lectureStarted,
     onlineUsers: state.lecture.onlineUsers,
-    streamState: state.stream
+    streamState: state.stream,
+    playToken: state.lecture.playToken
 });
 
-export default connect(mapStateToProps, { initSocket, joinClassroom, startLecture, stopLecture })(TutorClassroom);
+export default connect(mapStateToProps, {
+    initSocket,
+    joinClassroom,
+    startLecture,
+    stopLecture
+})(TutorClassroom);

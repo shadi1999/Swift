@@ -50,7 +50,6 @@ router.post('/',
             }
 
             const tutor = new Tutor({ name, email, password });
-
             await tutor.save();
 
             const payload = {

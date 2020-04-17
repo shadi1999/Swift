@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Input, Button, Checkbox, Form, Spin } from 'antd';
@@ -11,7 +11,11 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 
 const AddClassroom = ({ setAlert, addClassroom, loading, classrooms, getClassrooms }) => {
-    getClassrooms();
+
+    useEffect(() => {
+        getClassrooms();
+    }, []);
+
     const history = useHistory();
     const [form] = Form.useForm();
     const onFinish = values => {

@@ -11,9 +11,7 @@ import {
 } from './types';
 import axios from 'axios';
 import config from '../Config';
-import {
-    setAlert
-} from './alert';
+import { setAlert } from './alert';
 import WebRTCAdaptor from '../utils/webrtc_adaptor';
 
 let webRTCAdaptor;
@@ -21,7 +19,7 @@ let webRTCAdaptor;
 export const initWebrtc = (classroomId) => async (dispatch) => {
     try {
         const classroom = await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}`);
-        const websocketURL = `wss://${window.location.hostname}:5443/${classroom.mediaServerApp}/websocket`;
+        const websocketURL = `wss://${window.location.hostname}:5443/${classroom.data.mediaServerApp}/websocket`;
 
         webRTCAdaptor = new WebRTCAdaptor({
             websocket_url: websocketURL,
@@ -137,17 +135,18 @@ export const stopPublishing = (classroomId) => dispatch => {
     });
 }
 
-export const switchMode = (classroomId, newMode) => {
+export const switchMode = (classroomId, newMode) => dispatch => {
+    console.log(newMode, classroomId);
     switch (newMode) {
         case 'webcam':
             webRTCAdaptor.turnOnLocalCamera();
             webRTCAdaptor.switchVideoCapture(classroomId);
+            break;
         case 'screen':
             webRTCAdaptor.switchDesktopCapture(classroomId);
+            break;
         case 'audio':
             webRTCAdaptor.turnOffLocalCamera();
-        default:
-            break;
     }
 }
 

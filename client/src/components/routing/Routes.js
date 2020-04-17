@@ -21,7 +21,7 @@ const Routes = ({ auth }) => {
     return (
         <>
 
-            <Skeleton active loading={auth.loading}>
+            <Skeleton active loading={auth.loading && auth.user !== null}>
                 <AlertWrapper />
 
                 <Switch>
