@@ -217,7 +217,7 @@ router.put('/', auth, adminOnly, async (req, res) => {
 @desc   start a new lecture in the classroom.
 @access private
 */
-router.post('/:id/start', auth, async (req, res) => {
+router.post('/:id/start', auth, tutorOnly, async (req, res) => {
     try {
         const classroomId = req.params.id;
         const classroom = await Classroom.findOne({
@@ -255,7 +255,7 @@ router.post('/:id/start', auth, async (req, res) => {
 @desc   stop the live lecture in the classroom.
 @access private
 */
-router.post('/:id/stop', auth, async (req, res) => {
+router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
     try {
         const classroom = await Classroom.findOne({
             id: req.params.id

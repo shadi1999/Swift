@@ -83,6 +83,21 @@ module.exports = async io => {
             
             callback(Boolean(socket.classroom.liveLecture), onlineUsers);
         });
+
+        socket.on('allowStudent', async ({to, token}) => {
+            const tutor = await Tutor.findById(socket.user.id);
+            if(tutor) {
+                io.to(to).emit('sendPublishToken', {token});
+                io.to(classroomId).emit('streamerChanged', {newStreamer: to});
+            }
+        });
+        socket.on('disallowStudent', async ({to}) => {
+            const tutor = await Tutor.findById(socket.user.id);
+            if(tutor) {
+                // TODO: remove publishToken form student.
+                io.to(classroomId).emit('streamerChanged', {newStreamer: socket.user.id});
+            }
+        });
       
         const leave = async () => {
             if(socket.lecture) {

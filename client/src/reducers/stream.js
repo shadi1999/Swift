@@ -10,8 +10,8 @@ import {
 
 const initialState = {
     loading: false,
-    currentStreamUrl: "",
-    currentStreamerId: "",
+    // currentStreamUrl: "",
+    // currentStreamerId: "",
     isSharing: false,
     webrtcConnected: false,
     micMuted: false

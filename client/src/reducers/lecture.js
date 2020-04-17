@@ -13,7 +13,8 @@ import {
     STOP_LECTURE,
     LOAD_LECTURE,
     GET_PUBLISH_TOKEN,
-    GET_PLAY_TOKEN
+    GET_PLAY_TOKEN,
+    ALLOW_USER_STREAM
 } from '../actions/types';
 
 const initState = {
@@ -22,7 +23,8 @@ const initState = {
     lectureStarted: false,
     onlineUsers: [],
     publishToken: '',
-    playToken: ''
+    playToken: '',
+    currentStreamerId: ''
 }
 
 export default function (state = initState, action) {
@@ -41,52 +43,58 @@ export default function (state = initState, action) {
                     ...state,
                     lectureStarted: true
                 }
-                case STOP_LECTURE:
+            case STOP_LECTURE:
+            return {
+                ...state,
+                lectureStarted: false,
+                publishToken: '',
+                playToken: ''
+            }
+            case GET_MESSAGES:
+                return {
+                    ...state,
+                    messages: payload.data,
+                    loading: false
+                }
+            case LOAD_LECTURE:
+                return {
+                    ...state,
+                    lectureStarted: payload.hasStarted,
+                    onlineUsers: payload.onlineUsers
+                }
+            case USER_JOINED:
+                if (!state.onlineUsers.find(u => u._id === payload._id)) {
                     return {
                         ...state,
-                        lectureStarted: false,
-                            publishToken: '',
-                            playToken: ''
+                        onlineUsers: [...state.onlineUsers, payload]
                     }
-                    case GET_MESSAGES:
-                        return {
-                            ...state,
-                            messages: payload.data,
-                                loading: false
-                        }
-                        case LOAD_LECTURE:
-                            return {
-                                ...state,
-                                lectureStarted: payload.hasStarted,
-                                    onlineUsers: payload.onlineUsers
-                            }
-                            case USER_JOINED:
-                                if (!state.onlineUsers.find(u => u._id === payload._id)) {
-                                    return {
-                                        ...state,
-                                        onlineUsers: [...state.onlineUsers, payload]
-                                    }
-                                } else {
-                                    return state;
-                                }
-                                case USER_LEFT:
-                                    let users = state.onlineUsers.filter(u => u._id !== payload._id);
-                                    return {
-                                        ...state,
-                                        onlineUsers: users
-                                    }
-                                    case GET_PUBLISH_TOKEN:
-                                        return {
-                                            ...state,
-                                            publishToken: payload
-                                        }
-                                        case GET_PLAY_TOKEN:
-                                            return {
-                                                ...state,
-                                                playToken: payload
-                                            }
-                                            case SEND_MESSAGE:
-                                            default:
-                                                return state;
+                } else {
+                    return state;
+                }
+            case USER_LEFT:
+                let users = state.onlineUsers.filter(u => u._id !== payload._id);
+                return {
+                    ...state,
+                    onlineUsers: users
+                }
+            case GET_PUBLISH_TOKEN:
+                return {
+                    ...state,
+                    publishToken: payload.publishToken,
+                    currentStreamerId: payload.currentStreamerId
+                }
+            case GET_PLAY_TOKEN:
+                return {
+                    ...state,
+                    playToken: payload
+                }
+            case ALLOW_USER_STREAM:
+                return {
+                    ...state,
+                    currentStreamerId: payload.currentStreamerId
+                }
+            case SEND_MESSAGE:
+            default:
+                return state;
     }
 }

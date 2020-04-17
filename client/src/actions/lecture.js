@@ -13,7 +13,8 @@ import {
   STOP_LECTURE,
   LOAD_LECTURE,
   GET_PUBLISH_TOKEN,
-  GET_PLAY_TOKEN
+  GET_PLAY_TOKEN,
+  ALLOW_USER_STREAM
 } from './types';
 import io from 'socket.io-client';
 import config from '../Config';
@@ -81,6 +82,24 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
     })
   });
 
+  socket.on('sendPublishToken', ({token}) => {
+    dispatch({
+      type: GET_PUBLISH_TOKEN,
+      payload: {
+        publishToken: token,
+        currentStreamerId: getState().auth.user._id
+      }
+    });
+  });
+
+  socket.on('streamerChanged', ({newStreamer}) => {
+    dispatch({
+      type: ALLOW_USER_STREAM,
+      payload: {
+        currentStreamerId: newStreamer
+      }
+    });
+  });
 }
 
 // Does not work for more than two duplicate names.
@@ -143,7 +162,7 @@ export const sendMessage = (m) => dispatch => {
   socket.emit('sendMessage', m);
 }
 
-export const startLecture = (id) => async dispatch => {
+export const startLecture = (id) => async (dispatch, getState) => {
   try {
     await axios.post(`${config.URL.Server}/api/classrooms/${id}/start`);
     socket.emit('startLecture');
@@ -152,10 +171,12 @@ export const startLecture = (id) => async dispatch => {
     const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${id}`);
     dispatch({
       type: GET_PUBLISH_TOKEN,
-      payload: publishToken
+      payload: {
+        publishToken,
+        currentStreamerId: getState().auth.user._id
+      }
     });
   } catch (error) {
-    // TODO: add an alert.
     console.error('Error starting the lecture', error);
   }
 }
@@ -163,4 +184,19 @@ export const startLecture = (id) => async dispatch => {
 export const stopLecture = (id) => async dispatch => {
   await axios.post(`${config.URL.Server}/api/classrooms/${id}/stop`);
   socket.emit('stopLecture');
+}
+
+// Allow a student to share video/audio stream.
+export const allowStudent = (userId) => async dispatch => {
+  try {
+    // Get a token from the media server and send it to the student.
+    const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${userId}`);
+    socket.emit('allowStudent', {to: userId, token: publishToken});
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+export const disallowStudent = (userId) => async dispatch => {
+  socket.emit('disallowStudent', {to: userId});
 }

@@ -36,6 +36,7 @@ export const STOP_LECTURE = 'STOP_LECTURE';
 export const LOAD_LECTURE = 'LOAD_LECTURE';
 export const GET_PUBLISH_TOKEN = 'GET_PUBLISH_TOKEN';
 export const GET_PLAY_TOKEN = 'GET_PLAY_TOKEN';
+export const ALLOW_USER_STREAM = 'ALLOW_USER_STREAM';
 
 export const GET_MESSAGES = 'GET_MESSAGES';
 export const SET_MESSAGES = 'SET_MESSAGES';

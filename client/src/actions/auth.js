@@ -78,20 +78,16 @@ export const registerTutor = ({ name, email, password }) => async dispatch => {
 
 
 export const loadUser = () => async dispatch => {
-    if (localStorage.token) {
-        setAuthToken(localStorage.token);
-    }
-
     try {
-        const res = await axios.get(URL + '/api/auth');
-
+        const res = await axios.get('/api/auth');
+    
         dispatch({
-            type: USER_LOADED,
-            payload: res.data
+          type: USER_LOADED,
+          payload: res.data
         });
-    } catch (err) {
+      } catch (err) {
         dispatch({
-            type: AUTH_ERROR
+          type: AUTH_ERROR
         });
     }
 }
@@ -107,7 +103,7 @@ export const login = (email, password) => async dispatch => {
             type: LOGIN_SUCCESS,
             payload: res.data
         });
-        // dispatch(loadUser());
+        dispatch(loadUser());
     } catch (err) {
         const errors = err.response.data.errors;
 

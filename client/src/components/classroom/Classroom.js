@@ -5,10 +5,15 @@ import ChatContainer from './chat/ChatContainer';
 import {connect} from 'react-redux';
 import {initSocket, joinClassroom} from '../../actions/lecture';
 import PropTypes from 'prop-types';
-import { Result, Button } from 'antd';
+import { Result, Button, List, Avatar } from 'antd';
 import {HistoryOutlined} from '@ant-design/icons';
+import Stream from './Stream';
+import VideoPlayer from "./VideoPlayer";
+import axios from 'axios';
+import config from '../../Config';
 
-const Classroom = ({initSocket, joinClassroom, token, lectureStarted}) => {
+const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, VideoPlayer, playToken, publishToken, onlineUsers, currentStreamerId}) => {
+    let mediaServerApp;
     const {id} = useParams();    
 
     useEffect(() => {
@@ -23,6 +28,15 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted}) => {
         // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
 
+    useEffect(async () => {
+        try {
+            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`);
+            mediaServerApp = data.mediaServerApp;
+        } catch (e) {
+            console.log(e);
+        }
+    }, []);
+
     return (
         <Layout.Content>
             {lectureStarted ? (
@@ -32,6 +46,26 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted}) => {
                          <ChatContainer />
                      </Col>
                      <Col span={16}>
+                        <List
+                            bordered
+                            header={publishToken ? <Stream /> : ""}
+                            dataSource={onlineUsers}
+                            renderItem={item => (
+                                <List.Item key={item._id} actions={[<a key="options">...</a>]}>
+                                <List.Item.Meta
+                                    avatar={
+                                        <Avatar className={currentStreamerId === item._id ? "currentStreamer" : ""} style={{ backgroundColor: item.color, verticalAlign: 'middle' }} size="large">
+                                            {item.name}
+                                        </Avatar>
+                                    }
+                                    title={item.name}
+                                    description={item.kind}
+                                />
+                                </List.Item>
+                            )}
+                        />
+                        <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
+                        {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
                      </Col>
                  </Row>
                  </>
@@ -49,12 +83,17 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted}) => {
 Classroom.propTypes={
     token: PropTypes.string.isRequired,
     lectureStarted: PropTypes.bool.isRequired,
-    joinClassroom: PropTypes.func.isRequired
+    joinClassroom: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     token: state.auth.token,
-    lectureStarted: state.lecture.lectureStarted
+    lectureStarted: state.lecture.lectureStarted,
+    onlineUsers: state.lecture.onlineUsers,
+    streamState: state.stream,
+    playToken: state.lecture.playToken,
+    currentStreamerId: state.lecture.currentStreamerId,
+    publishToken: state.lecture.publishToken
 });
 
 export default connect(mapStateToProps, {initSocket, joinClassroom})(Classroom);

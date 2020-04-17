@@ -22,7 +22,8 @@ const TutorClassroom = ({
     onlineUsers,
     streamState,
     VideoPlayer,
-    playToken
+    playToken,
+    currentStreamerId
 }) => {
     let mediaServerApp;
     const { id } = useParams();
@@ -75,7 +76,7 @@ const TutorClassroom = ({
                                     <List.Item key={item._id} actions={[<a key="options">...</a>]}>
                                         <List.Item.Meta
                                             avatar={
-                                                <Avatar style={{ backgroundColor: item.color, verticalAlign: 'middle' }} size="large">
+                                                <Avatar className={currentStreamerId === item._id ? "currentStreamer" : ""} style={{ backgroundColor: item.color, verticalAlign: 'middle' }} size="large">
                                                     {item.name}
                                                 </Avatar>
                                             }
@@ -85,10 +86,10 @@ const TutorClassroom = ({
                                     </List.Item>
                                 )}
                             />
+                            <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
+                            {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
                         </Col>
                     </Row>
-                    <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
-                    {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
                 </>
             ) : (
                     <Result
@@ -115,7 +116,8 @@ const mapStateToProps = (state) => ({
     lectureStarted: state.lecture.lectureStarted,
     onlineUsers: state.lecture.onlineUsers,
     streamState: state.stream,
-    playToken: state.lecture.playToken
+    playToken: state.lecture.playToken,
+    currentStreamerId: state.lecture.currentStreamerId,
 });
 
 export default connect(mapStateToProps, {
