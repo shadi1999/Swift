@@ -8,6 +8,7 @@ const {
 const {
     Lecture
 } = require('../../models/Lecture');
+const Student = require('../../models/Student');
 const Tutor = require('../../models/Tutor');
 const fs = require('fs')
 const os = require('os');
@@ -36,8 +37,8 @@ router.get('/', auth, adminOnly, (req, res) => {
 */
 router.get('/:id', auth, (req, res) => {
     Classroom.findOne({
-            id: req.params.id
-        }).populate('liveLecture').populate('students').populate('tutor')
+        id: req.params.id
+    }).populate('liveLecture').populate('students').populate('tutor')
         .then(classroom => {
             // Private classrooms authorization.
             if (classroom.private) {
@@ -54,11 +55,11 @@ router.get('/:id', auth, (req, res) => {
                             res.status(200).json(classroom);
                             break;
                         }
-                        default:
-                            res.status(401).json({
-                                msg: 'Unauthorized'
-                            });
-                            break;
+                    default:
+                        res.status(401).json({
+                            msg: 'Unauthorized'
+                        });
+                        break;
                 }
             }
 
@@ -428,7 +429,7 @@ router.get('/student/:id', auth, async (req, res) => {
     try {
         let studentId = req.params.id;
         let classes = [];
-        const classrooms = await Classroom.find();
+        const classrooms = await Classroom.find().populate('tutor');
         for (var classroom of classrooms) {
             for (var student of classroom.students) {
                 if (student == studentId) {
@@ -437,6 +438,85 @@ router.get('/student/:id', auth, async (req, res) => {
             }
         }
         return res.status(200).json(classes);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+/*
+@rote   POST api/classroom/students
+@desc   Add a student to a classroom
+@access private
+*/
+router.post('/:id/students/:email', auth, tutorOnly, async (req, res) => {
+    try {
+        let { email, id } = req.params;
+        let student = await Student.findOne({ email });
+        let classroom = await Classroom.findOne({ id });
+        if (!student || !classroom) {
+            return res.status(400).json('No student or No classroom, Invaild student email or classroom id');
+        }
+        classroom = classroom.populate('students');
+        for (std of classroom.students) {
+            if (std == student._id) {
+                return res.status(400).json('student already added');
+            }
+        }
+        classroom.students.push(student._id);
+        await classroom.save();
+        return res.status(200).json(classroom);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+/*
+@rote   GET api/classroom/students
+@desc   get students of a classroom
+@access private
+*/
+router.get('/:id/students', auth, tutorOnly, async (req, res) => {
+    try {
+        let { id } = req.params;
+        let classroom = await Classroom.findOne({ id }).populate('students');
+        if (!classroom) {
+            return res.status(400).json('No classroom with this id');
+        }
+        return res.status(200).json(classroom.students);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('Error');
+    }
+});
+
+/*
+@rote   DELETE api/classroom/students
+@desc   Remove a student from a classroom
+@access private
+*/
+router.delete('/:id/students/:email', auth, tutorOnly, async (req, res) => {
+    try {
+        let deletedStudent;
+        let { email, id } = req.params;
+        let student = await Student.findOne({ email });
+        let classroom = await Classroom.findOne({ id });
+        if (!student || !classroom) {
+            return res.status(400).json('No student or No classroom, Invaild student email or classroom id');
+        }
+        classroom = classroom.populate('students');
+        for (let i = 0; i < classroom.students.length; i++) {
+            if (student._id == classroom.students[i]) {
+                deletedStudent = classroom.students.splice(i, 1);
+                i--;
+            }
+        }
+        if (!deletedStudent) {
+            return res.status(400).json('This student isn\'t in this classroom');
+        }
+        await classroom.save();
+        return res.status(200).json(classroom.students);
     } catch (error) {
         console.log(error);
         return res.status(500).json('Error');

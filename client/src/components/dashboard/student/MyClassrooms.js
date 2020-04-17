@@ -19,7 +19,11 @@ const MyClassrooms = ({ student, classrooms, loading, getClassrooms }) => {
                 dataSource={classrooms}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.id}><Link to={`/classroom/${item.id}`}>go to the classroom</Link></Card>
+                        <Card title={item.id}>
+                            <Link to={`/classroom/${item.id}`}>go to the classroom</Link><br></br>
+                            given by: {item.tutor.name}<br></br>
+                            <Link>view recorded lectures</Link>
+                        </Card>
                     </List.Item>
                 )}
             />

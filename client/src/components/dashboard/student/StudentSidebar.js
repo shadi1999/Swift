@@ -12,11 +12,6 @@ const StudentSidebar = () => {
                         <LegacyIcon type="user" />
                     Home</Link>
                 </Menu.Item>
-                <Menu.Item key="my-lectures">
-                    <Link to="/dashboard/myLectures">
-                        <LegacyIcon type="video-camera" />
-                    My lectures</Link>
-                </Menu.Item>
                 <Menu.Item key="my-classrooms">
                     <Link to="/dashboard/myClassrooms">
                         <LegacyIcon type="video-camera" />
