@@ -51,7 +51,7 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
     });
 
     // Get a token from the media server to authorize for playing the stream.
-    const playToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${classroomId}`);
+    const playToken = await axios.get(`${config.URL.Server}/api/streams/playToken?classroomId=${classroomId}`);
     dispatch({
       type: GET_PLAY_TOKEN,
       payload: playToken

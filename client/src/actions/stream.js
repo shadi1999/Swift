@@ -11,9 +11,7 @@ import {
 } from './types';
 import axios from 'axios';
 import config from '../Config';
-import {
-    setAlert
-} from './alert';
+import { setAlert } from './alert';
 import WebRTCAdaptor from '../utils/webrtc_adaptor';
 
 let webRTCAdaptor;

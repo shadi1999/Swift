@@ -1,37 +1,16 @@
-import React, {
-    useEffect
-} from 'react';
-import {
-    Layout,
-    Row,
-    Col
-} from 'antd';
-import {
-    useParams
-} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Layout, Row, Col } from 'antd';
+import { useParams } from 'react-router-dom';
 import ChatContainer from './chat/ChatContainer';
-import {
-    connect
-} from 'react-redux';
-import {
-    initSocket,
-    joinClassroom,
-    startLecture,
-    stopLecture
-} from '../../actions/lecture';
+import { connect } from 'react-redux';
+import { initSocket, joinClassroom, startLecture, stopLecture } from '../../actions/lecture';
 import PropTypes from 'prop-types';
-import {
-    Result,
-    Button,
-    List,
-    Avatar,
-    Radio,
-    Tooltip
-} from 'antd';
-import {
-    HistoryOutlined
-} from '@ant-design/icons';
+import { Result, Button, List, Avatar, Radio, Tooltip } from 'antd';
+import { HistoryOutlined } from '@ant-design/icons';
 import Stream from './Stream';
+import VideoPlayer from "./VideoPlayer";
+import axios from 'axios';
+import config from '../Config';
 
 const TutorClassroom = ({
     initSocket,
@@ -41,11 +20,12 @@ const TutorClassroom = ({
     startLecture,
     stopLecture,
     onlineUsers,
-    streamState
+    streamState,
+    VideoPlayer,
+    playToken
 }) => {
-    const {
-        id
-    } = useParams();
+    let mediaServerApp;
+    const { id } = useParams();
 
     useEffect(() => {
         initSocket(token, id);
@@ -60,6 +40,15 @@ const TutorClassroom = ({
         // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
 
+    useEffect(() => {
+        try {
+            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}`);
+            mediaServerApp = data.mediaServerApp;
+        } catch(e) {
+            console.log(e);
+        }
+    }, []);
+
     const StartLecture = () => {
         startLecture(id);
     }
@@ -69,7 +58,6 @@ const TutorClassroom = ({
     }
 
     return (
-
         <Layout.Content>
             {lectureStarted ? (
                 <>
@@ -99,7 +87,8 @@ const TutorClassroom = ({
                             />
                         </Col>
                     </Row>
-                    <video id="localVideo" autoplay muted controls playsinline></video>
+                    <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
+                    {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
                 </>
             ) : (
                     <Result
@@ -125,7 +114,8 @@ const mapStateToProps = (state) => ({
     token: state.auth.token,
     lectureStarted: state.lecture.lectureStarted,
     onlineUsers: state.lecture.onlineUsers,
-    streamState: state.stream
+    streamState: state.stream,
+    playToken: state.lecture.playToken
 });
 
 export default connect(mapStateToProps, {

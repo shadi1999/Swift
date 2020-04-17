@@ -94,3 +94,10 @@ body {
 .ant-input-group-addon {
   padding: 0;
 }
+
+/*
+  Stream
+*/
+.hide {
+  display: none;
+}
