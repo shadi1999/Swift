@@ -18,7 +18,11 @@ const MyClassrooms = ({ tutor, classrooms, loading, getClassrooms }) => {
                 dataSource={classrooms}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.id}><Link to={`/classroom/${item.id}/tutor`}>go to the classroom</Link></Card>
+                        <Card title={item.id}>
+                            <Link to={`/classroom/${item.id}/tutor`}>go to the classroom</Link><br></br>
+                            <Link to={`/dashboard/classroom/${item.id}/info`}>view information</Link><br></br>
+                            <Link to={`/dashboard/classroom/${item.id}/lectures`}>view lectures</Link>
+                        </Card>
                     </List.Item>
                 )}
             />

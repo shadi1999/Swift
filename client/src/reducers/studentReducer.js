@@ -25,10 +25,6 @@ export default function (state = initialState, action) {
                 classrooms: payload
             }
         default:
-            return {
-                loading: true,
-                lectures: [],
-                classrooms: []
-            }
+            return initialState;
     }
 }

@@ -10,7 +10,7 @@
     "client": "npm start --prefix client",
     "MongoDB-MacOS": "mkdir mongo-db; mongod --dbpath mongo-db",
     "MongoDB-Windows": "md mongo-db & \"C:/Program Files/MongoDb/Server/4.2/bin/mongod.exe\" --dbpath mongo-db",
-    "program": "concurrently \"npm run MongoDB-Windows\"  \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run MongoDB-Windows\"  \"npm run server\" \"npm run client\""
   },
   "author": "Shadi",
   "license": "MIT",

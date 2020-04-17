@@ -147,10 +147,11 @@ export const loginAsGuest = name => async dispatch => {
 }
 
 export const logout = (history, redirectPath) => async dispatch => {
+    localStorage.setItem('token', '');
     setTimeout(() => {
+        history.push(redirectPath);
         dispatch({
             type: LOGOUT
         });
-        history.push(redirectPath);
     }, 2000)
 }

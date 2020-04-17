@@ -12,15 +12,10 @@ const TutorSidebar = () => {
                         <LegacyIcon type="user" />
                     Home</Link>
                 </Menu.Item>
-                <Menu.Item key="my-lectures">
+                <Menu.Item key="my-classrooms">
                     <Link to="/dashboard/myClassrooms">
                         <LegacyIcon type="video-camera" />
                         my Classrooms</Link>
-                </Menu.Item>
-                <Menu.Item key="my-classrooms">
-                    <Link to="/dashboard/myLectures">
-                        <LegacyIcon type="user" />
-                        my lectures</Link>
                 </Menu.Item>
             </Menu>
         </Fragment>
