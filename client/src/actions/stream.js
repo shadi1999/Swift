@@ -137,17 +137,18 @@ export const stopPublishing = (classroomId) => dispatch => {
     });
 }
 
-export const switchMode = (classroomId, newMode) => {
+export const switchMode = (classroomId, newMode) => dispatch => {
+    console.log(newMode, classroomId);
     switch (newMode) {
         case 'webcam':
             webRTCAdaptor.turnOnLocalCamera();
             webRTCAdaptor.switchVideoCapture(classroomId);
+            break;
         case 'screen':
             webRTCAdaptor.switchDesktopCapture(classroomId);
+            break;
         case 'audio':
             webRTCAdaptor.turnOffLocalCamera();
-        default:
-            break;
     }
 }
 

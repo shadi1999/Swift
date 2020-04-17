@@ -97,9 +97,9 @@ const TutorClassroom = ({
                                     </List.Item>
                                 )}
                             />
-                            <video id="localVideo"></video>
                         </Col>
                     </Row>
+                    <video id="localVideo" autoplay muted controls playsinline></video>
                 </>
             ) : (
                     <Result
