@@ -10,7 +10,7 @@ import { HistoryOutlined } from '@ant-design/icons';
 import Stream from './Stream';
 import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
-import config from '../Config';
+import config from '../../Config';
 
 const TutorClassroom = ({
     initSocket,
@@ -40,11 +40,11 @@ const TutorClassroom = ({
         // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
 
-    useEffect(() => {
+    useEffect(async () => {
         try {
-            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${classroomId}`);
+            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`);
             mediaServerApp = data.mediaServerApp;
-        } catch(e) {
+        } catch (e) {
             console.log(e);
         }
     }, []);

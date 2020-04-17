@@ -1,12 +1,10 @@
 import React from 'react';
 import Clappr from 'clappr';
 
-export default React.createClass({
-  propTypes: {
-    source: React.PropTypes.string
-  },
+export default class VideoPlayer {
 
-  shouldComponentUpdate: function(nextProps, nextState) {
+
+  shouldComponentUpdate(nextProps, nextState) {
     let changed = (nextProps.source != this.props.source);
     this.props = nextProps;
     this.state = nextState;
@@ -14,24 +12,24 @@ export default React.createClass({
       this.change(nextProps.source);
     }
     return false;
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.change(this.props.source);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.destroyPlayer();
-  },
-  
+  }
+
   destroyPlayer() {
     if (this.player) {
       this.player.destroy();
     }
     this.player = null;
-  },
+  }
 
-  change: function(source) {
+  change(source) {
     if (this.player) {
       this.destroyPlayer();
     }
@@ -44,13 +42,13 @@ export default React.createClass({
         enableWorker: true
       }
     });
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div>
         <div ref="player"></div>
       </div>
     );
   }
-});
+};
