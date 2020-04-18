@@ -10,7 +10,7 @@ const Slides = () => {
     const canvasRef = useRef(null);
   
     const { pdfDocument, pdfPage } = usePdf({
-      file: 'http://localhost:5000/TM355_Session_1.pdf',
+      file: 'TM355_Session_1.pdf',
       page,
       canvasRef
     });
