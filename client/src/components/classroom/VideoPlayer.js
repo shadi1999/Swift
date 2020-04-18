@@ -41,8 +41,8 @@ class VideoPlayer extends React.Component {
     this.player = new Clappr.Player({
       parent: this.refs.player,
       source: source,
-      width: '250px',
-      height: '500px',
+      width: '100%',
+      height: '100%',
       hlsjsConfig: {
         enableWorker: true
       }
@@ -51,9 +51,7 @@ class VideoPlayer extends React.Component {
 
   render() {
     return (
-      <div>
-        <div ref="player"></div>
-      </div>
+      <div className="clappr-vid" ref="player"></div>
     );
   }
 };

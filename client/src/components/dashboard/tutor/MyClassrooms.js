@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { List, Card } from 'antd';
+import { List, Card, Button } from 'antd';
 import { connect } from 'react-redux';
 import { getClassrooms } from '../../../actions/tutorActions';
 import PropTypes from 'prop-types';
@@ -18,10 +18,9 @@ const MyClassrooms = ({ tutor, classrooms, loading, getClassrooms }) => {
                 dataSource={classrooms}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.id}>
-                            <Link to={`/classroom/${item.id}/tutor`}>go to the classroom</Link><br></br>
-                            <Link to={`/dashboard/classroom/${item.id}/info`}>view information</Link><br></br>
-                            <Link to={`/dashboard/classroom/${item.id}/lectures`}>view lectures</Link>
+                        <Card theme="dark" className="classroom-card" title={item.id} extra={<Link to={`/dashboard/classroom/${item.id}/info`}>Edit Info</Link>}>
+                            <Button type="primary" href={`/classroom/${item.id}/tutor`}>Go to Classroom</Button>
+                            <Button href={`/dashboard/classroom/${item.id}/lectures`}>View Lectures</Button>
                         </Card>
                     </List.Item>
                 )}

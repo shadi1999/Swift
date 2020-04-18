@@ -29,7 +29,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Layout>
+          <Layout style={{minHeight: '100vh'}}>
             <Header style={{ height: '130px' }}>
               <Navbar />
             </Header>
@@ -40,7 +40,7 @@ function App() {
               </Switch>
             </Layout>
             <Footer>
-              <ContactUs />
+              Swift Course - A Fast and Affordable Online Classroom System
             </Footer>
           </Layout>
         </Fragment>

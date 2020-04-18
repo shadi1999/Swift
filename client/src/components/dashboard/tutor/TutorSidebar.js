@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { Menu } from 'antd';
+import { HomeOutlined, VideoCameraOutlined } from '@ant-design/icons';
+
 
 const TutorSidebar = () => {
     return (
@@ -9,13 +11,13 @@ const TutorSidebar = () => {
             <Menu theme="dark" mode="inline" >
                 <Menu.Item key="home">
                     <Link to="/dashboard">
-                        <LegacyIcon type="user" />
+                        <HomeOutlined />
                     Home</Link>
                 </Menu.Item>
                 <Menu.Item key="my-classrooms">
                     <Link to="/dashboard/myClassrooms">
-                        <LegacyIcon type="video-camera" />
-                        my Classrooms</Link>
+                        <VideoCameraOutlined />
+                        My Classrooms</Link>
                 </Menu.Item>
             </Menu>
         </Fragment>

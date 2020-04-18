@@ -5,29 +5,15 @@ import React, {
 import {
     useParams
 } from 'react-router-dom';
-import {
-    Button,
-    Input,
-    Spin,
-    Upload,
-    message
-} from 'antd';
-import {
-    LoadingOutlined
-} from '@ant-design/icons';
+import {Button, Input, Spin, Upload, message} from 'antd';
+import {LoadingOutlined} from '@ant-design/icons';
 import ChatMessage from './ChatMessage';
-import {
-    connect
-} from 'react-redux';
-import {
-    sendMessage,
-    loadMessages
-} from '../../../actions/lecture';
+import {connect} from 'react-redux';
+import {sendMessage, loadMessages} from '../../../actions/lecture';
 import PropTypes from 'prop-types';
-import {
-    UploadOutlined
-} from '@ant-design/icons';
+import {UploadOutlined, SendOutlined} from '@ant-design/icons';
 import config from '../../../Config';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 const ChatContainer = ({
     messages,
@@ -80,8 +66,7 @@ const ChatContainer = ({
 
     const btns = (
         <>
-            <Button type="submit" onClick={onClick}>
-                Send</Button>
+            <Button type="submit" onClick={onClick} icon={<SendOutlined />}>Send</Button>
             <Upload {...props}>
                 <Button>
                     <UploadOutlined />
@@ -94,13 +79,15 @@ const ChatContainer = ({
     // TODO: submit on clicking enter.
 
     return (
-        <div>
-            {!loading ? messages.map((m, i) => {
-                let user = onlineUsers.find(u => m.sender === u._id);
-                if (user === undefined) return;
-                return <ChatMessage key={i} message={m.text} senderFirstName={user.name} color={user.color} type={m.type} />
-            }) : <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}></Spin>
-            }
+        <div className="chat-container">
+            <ScrollToBottom className="chat-messages">
+                {!loading ? messages.map((m, i) => {
+                    let user = onlineUsers.find(u => m.sender === u._id);
+                    if (user === undefined) return;
+                    return <ChatMessage key={i} message={m.text} senderFirstName={user.name} color={user.color} type={m.type} />
+                }) : <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}></Spin>
+                }
+            </ScrollToBottom>
             <Input onChange={e => setMsg({ text: e.target.value, type: 'text' })} addonAfter={btns} />
         </div>
     )

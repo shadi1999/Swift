@@ -5,12 +5,13 @@ import ChatContainer from './chat/ChatContainer';
 import { connect } from 'react-redux';
 import { initSocket, joinClassroom, startLecture, stopLecture } from '../../actions/lecture';
 import PropTypes from 'prop-types';
-import { Result, Button, List, Avatar, Radio, Tooltip } from 'antd';
-import { HistoryOutlined } from '@ant-design/icons';
+import { Result, Button, List, Avatar, Radio, Tooltip, Menu, Dropdown } from 'antd';
+import { HistoryOutlined, MoreOutlined, StopOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
 import Stream from './Stream';
 import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
 import config from '../../Config';
+import Slides from "./Slides";
 
 const TutorClassroom = ({
     initSocket,
@@ -62,22 +63,43 @@ const TutorClassroom = ({
         stopLecture(id);
     }
 
+    const optionsMenu = (
+        <Menu>
+          <Menu.Item key="0">
+            <VideoCameraAddOutlined />
+            Allow to speak
+          </Menu.Item>
+          <Menu.Item key="1">
+            <StopOutlined />
+            Ban from chat
+          </Menu.Item>
+        </Menu>
+      );
+
     return (
         <Layout.Content>
             {lectureStarted ? (
                 <>
-                    <Row>
-                        <Col span={8}>
+                    <Row justify="space-around" className="classroom">
+                        <Col span={6}>
                             <ChatContainer />
+                            <video id="localVideo" className={streamState.isSharing ? "clappr-vid" : "hide"} autoPlay muted playsInline></video>
+                            {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
                         </Col>
-                        <Col span={16}>
+                        <Col span={11}>
+                            <Slides />
+                        </Col>
+                        <Col span={5}>
                             <Button type="danger" onClick={StopLecture}>Stop Lecture</Button>
                             <List
                                 bordered
                                 header={<Stream />}
                                 dataSource={onlineUsers}
                                 renderItem={item => (
-                                    <List.Item key={item._id} actions={[<a key="options">...</a>]}>
+                                    <List.Item key={item._id} actions={[<Dropdown overlay={optionsMenu} trigger={['click']}>
+                                        <a onClick={e => e.preventDefault()}><MoreOutlined /></a>
+                                        </Dropdown>]}
+                                    >
                                         <List.Item.Meta
                                             avatar={
                                                 <Avatar className={currentStreamerId === item._id ? "currentStreamer" : ""} style={{ backgroundColor: item.color, verticalAlign: 'middle' }} size="large">
@@ -90,8 +112,6 @@ const TutorClassroom = ({
                                     </List.Item>
                                 )}
                             />
-                            <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
-                            {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
                         </Col>
                     </Row>
                 </>

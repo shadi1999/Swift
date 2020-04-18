@@ -11,6 +11,7 @@ import Stream from './Stream';
 import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
 import config from '../../Config';
+import Slides from "./Slides";
 
 const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, playToken, publishToken, onlineUsers, currentStreamerId}) => {
     let mediaServerApp = "LiveApp";
@@ -46,11 +47,16 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
         <Layout.Content>
             {lectureStarted ? (
                  <>
-                 <Row>
-                     <Col span={8}>
-                         <ChatContainer />
+                <Row justify="space-around" className="classroom">
+                     <Col span={6}>
+                        <ChatContainer />
+                        <video id="localVideo" className={streamState.isSharing ? "clappr-vid" : "hide"} autoPlay muted></video>
+                        {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
                      </Col>
-                     <Col span={16}>
+                     <Col span={11}>
+                            <Slides />
+                        </Col>
+                     <Col span={5}>
                         <List
                             bordered
                             header={publishToken ? <Stream /> : ""}
@@ -69,8 +75,6 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
                                 </List.Item>
                             )}
                         />
-                        <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
-                        {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
                      </Col>
                  </Row>
                  </>

@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { editClassroom, deleteClassroom } from '../../../actions/adimnActions';
 import { Fragment } from 'react';
 import { setAlert } from '../../../actions/alert';
+import { EditFilled, DeleteFilled } from '@ant-design/icons';
 
 const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) => {
     const history = useHistory();
@@ -51,22 +52,22 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
 
     return (
         <Fragment>
-            <h1>Edit classroom</h1>
-            <p>
-                Edit the classrooms information.
-        </p>
+            <h1>Edit Classroom</h1>
+            {/* <p>
+                Edit the classroom's information.
+        </p> */}
             <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}>
-                <Form form={form} onFinish={onFinish}>
-                    <Form.Item name="newId" rules={[{ required: true, message: 'Please input id!' }]}>
+                <Form form={form} onFinish={onFinish} className="center-form">
+                    <Form.Item name="newId" label="Classroom ID" rules={[{ required: true, message: 'Please input id!' }]}>
                         <Input
-                            prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            prefix={<Icon type="video-camera" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             placeholder="id of classroom"
                         />
                     </Form.Item>
 
-                    <Form.Item name="email" rules={[{ required: true, message: 'Please input email of tutor!' }]}>
+                    <Form.Item name="email" label="Tutor's email" rules={[{ required: true, message: 'Please input email of tutor!' }]}>
                         <Input
-                            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             placeholder="email of tutor"
                         />
                     </Form.Item>
@@ -78,14 +79,14 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
                     <Form.Item name="record" valuePropName="checked">
                         <Checkbox>Recored Lecture</Checkbox>
                     </Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Edit Classroom
+                    <Button type="primary" htmlType="submit" icon={<EditFilled />}>
+                        Submit
                 </Button>
                     <br></br><br></br>
                     <Popconfirm title="Are you sure that you want to delete the classroom?"
                         okText="Yes" cancelText="No" onConfirm={onConfirm} okType="danger"
                         icon={<QuestionCircleOutlined style={{ color: 'red' }}></QuestionCircleOutlined>} >
-                        <Button type="primary" danger>
+                        <Button type="primary" danger icon={<DeleteFilled />}>
                             Delete the classroom
                     </Button>
                     </Popconfirm>

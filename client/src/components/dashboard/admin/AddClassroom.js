@@ -31,20 +31,20 @@ const AddClassroom = ({ setAlert, addClassroom, loading, classrooms, getClassroo
 
     return (
         <Fragment>
-            <h1>Add Classroom</h1>
+            <h1>Add a New Classroom</h1>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}>
                 <Form form={form} onFinish={onFinish} initialValues={{ Private: false, record: false }}>
                     <Form.Item name="id" rules={[{ required: true, message: 'Please input the course id!' }]}>
                         <Input
-                            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="course id"
+                            prefix={<Icon type="video-camera" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            placeholder="Classroom ID"
                         />
                     </Form.Item>
 
                     <Form.Item name="tutor" rules={[{ required: true, message: 'Please input the tutor email!' }]}>
                         <Input
                             prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="email of tutor"
+                            placeholder="Email of new classroom's tutor"
                         />
                     </Form.Item>
 

@@ -4,8 +4,10 @@ import { Menu, Dropdown, Avatar } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
-import Logo from '../../logo.png';
+import Logo from '../../default-monochrome.svg';
 import { Link, useHistory } from 'react-router-dom';
+import {LogoutOutlined, IdcardOutlined} from '@ant-design/icons';
+
 const Navbar = ({ isAuthenticated, user, logout }) => {
     const history = useHistory();
     let welcome;
@@ -16,13 +18,14 @@ const Navbar = ({ isAuthenticated, user, logout }) => {
     const menu = (
         <Fragment>
             <Menu>
-                <Menu.Item onClick={onClick} >
-                    Log out
-          </Menu.Item>
                 <Menu.Item >
-                    <LegacyIcon name='user' type='user'></LegacyIcon>
-                    My Profile
+                    <IdcardOutlined />
+                    My profile
                     <Link to="/myProfile"></Link>
+                </Menu.Item>
+                <Menu.Item onClick={onClick} >
+                    <LogoutOutlined />
+                    Log out
                 </Menu.Item>
             </Menu>
         </Fragment>
