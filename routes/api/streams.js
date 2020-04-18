@@ -35,7 +35,7 @@ router.get('/publishToken', auth, async (req, res) => {
         // TODO: let the tutor get a new token when it expires during the stream (so the stream won't stop).
         const expiresIn = Date.now() + 3600 * 4 * 1000; // Expires in four hours.
         const mediaServerApp = classroom.recordLectures ? 'WebRTCApp' : 'LiveApp';
-        const token = await axios.get(`${url}/${mediaServerApp}/rest/v2/broadcasts/${classroomId}/token?type=publish&expireDate=${expiresIn}`);
+        const data = await axios.get(`${url}/${mediaServerApp}/rest/v2/broadcasts/${classroomId}/token?type=publish&expireDate=${expiresIn}`);
 
         res.status(200).send(token);
     } catch (err) {

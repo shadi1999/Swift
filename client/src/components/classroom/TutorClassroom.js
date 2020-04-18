@@ -21,11 +21,10 @@ const TutorClassroom = ({
     stopLecture,
     onlineUsers,
     streamState,
-    VideoPlayer,
     playToken,
     currentStreamerId
 }) => {
-    let mediaServerApp;
+    let mediaServerApp = "LiveApp";
     const { id } = useParams();
 
     useEffect(() => {
@@ -41,13 +40,18 @@ const TutorClassroom = ({
         // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
 
-    useEffect(async () => {
-        try {
-            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`);
-            mediaServerApp = data.mediaServerApp;
-        } catch (e) {
-            console.log(e);
+    useEffect(() => {
+        async function getClassroom() {
+            try {
+                // TODO: move mediaServerApp to lecture redux state.
+                const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`, {headers: {"x-auth-token": token}});
+                console.log(data);
+                mediaServerApp = data.mediaServerApp;
+            } catch (e) {
+                console.log(e);
+            }    
         }
+        getClassroom();
     }, []);
 
     const StartLecture = () => {
@@ -87,7 +91,7 @@ const TutorClassroom = ({
                                 )}
                             />
                             <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
-                            {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
+                            {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
                         </Col>
                     </Row>
                 </>

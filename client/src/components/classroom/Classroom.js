@@ -12,8 +12,8 @@ import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
 import config from '../../Config';
 
-const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, VideoPlayer, playToken, publishToken, onlineUsers, currentStreamerId}) => {
-    let mediaServerApp;
+const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, playToken, publishToken, onlineUsers, currentStreamerId}) => {
+    let mediaServerApp = "LiveApp";
     const {id} = useParams();    
 
     useEffect(() => {
@@ -28,13 +28,18 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
         // return leave()... socket.io leaves automatically
     }, [lectureStarted, id]);
 
-    useEffect(async () => {
-        try {
-            const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`);
-            mediaServerApp = data.mediaServerApp;
-        } catch (e) {
-            console.log(e);
+    useEffect(() => {
+        async function getClassroom() {
+            try {
+                const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`, {headers: {"x-auth-token": token}});
+                console.log(data);
+
+                mediaServerApp = data.mediaServerApp;
+            } catch (e) {
+                console.log(e);
+            }
         }
+        getClassroom();
     }, []);
 
     return (
@@ -65,7 +70,7 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
                             )}
                         />
                         <video className={streamState.isSharing ? "" : "hide"} id="localVideo" autoplay muted controls playsinline></video>
-                        {!streamState.isSharing ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/${id}.m3u8?token=${playToken}`} />) : ""}
+                        {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
                      </Col>
                  </Row>
                  </>

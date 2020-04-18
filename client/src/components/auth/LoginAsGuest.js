@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loginAsGuest } from '../../actions/auth';
 
-const LoginAsGuest = ({form, loginAsGuest, isAuthenticated}) => {
+const LoginAsGuest = ({form, loginAsGuest, isAuthenticated, user}) => {
     const handleSubmit = async e => {
         e.preventDefault();
         form.validateFields((err, values) => {
@@ -17,7 +17,7 @@ const LoginAsGuest = ({form, loginAsGuest, isAuthenticated}) => {
         });
     };
 
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
         return <Redirect to='/dashboard' />;
     }
 
@@ -54,7 +54,8 @@ LoginAsGuest.propTypes = {
 const Wrapped = Form.create({ name: 'login-as-guest' })(LoginAsGuest);
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user
 });
 
 export default connect(mapStateToProps, {loginAsGuest})(Wrapped);

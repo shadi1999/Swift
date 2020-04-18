@@ -79,7 +79,7 @@ export const registerTutor = ({ name, email, password }) => async dispatch => {
 
 export const loadUser = () => async dispatch => {
     try {
-        const res = await axios.get('/api/auth');
+        const res = await axios.get(URL + '/api/auth/');
     
         dispatch({
           type: USER_LOADED,

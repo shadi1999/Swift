@@ -7,14 +7,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login } from '../../actions/auth';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, user }) => {
     const [form] = Form.useForm();
     const onFinish = values => {
         const { email, password } = values;
         login(email, password);
     }
 
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
         return <Redirect to='/dashboard' />;
     }
 
@@ -71,7 +71,8 @@ Login.propTypes = {
 
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user
 });
 
 export default connect(mapStateToProps, { login })(Login);

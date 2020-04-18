@@ -1,8 +1,12 @@
 import React from 'react';
 import Clappr from 'clappr';
+import { connect } from 'react-redux';
 
-export default class VideoPlayer {
-
+class VideoPlayer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     let changed = (nextProps.source != this.props.source);
@@ -33,11 +37,12 @@ export default class VideoPlayer {
     if (this.player) {
       this.destroyPlayer();
     }
+    console.log(source);
     this.player = new Clappr.Player({
       parent: this.refs.player,
       source: source,
-      width: '100%',
-      height: '100%',
+      width: '250px',
+      height: '500px',
       hlsjsConfig: {
         enableWorker: true
       }
@@ -52,3 +57,6 @@ export default class VideoPlayer {
     );
   }
 };
+
+export default VideoPlayer;
+// export default connect()(VideoPlayer);
