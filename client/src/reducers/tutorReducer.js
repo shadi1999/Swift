@@ -46,14 +46,14 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                students: [...state.students, payload]
+                students: [...state.students, payload],
             }
         case GET_STUDENTS_OF_CLASSROOM_SUCCESS:
         case DELETE_STUDENT_FROM_CLASSROOM_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                students: payload
+                students: payload,
             }
         case GET_STUDENTS_OF_CLASSROOM_FAIL:
         case ADD_STUDENT_TO_CLASSROOM_FAIL:

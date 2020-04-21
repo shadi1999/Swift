@@ -63,13 +63,14 @@ export const addStudentToClassroom = (email, id, history, redirectPath) => async
         dispatch({
             type: ADD_STUDENT_TO_CLASSROOM
         })
-        const student = await axios.post(URL + `/api/classroom/${id}/students/${email}`)
+        const student = await axios.post(URL + `/api/classrooms/${id}/students/${email}`)
         dispatch({
             type: ADD_STUDENT_TO_CLASSROOM_SUCCESS,
             payload: student.data
         })
         history.push(redirectPath);
     } catch (err) {
+        console.log(err);
         dispatch({
             type: ADD_STUDENT_TO_CLASSROOM_FAIL
         })
@@ -93,7 +94,7 @@ export const deleteStudentFromClassroom = (email, id, history, redirectPath) => 
         dispatch({
             type: DELETE_STUDENT_FROM_CLASSROOM
         })
-        const students = await axios.delete(URL + `/api/classroom/${id}/students/${email}`, config);
+        const students = await axios.delete(URL + `/api/classrooms/${id}/students/${email}`, config);
         dispatch({
             type: DELETE_STUDENT_FROM_CLASSROOM_SUCCESS,
             payload: students.data
@@ -113,7 +114,7 @@ export const deleteStudentFromClassroom = (email, id, history, redirectPath) => 
     }
 }
 
-export const getStudentsFromClassroom = (id, history, redirectPath) => async dispatch => {
+export const getStudentsFromClassroom = (id) => async dispatch => {
     try {
         const config = {
             headers: {
@@ -123,12 +124,11 @@ export const getStudentsFromClassroom = (id, history, redirectPath) => async dis
         dispatch({
             type: GET_STUDENTS_OF_CLASSROOM
         })
-        const students = await axios.get(URL + `/api/classroom/${id}/students`, config);
+        const students = await axios.get(URL + `/api/classrooms/${id}/students`, config);
         dispatch({
             type: GET_STUDENTS_OF_CLASSROOM_SUCCESS,
             payload: students.data
         })
-        history.push(redirectPath);
     } catch (err) {
         dispatch({
             type: GET_STUDENTS_OF_CLASSROOM_FAIL

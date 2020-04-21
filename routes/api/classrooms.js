@@ -466,7 +466,7 @@ router.post('/:id/students/:email', auth, tutorOnly, async (req, res) => {
         }
         classroom.students.push(student._id);
         await classroom.save();
-        return res.status(200).json(classroom);
+        return res.status(200).json(student);
     } catch (error) {
         console.log(error);
         return res.status(500).json('Error');
@@ -502,20 +502,15 @@ router.delete('/:id/students/:email', auth, tutorOnly, async (req, res) => {
         let deletedStudent;
         let { email, id } = req.params;
         let student = await Student.findOne({ email });
-        let classroom = await Classroom.findOne({ id });
-        if (!student || !classroom) {
-            return res.status(400).json('No student or No classroom, Invaild student email or classroom id');
+        // let classroom = await Classroom.findOne({ id });
+        if (!student) {
+            return res.status(400).json('No student, Invaild student email');
         }
-        classroom = classroom.populate('students');
-        for (let i = 0; i < classroom.students.length; i++) {
-            if (student._id == classroom.students[i]) {
-                deletedStudent = classroom.students.splice(i, 1);
-                i--;
-            }
-        }
-        if (!deletedStudent) {
-            return res.status(400).json('This student isn\'t in this classroom');
-        }
+
+        const classroom = await Classroom.findOne({ id }).populate('students');
+
+        classroom.students.remove(student._id)
+
         await classroom.save();
         return res.status(200).json(classroom.students);
     } catch (error) {
