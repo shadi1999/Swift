@@ -13,7 +13,7 @@ const Tutor = require('../../models/Tutor');
 const fs = require('fs')
 const os = require('os');
 const axios = require('axios');
-
+const User = require('../../models/User');
 //Classroom model
 const Classroom = require('../../models/Classroom');
 
@@ -363,6 +363,18 @@ router.get('/tutor/:id/lectures', auth, tutorOnly, async (req, res) => {
             if (classroom.tutor == tutorId) {
                 let lecture = await classroom.populate('pastLectures').execPopulate();
                 lectures.push(lecture);
+            }
+        }
+        for (var classroom of classrooms) {
+            for (var lecture of classroom.pastLectures) {
+                for (var attendance of lecture.attendance) {
+                    if (attendance.user) {
+                        const u = await User.findById(attendance.user);
+                        if (u) {
+                            attendance.user = u;
+                        }
+                    }
+                }
             }
         }
         return res.status(200).json(lectures);

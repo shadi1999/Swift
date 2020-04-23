@@ -9,13 +9,25 @@ const MyLectures = ({ tutor, lectures, loading, getLectures }) => {
     let idLectures = [];
     for (let lecture of lectures) {
         if (lecture.id === id) {
+            console.log(lecture);
+
             idLectures.push(lecture);
         }
     }
     useEffect(() => {
         getLectures(tutor);
     }, []);
+    const time_convert = (duration) => {
+        var seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes + ":" + seconds;
+    }
     return (
         <Fragment>
             <List
@@ -23,12 +35,14 @@ const MyLectures = ({ tutor, lectures, loading, getLectures }) => {
                 grid={{ gutter: 16, column: 4 }}
                 dataSource={idLectures}
                 renderItem={item => (
-                    <List.Item>
-                        <Card title={item.id}><div>Started On: {item.pastLectures.startedOn}<br></br> Ended On: {item.pastLectures.endedOn}</div>
-                            <div>Attendance:<br></br> {
-                                item.pastLectures.attendance ?
-                                    item.pastLectures.attendance.map(t => <Fragment><p>{'user:' + t.user + ' duration:' + t.duration}</p></Fragment>) : <Fragment><div>No One.</div></Fragment>}</div></Card>
-                    </List.Item>
+                    item.pastLectures.map(id =>
+                        <List.Item>
+                            <Card style={{ width: 200 }} title={item.id}><div>Started On:<br></br> {id.startedOn}<br></br> Ended On:<br></br> {id.endedOn}</div>
+                                <div>Attendance:<br></br> {
+                                    id.attendance ?
+                                        id.attendance.map(t => <Fragment><p><br></br>{'user name:' + t.user.name} <br></br> {'email:' + t.user.email} <br></br> {' duration:' + time_convert(t.duration)}</p></Fragment>) : <Fragment><div>No One.</div></Fragment>}</div></Card>
+                        </List.Item>
+                    )
                 )}
             />
         </Fragment>
