@@ -13,7 +13,7 @@ const Tutor = require('../../models/Tutor');
 const fs = require('fs')
 const os = require('os');
 const axios = require('axios');
-
+const User = require('../../models/User');
 //Classroom model
 const Classroom = require('../../models/Classroom');
 
@@ -364,6 +364,18 @@ router.get('/tutor/:id/lectures', auth, tutorOnly, async (req, res) => {
                 lectures.push(lecture);
             }
         }
+        for (var classroom of classrooms) {
+            for (var lecture of classroom.pastLectures) {
+                for (var attendance of lecture.attendance) {
+                    if (attendance.user) {
+                        const u = await User.findById(attendance.user);
+                        if (u) {
+                            attendance.user = u;
+                        }
+                    }
+                }
+            }
+        }
         return res.status(200).json(lectures);
     } catch (error) {
         console.log(error);
@@ -465,7 +477,7 @@ router.post('/:id/students/:email', auth, tutorOnly, async (req, res) => {
         }
         classroom.students.push(student._id);
         await classroom.save();
-        return res.status(200).json(classroom);
+        return res.status(200).json(student);
     } catch (error) {
         console.log(error);
         return res.status(500).json('Error');
@@ -501,20 +513,15 @@ router.delete('/:id/students/:email', auth, tutorOnly, async (req, res) => {
         let deletedStudent;
         let { email, id } = req.params;
         let student = await Student.findOne({ email });
-        let classroom = await Classroom.findOne({ id });
-        if (!student || !classroom) {
-            return res.status(400).json('No student or No classroom, Invaild student email or classroom id');
+        // let classroom = await Classroom.findOne({ id });
+        if (!student) {
+            return res.status(400).json('No student, Invaild student email');
         }
-        classroom = classroom.populate('students');
-        for (let i = 0; i < classroom.students.length; i++) {
-            if (student._id == classroom.students[i]) {
-                deletedStudent = classroom.students.splice(i, 1);
-                i--;
-            }
-        }
-        if (!deletedStudent) {
-            return res.status(400).json('This student isn\'t in this classroom');
-        }
+
+        const classroom = await Classroom.findOne({ id }).populate('students');
+
+        classroom.students.remove(student._id)
+
         await classroom.save();
         return res.status(200).json(classroom.students);
     } catch (error) {

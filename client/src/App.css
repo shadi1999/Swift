@@ -20,6 +20,10 @@ body {
   background-size: cover;
 }
 
+.hide-list {
+  display: none;
+}
+
 
 .welcome-username .ant-avatar {
   margin-right: 7px;
