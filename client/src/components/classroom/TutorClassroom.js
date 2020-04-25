@@ -3,10 +3,10 @@ import { Layout, Row, Col } from 'antd';
 import { useParams } from 'react-router-dom';
 import ChatContainer from './chat/ChatContainer';
 import { connect } from 'react-redux';
-import { initSocket, joinClassroom, startLecture, stopLecture } from '../../actions/lecture';
+import { initSocket, joinClassroom, startLecture, stopLecture, allowStudent } from '../../actions/lecture';
 import PropTypes from 'prop-types';
-import { Result, Button, List, Avatar, Radio, Tooltip, Menu, Dropdown } from 'antd';
-import { HistoryOutlined, MoreOutlined, StopOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
+import { Result, Button, List, Avatar, Menu, Dropdown } from 'antd';
+import { HistoryOutlined, MoreOutlined, StopOutlined, VideoCameraAddOutlined, MessageOutlined } from '@ant-design/icons';
 import Stream from './Stream';
 import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
@@ -63,13 +63,17 @@ const TutorClassroom = ({
         stopLecture(id);
     }
 
-    const optionsMenu = (
+    const generateOptions = (userId) => (
         <Menu>
-          <Menu.Item key="0">
+          <Menu.Item key="0" onClick={allowStudent(userId)}>
             <VideoCameraAddOutlined />
             Allow to speak
           </Menu.Item>
           <Menu.Item key="1">
+            <MessageOutlined />
+            Private message
+          </Menu.Item>
+          <Menu.Item key="2">
             <StopOutlined />
             Ban from chat
           </Menu.Item>
@@ -96,7 +100,7 @@ const TutorClassroom = ({
                                 header={<Stream />}
                                 dataSource={onlineUsers}
                                 renderItem={item => (
-                                    <List.Item key={item._id} actions={[<Dropdown overlay={optionsMenu} trigger={['click']}>
+                                    <List.Item key={item._id} actions={[<Dropdown overlay={generateOptions(item._id)} trigger={['click']}>
                                         <a onClick={e => e.preventDefault()}><MoreOutlined /></a>
                                         </Dropdown>]}
                                     >
@@ -148,5 +152,6 @@ export default connect(mapStateToProps, {
     initSocket,
     joinClassroom,
     startLecture,
-    stopLecture
+    stopLecture,
+    allowStudent
 })(TutorClassroom);

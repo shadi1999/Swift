@@ -1,24 +1,23 @@
 import {
-  RECEIVE_MESSAGE,
   ADD_MESSAGE,
-  SEND_MESSAGE,
   USER_LEFT,
   GET_MESSAGES,
   USER_JOINED,
-  SET_MESSAGES,
-  JOIN_CLASSROOM,
-  JOIN_CLASSROOM_FAIL,
-  JOIN_CLASSROOM_SUCCESS,
   START_LECTURE,
   STOP_LECTURE,
   LOAD_LECTURE,
   GET_PUBLISH_TOKEN,
   GET_PLAY_TOKEN,
-  ALLOW_USER_STREAM
+  ALLOW_USER_STREAM,
+  RECEIVE_SLIDE,
+  CHANGE_SLIDE_PAGE,
+  CHANGE_CURRENT_REPLAY,
+  SET_ONLINE_USERS
 } from './types';
 import io from 'socket.io-client';
 import config from '../Config';
 import axios from 'axios';
+import { stopPublishing } from './stream';
 
 let socket;
 
@@ -26,14 +25,15 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
   socket = io(`${config.URL.Server}?token=${token}&classroom=${classroomId}`);
 
   socket.on('connect', () => {
-    socket.emit('loadLecture', null, (hasStarted, onlineUsers) => {
+    socket.emit('loadLecture', null, (hasStarted, slideUrl, onlineUsers) => {
       onlineUsers = assignColors(onlineUsers);
 
       dispatch({
         type: LOAD_LECTURE,
         payload: {
           hasStarted,
-          onlineUsers
+          onlineUsers,
+          slideUrl
         }
       });
     });
@@ -43,6 +43,20 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
     dispatch({
       type: ADD_MESSAGE,
       payload: msg
+    });
+  });
+
+  socket.on('slidesUploaded', url => {
+    dispatch({
+      type: RECEIVE_SLIDE,
+      payload: url
+    });
+  });
+
+  socket.on('slidesPageChanged', pageNumber => {
+    dispatch({
+      type: CHANGE_SLIDE_PAGE,
+      payload: pageNumber
     });
   });
 
@@ -100,6 +114,10 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
         currentStreamerId: newStreamer
       }
     });
+
+    if (getState().stream.isSharing && getState().auth.user._id !== newStreamer) {
+      dispatch(stopPublishing(classroomId));
+    }
   });
 }
 
@@ -199,6 +217,106 @@ export const allowStudent = (userId) => async dispatch => {
   }
 }
 
+// Disallow the student to share a stream & change the streamer back to the tutor.
 export const disallowStudent = (userId) => async dispatch => {
   socket.emit('disallowStudent', {to: userId});
+}
+
+export const uploadSlides = (url) => async dispatch => {
+  socket.emit('uploadSlides', url);
+}
+
+export const changeSlidesPage = pageNumber => async (dispatch, getState) => {
+  dispatch({
+    type: CHANGE_SLIDE_PAGE,
+    payload: pageNumber
+  });
+
+  if (getState().auth.user.kind === "Tutor")
+    socket.emit('changeSlidesPage', pageNumber);
+}
+
+
+export const replayLecture = (classroomId, lectureId) => async (dispatch, getState) => {
+    dispatch({type: STOP_LECTURE});
+
+    try {
+        const lecture = await axios.get(`${config.URL.Server}/api/lectures/${classroomId}/${lectureId}`);
+        let { chatMessages, slideHistory, streamHistory, onlineUsers } = lecture.data;
+
+        // Add all attendants to onlineUsers array.
+        dispatch({
+          type: SET_ONLINE_USERS,
+          payload: assignColors(onlineUsers)
+        });
+
+        // Time and duration in milliseconds.
+        let duration = lecture.endedOn - lecture.startedOn;
+        let time = 0;
+        // Time in minutes.
+        let min = 0;
+
+        let timerId = setInterval(() => {
+            if (time >= duration)
+                clearInterval(timerId);
+
+            // Get messages sent in this second of the lecture.
+            for (let i = 0; i < chatMessages.length; i++) {
+                let messageTime = chatMessages[i].time - lecture.startedOn;
+                if (messageTime >= time && messageTime <= (time + 1000)) {
+                    dispatch({
+                        type: ADD_MESSAGE,
+                        payload: chatMessages[i]
+                    });
+
+                    chatMessages.splice(i, 1);
+                    i--;
+                } else {
+                    break;
+                }
+            }
+
+            // Get slides file and page changes in this second of the lecture.
+            for (let i = 0; i < slideHistory.length; i++) {
+                let messageTime = slideHistory[i].date - lecture.startedOn;
+                if (messageTime >= time && messageTime <= (time + 1000)) {
+                    if(slideHistory[i].slideUrl !== getState().lecture.slideUrl) {
+                        dispatch({
+                            type: RECEIVE_SLIDE,
+                            payload: slideHistory[i].slideUrl
+                        });
+                    }
+
+                    dispatch({
+                        type: CHANGE_SLIDE_PAGE,
+                        payload: slideHistory[i].slideNumber
+                    });                    
+
+                    slideHistory.splice(i, 1);
+                    i--;
+                } else {
+                    break;
+                }
+            }
+
+            time += 1000;
+        }, 1000);
+
+        // Check if the video replay url changed every minute.
+        let minTimerId = setInterval(() => {
+            if (min >= (duration / 60000))
+                clearInterval(minTimerId);
+
+            if (streamHistory[min.toString()]) {
+                dispatch({
+                    type: CHANGE_CURRENT_REPLAY,
+                    payload: streamHistory[min.toString()]
+                });
+            }
+                
+            min++;
+        }, 60000);
+    } catch(e) {
+        console.log(e);
+    }
 }

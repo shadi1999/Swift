@@ -270,9 +270,8 @@ router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
         let theLecture = await Lecture.findById(classroom.liveLecture);
         theLecture.endedOn = Date.now();
         await theLecture.save();
-        if (classroom.recordLectures) {
-            classroom.pastLectures.push(classroom.liveLecture);
-        }
+
+        classroom.pastLectures.push(theLecture);
         classroom.liveLecture = null;
         await classroom.save();
         res.status(200).send();

@@ -20,7 +20,7 @@ const upload = multer({
     storage: storage
 }).single('file');
 
-// upload route...
+// upload route for chat...
 router.post('/upload/:id/', auth, function (req, res) {
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {

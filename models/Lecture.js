@@ -12,7 +12,7 @@ const Attendance = new Schema({
 const ChatMessage = new Schema({
     time: {
         type:Date,
-        default:Date.now()
+        default:Date.now
     },
     type: String,
     text: String,
@@ -35,7 +35,7 @@ const Lecture = new Schema({
     endedOn: {type: Date},
     attendance: [Attendance],
     slideUrl: {type: String},
-    slideHistory: [{slideNumber: Number, date: Date}],
+    slideHistory: [{slideNumber: Number, date: {type: Date, default: Date.now}, slideUrl: String}],
     // streamUrl: {
     //     type: String
     // }

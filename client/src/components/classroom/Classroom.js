@@ -5,8 +5,8 @@ import ChatContainer from './chat/ChatContainer';
 import {connect} from 'react-redux';
 import {initSocket, joinClassroom} from '../../actions/lecture';
 import PropTypes from 'prop-types';
-import { Result, Button, List, Avatar } from 'antd';
-import {HistoryOutlined} from '@ant-design/icons';
+import { Result, Button, List, Avatar, Menu, Dropdown } from 'antd';
+import { HistoryOutlined, MessageOutlined, MoreOutlined } from '@ant-design/icons';
 import Stream from './Stream';
 import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
@@ -43,6 +43,15 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
         getClassroom();
     }, []);
 
+    const optionsMenu = (
+        <Menu>
+          <Menu.Item key="0">
+            <MessageOutlined />
+            Private message
+          </Menu.Item>
+        </Menu>
+      );
+
     return (
         <Layout.Content>
             {lectureStarted ? (
@@ -59,10 +68,14 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
                      <Col span={5}>
                         <List
                             bordered
-                            header={publishToken ? <Stream /> : ""}
+                            // header={publishToken ? <Stream /> : ""}
+                            header={<Stream />}
                             dataSource={onlineUsers}
                             renderItem={item => (
-                                <List.Item key={item._id} actions={[<a key="options">...</a>]}>
+                                <List.Item key={item._id} actions={[<Dropdown overlay={optionsMenu} trigger={['click']}>
+                                    <a onClick={e => e.preventDefault()}><MoreOutlined /></a>
+                                    </Dropdown>]}
+                                >
                                 <List.Item.Meta
                                     avatar={
                                         <Avatar className={currentStreamerId === item._id ? "currentStreamer" : ""} style={{ backgroundColor: item.color, verticalAlign: 'middle' }} size="large">

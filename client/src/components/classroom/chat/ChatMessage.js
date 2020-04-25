@@ -15,12 +15,12 @@ const ChatMessage = ({ message, senderFirstName, color, type }) => {
                 );
             case "image":
                 return (
-                    <img className="img-attachment" src={`${config.URL.Server}/files/${message}`} />
+                    <img className="img-attachment" src={`${config.URL.Server}/${message}`} />
                 );
             case "file":
                 let filename = /([^\/]+$)/.exec(message)[0];
                 return (
-                    <Button className="file-attachment" type="link" href={`${config.URL.Server}/files/${message}`} target="_blank">{filename} <DownloadOutlined /></Button>
+                    <Button className="file-attachment" type="link" href={`${config.URL.Server}/${message}`} target="_blank">{filename} <DownloadOutlined /></Button>
                 );
         }
     }

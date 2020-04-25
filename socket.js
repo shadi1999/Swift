@@ -53,6 +53,34 @@ module.exports = async io => {
             io.to(classroomId).emit('message', msg);
         });
 
+        socket.on('uploadSlides', async (url) => {
+            const tutor = await Tutor.findById(socket.user.id);
+            if(tutor) {
+                socket.classroom.liveLecture.slideUrl = url;
+
+                // For replaying the recording of the lecture.
+                socket.classroom.liveLecture.slideHistory.push({
+                    slideNumber: 1,
+                    date: Date.now(),
+                    slideUrl: url
+                });
+                await socket.classroom.liveLecture.save();
+
+                io.to(classroomId).emit('slidesUploaded', url);
+            }
+        });
+
+        socket.on('changeSlidesPage', async pageNumber => {
+            socket.classroom.liveLecture.slideHistory.push({
+                slideNumber: pageNumber,
+                date: Date.now(),
+                slideUrl: socket.classroom.liveLecture.slideUrl
+            });
+            await socket.classroom.liveLecture.save();
+
+            socket.to(classroomId).emit('slidesPageChanged', pageNumber);
+        });
+
         socket.on('startLecture', async () => {      
             const tutor = await Tutor.findById(socket.user.id);
             if(tutor) {
@@ -71,17 +99,21 @@ module.exports = async io => {
             socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate(); 
             
             let onlineUsers = [];
+            let slideUrl = "";
             if(socket.classroom.liveLecture) {
-                let lecture = await Lecture.findById(socket.classroom.liveLecture._id, {'onlineUsers.name': 1, 'onlineUsers._id': 1}).populate('onlineUsers');
+                let lectureId = socket.classroom.liveLecture._id;
+                let lecture = await Lecture.findById(lectureId, {'onlineUsers.name': 1, 'onlineUsers._id': 1, 'slideUrl': 1}).populate('onlineUsers');
                 lecture = await lecture.execPopulate();   
 
                 onlineUsers = lecture.onlineUsers
                 if(onlineUsers.length !== 0){
                     onlineUsers = onlineUsers.map(user => ({_id: user._id, name: user.name, kind: user.kind}));
                 }
+
+                slideUrl = lecture.slideUrl;
             }
-            
-            callback(Boolean(socket.classroom.liveLecture), onlineUsers);
+
+            callback(Boolean(socket.classroom.liveLecture), slideUrl, onlineUsers);
         });
 
         socket.on('allowStudent', async ({to, token}) => {
@@ -98,6 +130,8 @@ module.exports = async io => {
                 io.to(classroomId).emit('streamerChanged', {newStreamer: socket.user.id});
             }
         });
+
+        
       
         const leave = async () => {
             if(socket.lecture) {

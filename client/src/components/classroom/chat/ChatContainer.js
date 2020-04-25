@@ -1,10 +1,5 @@
-import React, {
-    useState,
-    useEffect
-} from 'react';
-import {
-    useParams
-} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {Button, Input, Spin, Upload, message} from 'antd';
 import {LoadingOutlined} from '@ant-design/icons';
 import ChatMessage from './ChatMessage';
@@ -55,7 +50,7 @@ const ChatContainer = ({
                 }
 
                 let lectureId = /([^\/]+$)/.exec(info.file.response.destination)[0];
-                let text = `${id}/${lectureId}/${info.file.response.filename}`;
+                let text = `files/${id}/${lectureId}/${info.file.response.filename}`;
                 sendMessage({ text, type });
                 message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
