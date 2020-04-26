@@ -20,9 +20,11 @@ const MyClassrooms = ({ student, classrooms, loading, getClassrooms }) => {
                 renderItem={item => (
                     <List.Item>
                         <Card title={item.id}>
-                            <Link to={`/classroom/${item.id}`}>go to the classroom</Link><br></br>
-                            given by: {item.tutor.name}<br></br>
-                            <Link>view recorded lectures</Link>
+                            <Link to={`/classroom/${item.id}`}>Go to The Classroom</Link><br></br>
+                            Tutor: {item.tutor.name}<br></br>
+                            {(item.recordLectures && item.pastLectures.length > 0) && (
+                                <Link to={`/replay/${item.id}/${item.pastLectures[item.pastLectures.length - 1]}/`}>Replay Latest Lecture</Link>
+                            )}
                         </Card>
                     </List.Item>
                 )}

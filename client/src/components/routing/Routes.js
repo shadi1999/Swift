@@ -10,6 +10,7 @@ import { Skeleton } from 'antd';
 import MainDashboard from '../dashboard/MainDashboard';
 import Classroom from '../classroom/Classroom';
 import TutorClassroom from '../classroom/TutorClassroom';
+import ReplayClassroom from '../classroom/ReplayClassroom';
 import LoginAsGuest from '../auth/LoginAsGuest';
 import Home from '../Home';
 import Profile from '../layout/Profile';
@@ -32,6 +33,7 @@ const Routes = ({ auth }) => {
                     <Route path='/login' component={Login} />
                     <Route path='/classroom/:id/tutor' component={TutorClassroom} />
                     <Route exact path='/classroom/:id/' component={Classroom} />
+                    <Route path='/replay/:classroomId/:lectureId/' component={ReplayClassroom} />
                     {privateRoutes}
                     <Route exact path="/" component={Home} />
                     <Route component={ErrorNotFound} />

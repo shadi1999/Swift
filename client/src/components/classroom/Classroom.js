@@ -14,7 +14,7 @@ import config from '../../Config';
 import Slides from "./Slides";
 
 const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, playToken, publishToken, onlineUsers, currentStreamerId}) => {
-    let mediaServerApp = "LiveApp";
+    let mediaServerApp = "WebRTCApp";
     const {id} = useParams();    
 
     useEffect(() => {

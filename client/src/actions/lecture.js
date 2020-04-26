@@ -241,8 +241,9 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
     dispatch({type: STOP_LECTURE});
 
     try {
-        const lecture = await axios.get(`${config.URL.Server}/api/lectures/${classroomId}/${lectureId}`);
-        let { chatMessages, slideHistory, streamHistory, onlineUsers } = lecture.data;
+        const res = await axios.get(`${config.URL.Server}/api/lectures/${classroomId}/${lectureId}`);
+        const { lecture, streamHistory } = res.data;
+        let { chatMessages, slideHistory, onlineUsers } = lecture;
 
         // Add all attendants to onlineUsers array.
         dispatch({
@@ -252,6 +253,7 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
 
         // Time and duration in milliseconds.
         let duration = lecture.endedOn - lecture.startedOn;
+        console.log('duration', duration)
         let time = 0;
         // Time in minutes.
         let min = 0;
@@ -263,7 +265,9 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
             // Get messages sent in this second of the lecture.
             for (let i = 0; i < chatMessages.length; i++) {
                 let messageTime = chatMessages[i].time - lecture.startedOn;
+                console.log(messageTime)
                 if (messageTime >= time && messageTime <= (time + 1000)) {
+                  	console.log("1")
                     dispatch({
                         type: ADD_MESSAGE,
                         payload: chatMessages[i]
@@ -272,6 +276,7 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
                     chatMessages.splice(i, 1);
                     i--;
                 } else {
+					console.log(2)
                     break;
                 }
             }
@@ -299,6 +304,7 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
                 }
             }
 
+			console.log('time', time)
             time += 1000;
         }, 1000);
 

@@ -25,7 +25,7 @@ const TutorClassroom = ({
     playToken,
     currentStreamerId
 }) => {
-    let mediaServerApp = "LiveApp";
+    let mediaServerApp = "WebRTCApp";
     const { id } = useParams();
 
     useEffect(() => {

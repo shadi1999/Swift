@@ -1,6 +1,7 @@
 const Administrator = require('../models/Administrator');
 const Tutor = require('../models/Tutor');
 const User = require('../models/User');
+const Classroom = require('../models/Classroom');
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -31,18 +32,37 @@ module.exports = {
     privateClassroom: async (req, res, next) => {
         try {
             const { classroomId } = req.params;
-            const classroom = await Classroom.findById(classroomId);
+            const classroom = await Classroom.findOne({id: classroomId});
             const user = await User.findById(req.user.id);
 
             if (user.kind === "Admin") {
                 next();
             } else if (user.kind === "Tutor") {
-                classroom.tutor == user._id && next();
+                if (classroom.tutor == user._id) {
+                    next();
+                } else {
+                    res.status(401).json({msg:'Unauthorized'});
+                }
             } else if (user.kind === "Student") {
-                classroom.students.includes(mongoose.Types.ObjectId(user._id)) && next();
+                console.log("student")
+                // for (let student of classroom.students) {
+                //     console.log(student)
+                //     if (student == req.user.id) {
+                //         console.log('true')
+                //         next();
+                //     } else {
+                //         console.log('false')
+                //     }
+                // }
+                
+                // classroom.students.some(student => student._id == req.user.id) && next();
+                if (classroom.students.includes(mongoose.Types.ObjectId(user._id))) {
+                    console.log("trueeeeee")
+                    next();
+                } else {
+                    res.status(401).json({msg:'Unauthorized'});
+                }
             }
-
-            res.status(401).json({msg:'Unauthorized'});
         } catch(err) {
             res.status(500).json({msg:err});
         }

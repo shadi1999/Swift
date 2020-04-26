@@ -35,28 +35,31 @@ router.get('/', auth, adminOnly, (req, res) => {
 @desc   get a classroom's data
 @access private
 */
-router.get('/:id', auth, (req, res) => {
+router.get('/:id', auth, async (req, res) => {
+    const user = await User.findById(req.user.id);
     Classroom.findOne({
         id: req.params.id
     }).populate('liveLecture').populate('students').populate('tutor')
         .then(classroom => {
             // Private classrooms authorization.
             if (classroom.private) {
-                switch (req.user.kind) {
+                switch (user.kind) {
                     case 'Tutor':
-                        if (classroom.tutor == req.user.id)
-                            res.status(200).json(classroom);
+                        if (classroom.tutor == req.user.id) {
+                            console.log(classroom.tutor, req.user.id)
+                            return res.status(200).json(classroom);
+                        }
                         break;
                     case 'Administrator':
                         res.status(200).json(classroom);
                         break;
                     case 'Student':
                         if (classroom.students.some(student => student._id == req.user.id)) {
-                            res.status(200).json(classroom);
+                            return res.status(200).json(classroom);
                             break;
                         }
                     default:
-                        res.status(401).json({
+                        return res.status(401).json({
                             msg: 'Unauthorized'
                         });
                         break;
@@ -114,7 +117,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
             tutor: thetutor._id
         });
 
-        if (Private) {
+        if (Private && req.body.students) {
             // Add the students allowed to attend the class.
             for (let student of req.body.students) {
                 newClass.students.push(student);

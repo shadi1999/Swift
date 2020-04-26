@@ -14,11 +14,11 @@ import Slides from "./Slides";
 
 const ReplayClassroom = ({token, streamState, playToken, currentStreamerId, replayLecture, currentReplayUrl}) => {
     let mediaServerApp = "WebRTCApp";
-    const {id} = useParams();    
-
+    
+    const { classroomId, lectureId } = useParams();
     useEffect(() => {
-        replayLecture();
-    }, []);
+        replayLecture(classroomId, lectureId);
+    }, [classroomId, lectureId]);
 
     return (
         <Layout.Content>
