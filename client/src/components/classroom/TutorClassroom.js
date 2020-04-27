@@ -65,7 +65,7 @@ const TutorClassroom = ({
 
     const generateOptions = (userId) => (
         <Menu>
-          <Menu.Item key="0" onClick={allowStudent(userId)}>
+          <Menu.Item key="0" onClick={() => allowStudent(userId)}>
             <VideoCameraAddOutlined />
             Allow to speak
           </Menu.Item>
@@ -88,7 +88,7 @@ const TutorClassroom = ({
                         <Col span={6}>
                             <ChatContainer />
                             <video id="localVideo" className={streamState.isSharing ? "clappr-vid" : "hide"} autoPlay muted playsInline></video>
-                            {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
+                            {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} live={true} classroomId={id} />) : ""}
                         </Col>
                         <Col span={11}>
                             <Slides />

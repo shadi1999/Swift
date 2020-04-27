@@ -44,20 +44,8 @@ module.exports = {
                     res.status(401).json({msg:'Unauthorized'});
                 }
             } else if (user.kind === "Student") {
-                console.log("student")
-                // for (let student of classroom.students) {
-                //     console.log(student)
-                //     if (student == req.user.id) {
-                //         console.log('true')
-                //         next();
-                //     } else {
-                //         console.log('false')
-                //     }
-                // }
-                
                 // classroom.students.some(student => student._id == req.user.id) && next();
                 if (classroom.students.includes(mongoose.Types.ObjectId(user._id))) {
-                    console.log("trueeeeee")
                     next();
                 } else {
                     res.status(401).json({msg:'Unauthorized'});

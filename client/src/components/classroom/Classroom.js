@@ -60,7 +60,7 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
                      <Col span={6}>
                         <ChatContainer />
                         <video id="localVideo" className={streamState.isSharing ? "clappr-vid" : "hide"} autoPlay muted></video>
-                        {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} />) : ""}
+                        {!streamState.isSharing && mediaServerApp ? (<VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${id}.m3u8`} live={true} classroomId={id} />) : ""}
                      </Col>
                      <Col span={11}>
                             <Slides />

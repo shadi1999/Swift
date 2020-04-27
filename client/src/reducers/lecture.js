@@ -117,7 +117,8 @@ export default function (state = initState, action) {
         case SET_ONLINE_USERS:
             return {
                 ...state,
-                onlineUsers: payload
+                onlineUsers: payload,
+                loading: false
             }
         case SEND_MESSAGE:
         default:
