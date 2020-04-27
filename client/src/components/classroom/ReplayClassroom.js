@@ -26,7 +26,7 @@ const ReplayClassroom = ({token, streamState, playToken, currentStreamerId, repl
                 <Row justify="space-around" className="classroom">
                     <Col span={11}>
                         <ChatContainer />
-                        <VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${currentReplayUrl}`} />
+                        <VideoPlayer className="play-vid" source={`https://${window.location.hostname}:5443/${mediaServerApp}/streams/${currentReplayUrl}`} live={false} />
                     </Col>
                     <Col span={11}>
                         <Slides />

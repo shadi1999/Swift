@@ -252,11 +252,10 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
         });
 
         // Time and duration in milliseconds.
-        let duration = lecture.endedOn - lecture.startedOn;
-        console.log('duration', duration)
+        let duration = new Date(lecture.endedOn) - new Date(lecture.startedOn);
         let time = 0;
         // Time in minutes.
-        let min = 0;
+        let min = 1;
 
         let timerId = setInterval(() => {
             if (time >= duration)
@@ -264,10 +263,8 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
 
             // Get messages sent in this second of the lecture.
             for (let i = 0; i < chatMessages.length; i++) {
-                let messageTime = chatMessages[i].time - lecture.startedOn;
-                console.log(messageTime)
+                let messageTime = new Date(chatMessages[i].time) - new Date(lecture.startedOn);
                 if (messageTime >= time && messageTime <= (time + 1000)) {
-                  	console.log("1")
                     dispatch({
                         type: ADD_MESSAGE,
                         payload: chatMessages[i]
@@ -276,14 +273,13 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
                     chatMessages.splice(i, 1);
                     i--;
                 } else {
-					console.log(2)
                     break;
                 }
             }
 
             // Get slides file and page changes in this second of the lecture.
             for (let i = 0; i < slideHistory.length; i++) {
-                let messageTime = slideHistory[i].date - lecture.startedOn;
+                let messageTime = new Date(slideHistory[i].date) - new Date(lecture.startedOn);
                 if (messageTime >= time && messageTime <= (time + 1000)) {
                     if(slideHistory[i].slideUrl !== getState().lecture.slideUrl) {
                         dispatch({
@@ -304,12 +300,11 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
                 }
             }
 
-			console.log('time', time)
             time += 1000;
         }, 1000);
 
         // Check if the video replay url changed every minute.
-        let minTimerId = setInterval(() => {
+        let minTimerId = setInterval(function getStream() {
             if (min >= (duration / 60000))
                 clearInterval(minTimerId);
 
@@ -319,9 +314,10 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
                     payload: streamHistory[min.toString()]
                 });
             }
-                
+
             min++;
-        }, 60000);
+            return getStream;
+        }(), 60000);
     } catch(e) {
         console.log(e);
     }

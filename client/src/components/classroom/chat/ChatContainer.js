@@ -26,7 +26,8 @@ const ChatContainer = ({
     }
 
     useEffect(() => {
-        loadMessages(id);
+        if (id)
+            loadMessages(id);
     }, []);
 
     const props = {
