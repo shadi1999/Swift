@@ -12,12 +12,15 @@ import {
   RECEIVE_SLIDE,
   CHANGE_SLIDE_PAGE,
   CHANGE_CURRENT_REPLAY,
-  SET_ONLINE_USERS
+  SET_ONLINE_USERS,
+  SET_REPLAY_DURATOIN,
+  SET_REPLAY_TIME
 } from './types';
 import io from 'socket.io-client';
 import config from '../Config';
 import axios from 'axios';
 import { stopPublishing } from './stream';
+import { notification } from 'antd';
 
 let socket;
 
@@ -66,8 +69,9 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
     });
 
     // Get a token from the media server to authorize for playing the stream.
-    const playToken = await axios.get(`${config.URL.Server}/api/streams/playToken?classroomId=${classroomId}`);
-    console.log(playToken);
+    // const playToken = await axios.get(`${config.URL.Server}/api/streams/playToken?classroomId=${classroomId}`);
+    const playToken = "fake";
+
     dispatch({
       type: GET_PLAY_TOKEN,
       payload: playToken
@@ -118,6 +122,16 @@ export const initSocket = (token, classroomId) => (dispatch, getState) => {
     if (getState().stream.isSharing && getState().auth.user._id !== newStreamer) {
       dispatch(stopPublishing(classroomId));
     }
+  });
+
+  socket.on('handRaised', ({user}) => {
+    let student = getState().lecture.onlineUsers.find(u => u._id === user);
+
+    notification.info({
+      message: 'Hand raised',
+      description: `${student.name} is raising their hand.`,
+      duration: 7
+    });
   });
 }
 
@@ -187,8 +201,9 @@ export const startLecture = (id) => async (dispatch, getState) => {
     socket.emit('startLecture');
 
     // Get a token from the media server to authorize for publishing a stream.
-    const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${id}`);
-    
+    // const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${id}`);
+    const publishToken = "fake";
+
     dispatch({
       type: GET_PUBLISH_TOKEN,
       payload: {
@@ -210,7 +225,9 @@ export const stopLecture = (id) => async dispatch => {
 export const allowStudent = (userId) => async dispatch => {
   try {
     // Get a token from the media server and send it to the student.
-    const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${userId}`);
+    // const publishToken = await axios.get(`${config.URL.Server}/api/streams/publishToken?classroomId=${userId}`);
+    const publishToken = "fake";
+
     socket.emit('allowStudent', {to: userId, token: publishToken});
   } catch(e) {
     console.log(e);
@@ -236,6 +253,14 @@ export const changeSlidesPage = pageNumber => async (dispatch, getState) => {
     socket.emit('changeSlidesPage', pageNumber);
 }
 
+export const raiseHand = () => dispatch => {
+  socket.emit('raiseHand');
+}
+
+export const banStudentFromChat = userId => dispatch => {
+  socket.emit('banStudentFromChat', {userId});
+}
+
 
 export const replayLecture = (classroomId, lectureId) => async (dispatch, getState) => {
     dispatch({type: STOP_LECTURE});
@@ -255,7 +280,12 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
         let duration = new Date(lecture.endedOn) - new Date(lecture.startedOn);
         let time = 0;
         // Time in minutes.
-        let min = 1;
+        let min = 0;
+
+        dispatch({
+          type: SET_REPLAY_DURATOIN,
+          payload: duration
+        });
 
         let timerId = setInterval(() => {
             if (time >= duration)
@@ -301,6 +331,11 @@ export const replayLecture = (classroomId, lectureId) => async (dispatch, getSta
             }
 
             time += 1000;
+
+            dispatch({
+              type: SET_REPLAY_TIME,
+              payload: time
+            });    
         }, 1000);
 
         // Check if the video replay url changed every minute.

@@ -44,6 +44,18 @@ body {
   color: #ffffff9c;
 }
 
+.ant-notification {
+  text-align: left;
+}
+
+.ant-layout-content > .ant-progress-line {
+  width: 89%
+}
+
+.ant-progress-line .ant-progress-inner {
+  background-color: #ffffff;
+}
+
 
 /*
 --- Chat
@@ -144,6 +156,11 @@ body {
 
 .clappr-vid > div {
   border-radius: 17px;
+}
+
+.clappr-vid .bar-container,
+.clappr-vid .media-control-left-panel {
+  display: none !important;
 }
 
 /*

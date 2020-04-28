@@ -45,12 +45,23 @@ class VideoPlayer extends React.Component {
     }
     
     const engine = new Engine();
+    let thiz = this;
     this.player = new Clappr.Player({
       parent: this.refs.player,
       source: source,
       width: '100%',
       height: '100%',
-      autoplay: true,
+      autoPlay: true,
+      hideMediaControl: true,
+      disableKeyboardShortcuts: true,
+      playbackNotSupportedMessage: "There was no stream at this part of the lecture.",
+      // chromeless: true,
+      disableErrorScreen: true,
+      events: {
+        onError: function(e) {
+          setTimeout(function() { thiz.player.configure(thiz.player.options); }, 3200);
+        }
+      },
       hlsjsConfig: {
         enableWorker: true,
         liveSyncDurationCount: 7,
@@ -61,7 +72,6 @@ class VideoPlayer extends React.Component {
 
     // Statistics
     if(this.props.live) {
-      console.log("live")
       const downloadTotals = { http: 0, p2p: 0 };
       engine.on(Events.PieceBytesDownloaded, (method, size) => {
         downloadTotals[method] += size;

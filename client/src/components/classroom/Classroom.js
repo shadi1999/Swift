@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Row, Col } from 'antd';
 import {useParams} from 'react-router-dom';
 import ChatContainer from './chat/ChatContainer';
 import {connect} from 'react-redux';
-import {initSocket, joinClassroom} from '../../actions/lecture';
+import { initSocket, joinClassroom, raiseHand } from '../../actions/lecture';
 import PropTypes from 'prop-types';
 import { Result, Button, List, Avatar, Menu, Dropdown } from 'antd';
 import { HistoryOutlined, MessageOutlined, MoreOutlined } from '@ant-design/icons';
@@ -12,10 +12,12 @@ import VideoPlayer from "./VideoPlayer";
 import axios from 'axios';
 import config from '../../Config';
 import Slides from "./Slides";
+import HandRightIcon from '../../hand-right.svg';
 
-const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, playToken, publishToken, onlineUsers, currentStreamerId}) => {
-    let mediaServerApp = "WebRTCApp";
-    const {id} = useParams();    
+const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamState, playToken, publishToken, onlineUsers, currentStreamerId, raiseHand}) => {
+    let [mediaServerApp, setMediaServerApp] = useState("");
+    const {id} = useParams();   
+    const [handRaised, setHandRaised] = useState(false)
 
     useEffect(() => {
         initSocket(token, id);
@@ -33,15 +35,22 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
         async function getClassroom() {
             try {
                 const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`, {headers: {"x-auth-token": token}});
-                console.log(data);
-
-                mediaServerApp = data.mediaServerApp;
+                setMediaServerApp(data.mediaServerApp);
             } catch (e) {
                 console.log(e);
             }
         }
         getClassroom();
     }, []);
+
+    const RaiseHand = () => {
+        setHandRaised(true);
+        raiseHand();
+
+        setTimeout(() => {
+            setHandRaised(false);
+        }, 8000);
+    }
 
     const optionsMenu = (
         <Menu>
@@ -66,6 +75,7 @@ const Classroom = ({initSocket, joinClassroom, token, lectureStarted, streamStat
                             <Slides />
                         </Col>
                      <Col span={5}>
+                     <Button onClick={RaiseHand} disabled={handRaised} shape="round" icon={<img src={HandRightIcon} style={{marginRight: '7px', width: '20px'}} />}>Raise your hand</Button>
                         <List
                             bordered
                             // header={publishToken ? <Stream /> : ""}
@@ -118,4 +128,4 @@ const mapStateToProps = (state) => ({
     publishToken: state.lecture.publishToken
 });
 
-export default connect(mapStateToProps, {initSocket, joinClassroom})(Classroom);
+export default connect(mapStateToProps, {initSocket, joinClassroom, raiseHand})(Classroom);

@@ -18,7 +18,9 @@ import {
     RECEIVE_SLIDE,
     CHANGE_SLIDE_PAGE,
     CHANGE_CURRENT_REPLAY,
-    SET_ONLINE_USERS
+    SET_ONLINE_USERS,
+    SET_REPLAY_DURATOIN,
+    SET_REPLAY_TIME
 } from '../actions/types';
 
 const initState = {
@@ -31,14 +33,13 @@ const initState = {
     currentStreamerId: '',
     slideUrl: '',
     slidePage: 1,
-    currentReplayUrl: ''
+    currentReplayUrl: '',
+    replayDuration: 0,
+    replayTime: 0
 }
 
 export default function (state = initState, action) {
-    const {
-        type,
-        payload
-    } = action;
+    const { type, payload } = action;
     switch (type) {
         case ADD_MESSAGE:
             return {
@@ -119,6 +120,16 @@ export default function (state = initState, action) {
                 ...state,
                 onlineUsers: payload,
                 loading: false
+            }
+        case SET_REPLAY_DURATOIN:
+            return {
+                ...state,
+                replayDuration: payload
+            }
+        case SET_REPLAY_TIME:
+            return {
+                ...state,
+                replayTime: payload
             }
         case SEND_MESSAGE:
         default:

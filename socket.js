@@ -2,25 +2,16 @@ const Classroom = require('./models/Classroom');
 const Tutor = require('./models/Tutor');
 const {Lecture, Attendance} = require('./models/Lecture');
 const User = require('./models/User');
+const mongoose = require('mongoose');
 
 module.exports = async io => {
-    // io.on('connection', function(socket) {
-    //     socket.join(socket.classroomId);
-    //     const classroom = await Classroom.findById(socket.classroomId);
-    //     const lecture = classroom.liveLecture;
-    //     socket.on('message', function(msg) {
-    //         socket.to(socket.classroomId).emit('bc message', msg);
-    //         lecture.chatMessages.push(msg);
-    //         await lecture.save();
-    //     });
-
-        
-    // })
+    let socketIds = {};
+    let bannedUsers = [];
 
     io.on('connect', async (socket) => {
         let classroomId = socket.handshake.query.classroom;
         socket.classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
-        socket.join(classroomId);        
+        socket.join(classroomId);
 
         socket.on('join', async (data) => {
             // TODO: add error handling.
@@ -39,18 +30,19 @@ module.exports = async io => {
 
             let user = await User.findById(socket.user.id, {'name': 1});
             io.to(classroomId).emit('userJoined', user);
-            // io.to(classroom).emit('roomData', { classroom: user.classroom, users: getUsersInRoom(user.classroom) });
-        
-            // callback();
+            
+            socketIds[user._id] = socket.id;
         });
       
         socket.on('sendMessage', async (msg) => {
-            msg = { ...msg, sender: socket.user.id }
+            if (!bannedUsers.includes(socket.user.id)) {
+                msg = { ...msg, sender: socket.user.id }
 
-            socket.classroom.liveLecture.chatMessages.push(msg);
-            await socket.classroom.liveLecture.save();
-            
-            io.to(classroomId).emit('message', msg);
+                socket.classroom.liveLecture.chatMessages.push(msg);
+                await socket.classroom.liveLecture.save();
+                
+                io.to(classroomId).emit('message', msg);
+            }
         });
 
         socket.on('uploadSlides', async (url) => {
@@ -119,7 +111,7 @@ module.exports = async io => {
         socket.on('allowStudent', async ({to, token}) => {
             const tutor = await Tutor.findById(socket.user.id);
             if(tutor) {
-                io.to(to).emit('sendPublishToken', {token});
+                io.to(socketIds[to]).emit('sendPublishToken', {token});
                 io.to(classroomId).emit('streamerChanged', {newStreamer: to});
             }
         });
@@ -131,6 +123,17 @@ module.exports = async io => {
             }
         });
 
+        socket.on('raiseHand', () => {
+            // Send the ID of the student who raised their hand to the tutor of the classroom.
+            io.to(socketIds[socket.classroom.tutor]).emit('handRaised', {user: socket.user.id});
+        });
+
+        socket.on('banStudentFromChat', async ({userId}) => {
+            const tutor = await Tutor.findById(socket.user.id);
+            if(tutor) {
+                bannedUsers.push(userId);
+            }
+        });
         
       
         const leave = async () => {

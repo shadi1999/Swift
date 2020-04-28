@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Row, Col } from 'antd';
 import { useParams } from 'react-router-dom';
 import ChatContainer from './chat/ChatContainer';
 import { connect } from 'react-redux';
-import { initSocket, joinClassroom, startLecture, stopLecture, allowStudent } from '../../actions/lecture';
+import { initSocket, joinClassroom, startLecture, stopLecture, allowStudent, banStudentFromChat } from '../../actions/lecture';
 import PropTypes from 'prop-types';
 import { Result, Button, List, Avatar, Menu, Dropdown } from 'antd';
 import { HistoryOutlined, MoreOutlined, StopOutlined, VideoCameraAddOutlined, MessageOutlined } from '@ant-design/icons';
@@ -23,9 +23,11 @@ const TutorClassroom = ({
     onlineUsers,
     streamState,
     playToken,
-    currentStreamerId
+    currentStreamerId,
+    allowStudent,
+    banStudentFromChat
 }) => {
-    let mediaServerApp = "WebRTCApp";
+    let [mediaServerApp, setMediaServerApp] = useState("");
     const { id } = useParams();
 
     useEffect(() => {
@@ -46,8 +48,7 @@ const TutorClassroom = ({
             try {
                 // TODO: move mediaServerApp to lecture redux state.
                 const { data } = await axios.get(`${config.URL.Server}/api/classrooms/${id}`, {headers: {"x-auth-token": token}});
-                console.log(data);
-                mediaServerApp = data.mediaServerApp;
+                setMediaServerApp(data.mediaServerApp);
             } catch (e) {
                 console.log(e);
             }    
@@ -73,7 +74,7 @@ const TutorClassroom = ({
             <MessageOutlined />
             Private message
           </Menu.Item>
-          <Menu.Item key="2">
+          <Menu.Item key="2" onClick={() => banStudentFromChat(userId)}>
             <StopOutlined />
             Ban from chat
           </Menu.Item>
@@ -153,5 +154,6 @@ export default connect(mapStateToProps, {
     joinClassroom,
     startLecture,
     stopLecture,
-    allowStudent
+    allowStudent,
+    banStudentFromChat
 })(TutorClassroom);

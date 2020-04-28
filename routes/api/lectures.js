@@ -48,13 +48,30 @@ router.get('/:classroomId/:id', auth, privateClassroom, async (req, res) => {
             const streamHistory = {};
             const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             let minute = 0;
+            const formatDate = (date) => {
+                let hours;
+                if (date.getHours() < 10) {
+                    hours = "0" + date.getHours();
+                } else {
+                    hours = date.getHours();
+                }
+
+                let minutes;
+                if (date.getMinutes() < 10) {
+                    minutes = "0" + date.getMinutes();
+                } else {
+                    minutes = date.getMinutes();
+                }
+
+                return `${date.getFullYear()}-${months[date.getMonth()]}-${date.getDate()}_${hours}-${minutes}`
+            }
 
             for (date = lecture.startedOn; date <= lecture.endedOn; date = new Date(date.valueOf() + 60000)) {
                 // File name (e.g. TM101-2020-04-24_12-34.mp4).
-                let fileName = `${classroomId}-${date.getFullYear()}-${months[date.getMonth()]}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}.mp4`;
+                let fileName = `${classroomId}-${formatDate(date)}.mp4`;
                 if (fs.existsSync(`/usr/local/antmedia/webapps/WebRTCApp/streams/${fileName}`)) {
-                    // If the stream file exists.
-                    streamHistory[minute] = fileName;
+                        // If the stream file exists.
+                        streamHistory[minute] = fileName;
                 }
 
                 minute++;
@@ -89,24 +106,22 @@ router.post('/downloadStats', async (req, res) => {
     console.log('\n');
 
     try {
-        const classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
+        // const classroom = await (await Classroom.findOne({id: classroomId})).populate('liveLecture').execPopulate();
+        const classroom = await Classroom.findOne({id: classroomId});
+        const lecture = await Lecture.findById(classroom.liveLecture);
+        
+        lecture.totalDownloads.overHttp += downloadTotals.http;
+        lecture.totalDownloads.overTorrent += downloadTotals.p2p;
+        await lecture.save();
 
-        if (classroom.liveLecture.totalDownloads) {
-            classroom.liveLecture.totalDownloads.overHttp += downloadTotals.http;
-            classroom.liveLecture.totalDownloads.overTorrent += downloadTotals.p2p;
-        } else {
-            // For the first time.
-            console.log('first time')
-            classroom.liveLecture.totalDownloads = {overHttp: downloadTotals.http, overTorrent: downloadTotals.p2p}
-        }
-
-        await classroom.liveLecture.save();
-        const { totalDownloads } = classroom.liveLecture;
+        const { totalDownloads } = lecture;
         const totalOverHttp = totalDownloads.overHttp * 100 / (totalDownloads.overHttp + totalDownloads.overTorrent);
-        const totalOverTorrent = totalDownloads.overTorrent * 100 / (totalDownloads.overHttp + totalDownloads.overTorrent);    
+        const totalOverTorrent = totalDownloads.overTorrent * 100 / (totalDownloads.overHttp + totalDownloads.overTorrent);  
+
         console.log(`${totalOverHttp}% of this lectures has been downloaded over HTTP so far.`);
         console.log(`${totalOverTorrent}% of this lectures has been downloaded over BitTorrent so far.`);
         console.log('\n');
+        
         return res.status(200).send();
     } catch(e) {
         console.log(e)

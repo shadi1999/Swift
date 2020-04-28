@@ -15,7 +15,7 @@ const StudentSidebar = () => {
                 <Menu.Item key="my-classrooms">
                     <Link to="/dashboard/myClassrooms">
                         <LegacyIcon type="video-camera" />
-                    My classrooms</Link>
+                    My Classrooms</Link>
                 </Menu.Item>
             </Menu>
         </Fragment>

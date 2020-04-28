@@ -32,7 +32,7 @@ router.get('/', auth, adminOnly, (req, res) => {
 
 /*
 @route  GET api/classrooms/:id
-@desc   get a classroom's data
+@desc   get one classroom's data by ID
 @access private
 */
 router.get('/:id', auth, async (req, res) => {
@@ -81,7 +81,7 @@ const url = `http://www.swiftcourse.me:5080`
 
 /*
 @route  POST api/classrooms
-@desc   Add a classroom
+@desc   Add a new classroom
 @access private
 */
 router.post('/', auth, adminOnly, async (req, res) => {
@@ -147,8 +147,8 @@ router.post('/', auth, adminOnly, async (req, res) => {
 });
 
 /*
-@route  DELETE api/classrooms
-@desc   delete a classroom
+@route  DELETE api/classrooms/:id
+@desc   delete a classroom by ID
 @access private
 */
 router.delete('/:id', auth, adminOnly, async (req, res) => {
@@ -227,6 +227,7 @@ router.post('/:id/start', auth, tutorOnly, async (req, res) => {
             id: classroomId
         });
 
+        // Authorization.
         if (req.user.id != classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
@@ -263,13 +264,15 @@ router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
         const classroom = await Classroom.findOne({
             id: req.params.id
         });
-        if (!classroom.liveLecture) {
 
+        // Authorization.
+        if (!classroom.liveLecture) {
             return res.status(500).json('lecture already stop');
         }
         if (req.user.id != classroom.tutor) {
             return res.status(400).json('Unauthorized access:\n\tNot the allowed tutor!');
         }
+
         let theLecture = await Lecture.findById(classroom.liveLecture);
         theLecture.endedOn = Date.now();
         await theLecture.save();
@@ -284,56 +287,11 @@ router.post('/:id/stop', auth, tutorOnly, async (req, res) => {
     }
 });
 
-
-// TODO: remove join and leave routes.
 /*
-@route  POST api/classrooms/:id/join
-@desc   join live classroom and intiate socket connection.
+@route  GET api/classrooms/:id/getlivechat
+@desc   get the chat messages of the live lecture by classroom ID.
 @access private
 */
-router.post('/:id/join', auth, async (req, res) => {
-    try {
-        const classroom = (await Classroom.findOne({
-            id: req.params.id
-        })).execPopulate('liveLecture');
-        const {
-            liveLecture
-        } = classroom;
-
-        if (!liveLecture.live) res.status(400).send('Lecture is not live.');
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-// TODO: automatically leave classroom when user closes window.
-/*
-@route  POST api/classrooms/:id/leave
-@desc   leave classroom and save attendance
-@access private
-*/
-router.post('/:id/leave', auth, async (req, res) => {
-    try {
-        const classroom = (await Classroom.findOne({
-            id: req.params.id
-        })).execPopulate('liveLecture');
-        const {
-            liveLecture
-        } = classroom;
-
-        if (!liveLecture.live) res.status(400).send('Lecture is not live.');
-        liveLecture.attendance.push({
-            id: req.user.id,
-            duration: req.body.duration
-        });
-        await liveLecture.save();
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
 router.get('/:id/getlivechat', auth, async (req, res) => {
     try {
         const classroomId = req.params.id;

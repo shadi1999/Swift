@@ -61,23 +61,8 @@ const EditTutor = ({ tutors, editTutor, deleteTutor, loading }) => {
                         />
                     </Form.Item>
 
-                    {/* <Form.Item name="password" rules={[{ required: true, message: 'Please input your Password!' }]}>
-                    <Input
-                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    type="password"
-                    placeholder="Password"
-                    />
-                </Form.Item>
-
-                <Form.Item name="password2" rules={[{ required: true, message: 'Please input your Password!' }]}>
-                    <Input
-                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    type="password"
-                    placeholder="Password"
-                    />
-                </Form.Item> */}
-                    <Button type="primary" htmlType="submit">
-                        Edit tutor
+                <Button type="primary" htmlType="submit">
+                    Edit tutor
                 </Button><br></br><br></br>
                     <Popconfirm title="Are you sure that you want to delete the tutor?"
                         okText="Yes" cancelText="No" onConfirm={onConfirm} okType="danger"

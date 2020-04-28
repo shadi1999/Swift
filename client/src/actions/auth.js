@@ -37,7 +37,7 @@ export const registerStudent = ({ name, email, password }) => async dispatch => 
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error', 7000));
 
         dispatch({
             type: REGISTER_FAIL
@@ -66,7 +66,7 @@ export const registerTutor = ({ name, email, password }) => async dispatch => {
         if (err.response) {
             const errors = err.response.data.errors;
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 12000));
+                dispatch(setAlert(error.msg, 'error', 7000));
         }
         console.log('Error', err);
 
@@ -109,7 +109,7 @@ export const login = (email, password) => async dispatch => {
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error', 7000));
 
         dispatch({
             type: LOGIN_FAIL
@@ -134,7 +134,7 @@ export const loginAsGuest = name => async dispatch => {
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error', 7000));
 
         dispatch({
             type: LOGIN_FAIL

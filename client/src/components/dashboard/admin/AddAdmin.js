@@ -8,11 +8,10 @@ import { addAdmin } from '../../../actions/adimnActions';
 import { useHistory } from 'react-router-dom';
 import { LoadingOutlined } from '@ant-design/icons';
 
-
-
 const AddAdmin = ({ setAlert, addAdmin, loading }) => {
     const history = useHistory();
     const [form] = Form.useForm();
+
     const onFinish = values => {
         let { name, email, password, password2 } = values;
 
@@ -25,7 +24,7 @@ const AddAdmin = ({ setAlert, addAdmin, loading }) => {
 
     return (
         <Fragment>
-            <h1>Add Extra Administrator</h1>
+            <h1>Add a New Administrator</h1>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}>
                 <Form form={form} onFinish={onFinish} initialValues={{ Private: false, record: false }}>
                     <Form.Item name="email" rules={[{ required: true, message: 'Please input the admin email!' }]}>
@@ -56,7 +55,7 @@ const AddAdmin = ({ setAlert, addAdmin, loading }) => {
                         />
                     </Form.Item>
                     <Button type="primary" htmlType="submit">
-                        Add Administrator
+                        Add an Administrator
                 </Button>
                 </Form>
             </Spin>
@@ -74,7 +73,5 @@ const mapStateToProps = (state) => ({
     admin: state.auth.user,
     loading: state.auth.loading
 })
-
-// const Wrapped = Form.create({ name: 'AddClassroom' })(AddClassroom);
 
 export default connect(mapStateToProps, { setAlert, addAdmin })(AddAdmin);

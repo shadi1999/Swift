@@ -36,7 +36,7 @@ const AdminSidebar = () => {
                 <Menu.Item key="add-extra-admin">
                     <Link to="/dashboard/addAdmin">
                         <LegacyIcon type="user-add" />
-                    Add an Extra Admin</Link>
+                    Add a New Admin</Link>
                 </Menu.Item>
             </Menu>
         </Fragment>

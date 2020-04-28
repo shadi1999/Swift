@@ -48,7 +48,7 @@ export const getTutors = () => async dispatch => {
         if (err.response) {
             const errors = err.response.data.errors;
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 12000));
+                dispatch(setAlert(error.msg, 'error'));
         }
 
         console.log('Error', err);
@@ -92,7 +92,7 @@ export const editTutor = (tutor, history, redirectPath) => async (dispatch, getS
         if (err.response) {
             const errors = err.response.data.errors;
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 12000));
+                dispatch(setAlert(error.msg, 'error'));
         }
 
         console.log('Error', err);
@@ -128,7 +128,7 @@ export const deleteTutor = (id, history, redirectPath) => async (dispatch, getSt
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
 
         dispatch({
             type: DELETE_TUTOR_FAIL
@@ -173,7 +173,7 @@ export const editStudent = (student, history, redirectPath) => async (dispatch, 
         if (err.response) {
             const errors = err.response.data.errors;
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 12000));
+                dispatch(setAlert(error.msg, 'error'));
         }
 
         console.log('Error', err);
@@ -209,7 +209,7 @@ export const deleteStudent = (id, history, redirectPath) => async (dispatch, get
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
 
         dispatch({
             type: DELETE_STUDENT_FAIL
@@ -230,7 +230,7 @@ export const getStudents = () => async dispatch => {
         if (err.response) {
             const errors = err.response.data.errors;
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 12000));
+                dispatch(setAlert(error.msg, 'error'));
         }
 
         console.log('Error', err);
@@ -267,7 +267,7 @@ export const addAdmin = ({ name, email, password }, history, redirectPath) => as
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
 
         dispatch({
             type: REGISTER_FAIL
@@ -301,7 +301,7 @@ export const deleteAdmin = (id, history, redirectPath) => async dispatch => {
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
 
         dispatch({
             type: DELETE_ADMIN_FAIL
@@ -336,7 +336,7 @@ export const editAdmin = ({ name, email, password }, history, redirectPath) => a
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
 
         dispatch({
             type: EDIT_ADMIN_FAIL
@@ -368,7 +368,7 @@ export const addClassroom = ({ id, tutor, Private, record }, history, redirectPa
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
     }
 }
 
@@ -385,7 +385,7 @@ export const getClassrooms = () => async dispatch => {
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
     }
 }
 
@@ -417,7 +417,7 @@ export const editClassroom = (classroom, newid, history, redirectPath) => async 
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
         dispatch({
             type: EDIT_CLASSROOM_FAIL
         });
@@ -449,7 +449,7 @@ export const deleteClassroom = (id, history, redirectPath) => async (dispatch, g
 
         if (errors)
             for (let error of errors)
-                dispatch(setAlert(error.msg, 'error', 100000));
+                dispatch(setAlert(error.msg, 'error'));
         dispatch({
             type: DELETE_CLASSROOM_FAIL
         });

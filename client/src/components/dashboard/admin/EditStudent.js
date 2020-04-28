@@ -61,24 +61,9 @@ const EditStudent = ({ students, editStudent, deleteStudent, loading }) => {
                         />
                     </Form.Item>
 
-                    {/* <Form.Item name="password" rules={[{ required: true, message: 'Please input your Password!' }]}>
-                    <Input
-                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    type="password"
-                    placeholder="Password"
-                    />
-                </Form.Item>
-
-                <Form.Item name="password2" rules={[{ required: true, message: 'Please input your Password!' }]}>
-                    <Input
-                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    type="password"
-                    placeholder="Password"
-                    />
-                </Form.Item> */}
                     <Button type="primary" htmlType="submit">
                         Edit student
-                </Button><br></br><br></br>
+                    </Button><br></br><br></br>
                     <Popconfirm title="Are you sure that you want to delete the student?"
                         okText="Yes" cancelText="No" onConfirm={onConfirm} okType="danger"
                         icon={<QuestionCircleOutlined style={{ color: 'red' }}></QuestionCircleOutlined>} >

@@ -41,6 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
   });
 } else {
   app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://swiftcourse.me,https://www.swiftcourse.me');
     res.setHeader('Access-Control-Allow-Headers', 'x-auth-token,content-type,x-requested-with');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
     next();
@@ -53,18 +54,16 @@ app.use('/api/students', require('./routes/api/students'));
 app.use('/api/tutors', require('./routes/api/tutors'));
 app.use('/api/administrators', require('./routes/api/administrators'));
 app.use('/api/classrooms', require('./routes/api/classrooms'));
+app.use('/api/streams', require('./routes/api/streams'));
 app.use('/api/lectures', require('./routes/api/lectures'));
 app.use('/api/auth', require('./routes/api/auth'));
 
-// Serve static assets if in production
-// if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('public'));
+// Serve static files.
+app.use(express.static('public'));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
-  });
-// }
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
 // socket.io configuration ...
 const socket = require('./socket');

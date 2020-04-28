@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Spin, Checkbox, Popconfirm } from 'antd';
 import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Icon } from '@ant-design/compatible';
@@ -14,6 +14,8 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
     const history = useHistory();
     const [form] = Form.useForm();
     let { id } = useParams();
+    let [Private, setPrivate] = useState(false);
+    let [recordLectures, setRecordLectures] = useState(false)
     let classroom;
 
     useEffect(() => {
@@ -22,13 +24,13 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
         if (classroom) {
             form.setFieldsValue({
                 newId: classroom.id,
-                email: classroom.tutor.email,
-                Private: false,
-                record: false
+                email: classroom.tutor.email
             });
         }
-    });
 
+        setPrivate(classroom.private);
+        setRecordLectures(classroom.recordLectures);
+    }, []);
 
     const onFinish = values => {
         const { newId, email, Private, record } = values;
@@ -37,10 +39,10 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
             newId,
             email,
             Private,
-            record
+            recordLectures
         }
         if (!newId || Private === undefined || record === undefined || !email) {
-            setAlert("please provide all fields", 'error');
+            setAlert("Please provide all fields", 'error');
         } else {
             editClassroom(classroom, newId, history, '/dashboard/classrooms/');
         }
@@ -53,9 +55,6 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
     return (
         <Fragment>
             <h1>Edit Classroom</h1>
-            {/* <p>
-                Edit the classroom's information.
-        </p> */}
             <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} size="large" spinning={loading}>
                 <Form form={form} onFinish={onFinish} className="center-form">
                     <Form.Item name="newId" label="Classroom ID" rules={[{ required: true, message: 'Please input id!' }]}>
@@ -73,11 +72,11 @@ const EditClassroom = ({ classrooms, editClassroom, deleteClassroom, loading }) 
                     </Form.Item>
 
                     <Form.Item name="Private" valuePropName="checked">
-                        <Checkbox>Private</Checkbox>
+                        <Checkbox checked={Private}>Private</Checkbox>
                     </Form.Item>
 
                     <Form.Item name="record" valuePropName="checked">
-                        <Checkbox>Recored Lecture</Checkbox>
+                        <Checkbox checked={recordLectures}>Recored Lecture</Checkbox>
                     </Form.Item>
                     <Button type="primary" htmlType="submit" icon={<EditFilled />}>
                         Submit

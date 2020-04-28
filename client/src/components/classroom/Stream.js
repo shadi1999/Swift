@@ -11,8 +11,10 @@ const Stream = ({ streamState, publishToken, initWebrtc, startPublishingAction, 
     const { id } = useParams();
 
     useEffect(() => {
-        initWebrtc(id);
-    }, []);
+        if(currentStreamerId === user._id) {
+            initWebrtc(id);
+        }
+    }, [currentStreamerId, user]);
 
     const startSharing = () => {
         startPublishingAction(publishToken, id);
@@ -20,6 +22,10 @@ const Stream = ({ streamState, publishToken, initWebrtc, startPublishingAction, 
 
     const stopSharing = () => {
         stopPublishing(id);
+    }
+
+    const disallow = () => {
+        disallowStudent(id);
     }
 
     const switchStreamMode = e => {
@@ -45,7 +51,7 @@ const Stream = ({ streamState, publishToken, initWebrtc, startPublishingAction, 
     } else if (user.kind === "Tutor") {
         return (
             <Tooltip title="Stop student from streaming to share your own stream">
-                <Button onClick={disallowStudent} danger icon={<SwapOutlined />}>Share your stream and stop student</Button>
+                <Button onClick={disallow} danger icon={<SwapOutlined />}>Share your stream and stop student</Button>
             </Tooltip>
         );
     } else {return null;}

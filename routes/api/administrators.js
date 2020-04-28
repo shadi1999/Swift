@@ -3,12 +3,12 @@ const auth = require('../../middleware/auth');
 const router = express.Router();
 const tutorsController = require('../../middleware/tutorsController');
 const { adminOnly } = require('../../middleware/privateRoutes');
-//Administrator model
+// Administrator model
 const Administrator = require('../../models/Administrator');
 
 /*
 @route  GET api/administrators
-@desc   display all administrators
+@desc   get all administrators
 @access private
 */
 router.get('/', auth, adminOnly, (req, res) => {
@@ -20,7 +20,7 @@ router.get('/', auth, adminOnly, (req, res) => {
 
 /*
 @route  GET api/administrators/:id
-@desc   display an administrator
+@desc   get one administrator by ID
 @access private
 */
 router.get('/:id', auth, adminOnly, (req, res) => {
@@ -32,10 +32,9 @@ router.get('/:id', auth, adminOnly, (req, res) => {
 
 
 // @route    POST api/administrators
-// @desc     Add Administrator
+// @desc     Add a new administrator
 // @access   Private
-router.post('/',
-    async (req, res) => {
+router.post('/', adminOnly, async (req, res) => {
         const { name, email, password } = req.body;
 
         try {
@@ -64,7 +63,7 @@ router.post('/',
     });
 
 // @route    DELETE api/administrators
-// @desc     delete an administrator
+// @desc     delete an administrator by ID
 // @access   Private
 router.delete('/:id',
     auth,

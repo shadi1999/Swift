@@ -1,5 +1,6 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
+const Classroom = require('../../models/Classroom');
 const tutorsController = require('../../middleware/tutorsController');
 const os = require('os');
 const axios = require('axios');
@@ -18,7 +19,7 @@ router.get('/publishToken', auth, async (req, res) => {
     try {
         const {
             classroomId
-        } = req.params;
+        } = req.query;
 
         const classroom = await Classroom.findOne({
             id: classroomId
@@ -53,7 +54,7 @@ router.get('/playToken', auth, async (req, res) => {
     try {
         const {
             classroomId
-        } = req.params;
+        } = req.query;
 
         const classroom = await Classroom.findOne({
             id: classroomId
@@ -76,3 +77,5 @@ router.get('/playToken', auth, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+module.exports = router;

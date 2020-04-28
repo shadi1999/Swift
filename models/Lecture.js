@@ -24,23 +24,34 @@ const Lecture = new Schema({
         type: Boolean,
         default: true
     },
-    // status: {
-    //     type: String,
-    //     enum: ['live', 'ended', 'recorded']
-    // }
+
     startedOn: {
         type: Date,
         required: true
     },
+
     endedOn: {type: Date},
+
     attendance: [Attendance],
+
     slideUrl: {type: String},
+
     slideHistory: [{slideNumber: Number, date: {type: Date, default: Date.now}, slideUrl: String}],
-    // streamUrl: {
-    //     type: String
-    // }
+
     chatMessages:[ChatMessage],
-    onlineUsers: [{type: Schema.Types.ObjectId, ref: 'user'}]
+
+    onlineUsers: [{type: Schema.Types.ObjectId, ref: 'user'}],
+
+    totalDownloads: {
+        overHttp: {
+            type: Number,
+            default: 0
+        },
+        overTorrent: {
+            type: Number,
+            default: 0
+        }
+    }
 });
 
 module.exports = {
