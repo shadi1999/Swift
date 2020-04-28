@@ -4,32 +4,34 @@ Swift Course - A Fast and Affordable Online Classroom System
 
 ***************************************************
 
-^ the system is working online on this #URL: https://www.swiftcourse.me/ ^
+^ The system is working online on this #URL: https://www.swiftcourse.me/ ^
 
 ***************************************************
 
-^ Develepment View ^
+^ Run in Develepment Mode ^
 
-1- install nodeJS V12.0 on your device
+1- Install Node.js V12.
 
-2- install mongoDB V4.2 on your device
+2- Install MongoDB V4.
 
-3- open terminal on software directory
+3- Open terminal in the project's directory.
 
-4- write the following commands:-
+4- Write the following commands:-
 
     a> npm install // to install dependencies for server side
 
     b> npm run client-install // to install dependencies for client side
 
-    c> npm run dev // to run the server, client and the DB
+    c> npm run dev // to run the server, client and the DB on development mode
+
+5- Now you can browser the website through "http://localhost:3000/".
 
 ***************************************************
 
-^ configration ^
+^ Configration ^
 
-*/ server directory is the main directory and client directory is the Client folder and each one has 
-    a file called package.json that explains the directory /*
+*/ server directory is the main directory and client directory is the "client" folder and each one has 
+    a file called package.json that explains the directory and lists all the dependencies. /*
 
 Server port is 5000
 
@@ -37,7 +39,24 @@ Client port is 3000
 
 Database port is 27017
 
-please check the config files on both server and client sides
+Please check the config files on both server and client side.
+
+***************************************************
+
+^ Documentation ^
+Everything is documented as comments withing the code.
+
+Documentation for each API endpoint can be found in the comments in "routes/api".
+
+***************************************************
+
+^ Code Structure ^
+The client-side code is seperated from the server-side code.
+Everything outside the "client" directory is server-side code.
+The client-side consumes the API endpoints provided by the server-side.
+
+In the client-side, state management is done by a method called Redux.
+That's why there are three directories: "actions", "reducers" and "store.js".
 
 ***************************************************
 
@@ -48,17 +67,13 @@ please check the config files on both server and client sides
 Folder PATH listing
 
 Swift:.
-|   .gitignore
 |   compile.sh
-|   package-lock.json
 |   package.json
 |   readme.txt
 |   server.js
 |   socket.js
 |          
 +---client
-|   |   .gitignore
-|   |   package-lock.json
 |   |   package.json
 |   |              
 |   +---public
@@ -75,8 +90,6 @@ Swift:.
 |       |   default-monochrome.svg
 |       |   index.css
 |       |   index.js
-|       |   logo.png
-|       |   logo.svg
 |       |   serviceWorker.js
 |       |   setupTests.js
 |       |   store.js
@@ -167,7 +180,6 @@ Swift:.
 |       |       
 |       \---utils
 |               setAuthToken.js
-|               webrtc_adaptor-old.js
 |               webrtc_adaptor.js
 |               
 +---config
@@ -186,7 +198,6 @@ Swift:.
 +---models
 |       Administrator.js
 |       Classroom.js
-|       Guest.js
 |       Lecture.js
 |       Student.js
 |       Tutor.js
@@ -201,7 +212,6 @@ Swift:.
 |           auth.js
 |           classrooms.js
 |           files.js
-|           guests.js
 |           streams.js
 |           students.js
 |           tutors.js
@@ -212,7 +222,5 @@ Swift:.
 |       swiftcourse-cert.crt
 |       www_swiftcourse_me.ca-bundle
 |       
-\---static
-
 
 ***************************************************
